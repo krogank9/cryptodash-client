@@ -1,0 +1,18 @@
+$background-color: #0C1117;
+$foreground-color: #1A2430;
+
+$active-text-color: rgb(118, 201, 255);
+$inactive-text-color: rgb(184, 202, 222);
+$sub-text-color: rgb(133, 163, 194);
+
+@mixin vcenter {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+@mixin hcenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

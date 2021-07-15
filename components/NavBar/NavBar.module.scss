@@ -1,0 +1,100 @@
+/* navBar block */
+
+.navBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $foreground-color;
+    padding: 10px 30px;
+    
+    &__hamburgerButton {
+        @include vcenter;
+        color: white;
+        text-decoration: none;
+        font-size: 34px;
+        margin-left: 30px;
+        padding: 12px 20px;
+    }
+    
+    &__searchBox {
+        @include vcenter;
+
+
+        &Input {
+            background-color: #0C1117;
+            padding: 15px 25px;
+            padding-right: 0px;
+            font-size: 16px;
+            outline: none;
+            border: 0px solid transparent;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            color: white;
+            min-width: 250px;
+        }
+        
+        &Button {
+            font-size: 22px;
+            padding: 15px;
+            background-color: #0C1117;
+            text-decoration: none;
+            color: white;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+
+            ion-icon {
+                display: block;
+            }
+        }
+    }
+    
+    &__sourceCodeButton {
+        font-size: 16px;
+        text-decoration: none;
+        color: white;
+        border: 1px solid white;
+        border-radius: 3px;
+        display: inline-block;
+        padding: 5px 14px;
+        margin-right: 24px;
+    
+        * {
+            vertical-align: middle;
+            display: inline-block;
+        }
+    }
+    &__sourceCodeButton:hover {
+        color: black;
+        background-color: white;
+    }
+
+    &__notificationsButton, &__mailButton {
+        @include vcenter;
+        color: white;
+        font-size: 26px;
+        padding: 12px;
+    }
+
+    &__profileButton {
+        @include vcenter;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+
+        &Icon {
+            display: inline-block;
+            width: 34px;
+            height: 34px;
+            background-size: cover;
+            background-image: url('/sky-bg.jpg');
+            margin-left: 12px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        &Text {
+            margin: 0 10px;
+        }
+    }
+}
