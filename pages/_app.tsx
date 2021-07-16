@@ -19,12 +19,9 @@ export default function App({ Component, pageProps }) {
         <SideBar/>
       </header>
 
-      <main>
-        <Component {...pageProps} className={"content"}/>
+      <main className={"content"}>
+        <Component {...pageProps}/>
       </main>
-
-      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-      <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     </div>
   )
 }

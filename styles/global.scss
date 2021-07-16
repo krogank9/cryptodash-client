@@ -26,8 +26,13 @@ ion-icon {
 }
 
 .content {
-    padding-top: 100px;
+    padding: calc(100px + 30px) 45px;
+    padding-bottom: 0px;
     margin-left: 335px;
+}
+
+.content > *:not(:last-child) {
+    margin-bottom: $tile-margin;
 }
 
 /*----------------------------------*/

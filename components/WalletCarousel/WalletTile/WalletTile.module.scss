@@ -1,0 +1,60 @@
+.walletTile {
+    font-size: unset;
+    display: inline-block;
+    background-color: #1A2430;
+    border-radius: 5px;
+    margin-right: 15px;
+    overflow: hidden;
+    padding: 10px;
+    width: calc(20% - 12px);
+    box-sizing: border-box;
+
+    &:last-child {
+        margin-right: 0;
+    }
+
+    &__crypto {
+        display: inline-block;
+
+        &Icon {
+            display: inline-block;
+            margin-right: 12px;
+            width: 32px;
+            height: 32px;
+        }
+
+        &Text {
+            display: inline-block;
+            &Name {
+                color: #85a3c2;
+            }
+        }
+    }
+
+    &__currency {
+        float: right;
+        text-align: right;
+
+        &Amount {
+            font-weight: 600;
+        }
+
+        &Change {
+            > * {
+                vertical-align: middle;
+            }
+            
+            &_positive {
+                color: $positive-text-color
+            }
+            &_negative {
+                color: $negative-text-color
+            }
+        }
+    }
+
+    &__graph {
+        margin: 0 -10px -10px;
+        height: 65px;
+    }
+}

@@ -1,0 +1,16 @@
+.ionIcon {
+    width: 1em;
+    height: 1em;
+    
+    path, line, circle {
+        color: currentColor;
+        fill: currentColor;
+        stroke: currentColor;
+    }
+}
+
+.noFill {
+    path, line, circle {
+        fill: none;
+    }
+}

@@ -5,6 +5,11 @@ $active-text-color: rgb(118, 201, 255);
 $inactive-text-color: rgb(184, 202, 222);
 $sub-text-color: rgb(133, 163, 194);
 
+$positive-text-color: #6DD598;
+$negative-text-color: #d46d6f;
+
+$tile-margin: 15px;
+
 @mixin vcenter {
     display: flex;
     align-items: center;
@@ -21,8 +26,8 @@ $sub-text-color: rgb(133, 163, 194);
     @media only screen and (max-width: 767px){ @content; }
 }
 
-@mixin on-tablet-and-up {
-    @media only screen and (min-width: 768px){ @content; }
+@mixin on-tablet-and-under {
+    @media only screen and (max-width: 1279px){ @content; }
 }
 
 @mixin on-desktop-and-up {

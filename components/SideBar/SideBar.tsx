@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import css from './SideBar.module.scss'
+import IonIcon from '../IonIcon/IonIcon'
 
 export default function SideBar() {
   return (
@@ -10,15 +10,15 @@ export default function SideBar() {
       </h2>
 
       <a href="#" className={css.sideBar__item + " " + css.sideBar__item_active}>
-        <ion-icon name="pie-chart"></ion-icon>
+        <IonIcon name="pie-chart" />
         <span>Overview</span>
       </a>
       <a href="#" className={css.sideBar__item}>
-        <ion-icon name="stats-chart"></ion-icon>
+        <IonIcon name="stats-chart" />
         <span>Analyze</span>
       </a>
       <a href="#" className={css.sideBar__item}>
-        <ion-icon name="swap-horizontal"></ion-icon>
+        <IonIcon name="swap-horizontal" />
         <span>Exchange</span>
       </a>
 
@@ -27,20 +27,20 @@ export default function SideBar() {
       </h2>
 
       <a href="#" className={css.sideBar__item}>
-        <ion-icon name="notifications"></ion-icon>
+        <IonIcon name="notifications" />
         <span>Notifications</span>
       </a>
       <a href="#" className={css.sideBar__item}>
-        <ion-icon name="settings"></ion-icon>
+        <IonIcon name="settings" />
         <span>Settings</span>
       </a>
       <a href="#" className={css.sideBar__item}>
-        <ion-icon name="information-circle"></ion-icon>
+        <IonIcon name="information-circle" />
         <span>About</span>
       </a>
 
       <a href="#" className={css.sideBar__item + " " + css.sideBar__loginLogoutItem}>
-        <ion-icon name="enter"></ion-icon>
+        <IonIcon name="enter" />
         <span>Log In / Create Account</span>
       </a>
     </div>
