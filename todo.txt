@@ -1,0 +1,6 @@
+-navbar and sidebar need some filler. too bare right now
+-graph colors could maybe use some work. seem slightly too close or something. maybe make not transparent.
+-webpack? something clean and fancy to speed up file loading base64 prevent FOUT etc
+-hamburger menu icon needs to be like a staggered menu icon visually hinting that it will slide menu in and out.
+ might change icon packs or just find an icon only for the hamburger menu part that works
+-organize css properties by type so it looks really pretty (do when done maybe)

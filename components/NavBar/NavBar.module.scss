@@ -7,6 +7,9 @@
     align-items: center;
     background-color: $foreground-color;
     padding: 10px 30px;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
     
     &__hamburgerButton {
         @include vcenter;
