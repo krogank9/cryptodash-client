@@ -9,8 +9,8 @@ export default function Overview({ Component, pageProps, className }) {
     <>
         <WalletCarousel />
         <div className={css.graphSplit}>
-          <OverviewGraph className={css.overviewGraph} />
-          <MarketCapTable />
+          <OverviewGraph className={css.graphSplit__graph} />
+          <MarketCapTable className={css.graphSplit__table} />
         </div>
     </>
   )

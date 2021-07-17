@@ -18,13 +18,15 @@ function mToR(x) {
     }
 }
 
-class OverviewGraph extends React.Component<{className?: string}> {
+interface OverviewGraphProps { className?: string }
+
+class OverviewGraph extends React.Component<OverviewGraphProps> {
     containerRef: React.RefObject<HTMLDivElement>;
     state: {
         graphOptions: {}
     }
 
-    constructor(props: { className: string; }) {
+    constructor(props) {
         super(props)
         this.containerRef = React.createRef()
         this.state = {
@@ -51,7 +53,7 @@ class OverviewGraph extends React.Component<{className?: string}> {
 
     render() {
         return (
-            <div className={css.overviewGraph + " " + (this.props.className||"")} ref={this.containerRef}>
+            <div className={css.overviewGraph + " " + (this.props.className || "")} ref={this.containerRef}>
                 <div className={css.overviewGraph__controls}>
                     <div className={css.overviewGraph__controlsPlot}>
                         <a href="#" className={css.overviewGraph__controlsPlotButton + " " + css.overviewGraph__controlsPlotButton_active}>Line</a>

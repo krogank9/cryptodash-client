@@ -1,4 +1,15 @@
 .graphSplit {
   border-radius: 5px;
   background-color: $foreground-color;
+
+  display: flex;
+  flex-direction: row;
+
+  &__graph {
+    flex-grow: 1;
+  }
+
+  &__table {
+    border-left: 2px solid #454545;
+  }
 }
