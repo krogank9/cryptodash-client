@@ -1,8 +1,12 @@
-import css from './graph.module.scss'
+import React, { Component } from 'react';
+import { makeChart } from './GenerateGraph.js'
 
 export default function Graph(props) {
-    let Elem = icons[props.name]
+    if (!props || Object.keys(props).length === 0 || Object.keys(props.options).length === 0)
+        return (<></>)
+
+    let svg = makeChart(props.options)
     return (
-        <Elem viewBox="0 0  512 512" className={(Elem.noFill? css.noFill:"")+" "+css.ionIcon+" "+(props.className||"")} />
+        svg
     )
 }
