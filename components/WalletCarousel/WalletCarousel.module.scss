@@ -33,4 +33,13 @@
             color: #666;
         }
     }
+
+    &__track {
+        // Hack to remove extra space below track. Will probably fix this later and use flex or something for wallet track.
+        // The extra space is because the WalletTile elements are inline-block.
+        line-height: 0;
+        > * {
+            line-height: initial;
+        }
+    }
 }

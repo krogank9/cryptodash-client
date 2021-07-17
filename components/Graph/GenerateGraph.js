@@ -52,8 +52,8 @@ for(let wg of Array.from(document.getElementsByClassName("wallet-graph"))) {
 
 //chart_container.innerHTML = svg
 
-function createElementSVG(e, props = {}) {
-    return React.createElement(e, props)
+function createElementSVG(e, props = {}, innerHTML) {
+    return React.createElement(e, props, [innerHTML])
 }
 
 /*
@@ -131,7 +131,7 @@ export var makeChart = function (options = {}) {
     let plots = plotData(options)
 
     let children = defs.concat(grid, legend, plots)
-    //console.log(children)
+    // Keep react from complaining even though it isn't really a list
     children = children.map( (el,key) => React.cloneElement(el, {key}) );
 
     return (
@@ -159,11 +159,10 @@ function makeLegend(options) {
         let label = createElementSVG("text", {
             x: x + 15, y: (y + spacing * i) + text_offset,
             fill: color,
-            "alignment-baseline": "middle",
-            "font-weight": "bold",
-            "font-size": 18
-        })
-        label.innerHTML = name
+            alignmentBaseline: "middle",
+            fontWeight: "bold",
+            fontSize: 18
+        }, name)
 
         svgElems.push(circle)
         svgElems.push(label)
@@ -177,8 +176,8 @@ function makeGrid(options) {
     const { xMin, xMax, yMin, yMax, xInterval, yInterval, width, height, strokeWidth, _lastX, _lastY, _xToGraph, _yToGraph, xLabelCallback, yLabelCallback } = options
 
     // Measure space for axis labels, and add appropriate padding
-    _leftPadding = options._leftPadding = 90
-    _bottomPadding = options._bottomPadding = 50
+    let _leftPadding = options._leftPadding = 90
+    let _bottomPadding = options._bottomPadding = 50
 
     for (let x = xMin; x < xMax; x += xInterval) {
         let line = createElementSVG("line", {
@@ -204,10 +203,9 @@ function makeGrid(options) {
         let label = createElementSVG("text", {
             x: _xToGraph(x), y: _yToGraph(0) + _bottomPadding / 2,
             fill: "white",
-            "text-anchor": "middle",
-            "alignment-baseline": "middle",
-        })
-        label.innerHTML = xLabelCallback(x)
+            textAnchor: "middle",
+            alignmentBaseline: "middle",
+        }, xLabelCallback(x))
 
         if (x == xMin)
             svgElems.push(line)
@@ -229,10 +227,9 @@ function makeGrid(options) {
         let label = createElementSVG("text", {
             x: _leftPadding / 2, y: _yToGraph(y),
             fill: "white",
-            "text-anchor": "middle",
-            "alignment-baseline": "middle",
-        })
-        label.innerHTML = yLabelCallback(y)
+            textAnchor: "middle",
+            alignmentBaseline: "middle",
+        }, yLabelCallback(y))
 
         svgElems.push(line)
         if (y != yMin && y != _lastY) {
@@ -264,7 +261,8 @@ function plotData(options) {
             fill: fillColor,
             fillOpacity: 0.75,
             strokeWidth: 0,
-            d: fill_d
+            d: fill_d,
+            mask: i == 0 && options.dataObjs.length >= 2 ? "url(#clipNum1)" : undefined
         })
 
         let clipPath = (
@@ -273,10 +271,6 @@ function plotData(options) {
                 <path fill={"black"} d={fill_d}></path>
             </mask>
         )
-
-        if (i == 0 && options.dataObjs.length >= 2) {
-            fillPath.mask = "url(#clipNum1)"
-        }
 
         svgElems.push(fillPath)
         svgElems.push(linePath)
