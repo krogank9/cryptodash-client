@@ -1,0 +1,94 @@
+.marketCapTable {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__header {
+        padding: 13px 17px;
+        border: 2px solid transparent;
+        border-bottom: 2px solid #454545;
+    }
+
+    &__list {
+        flex-grow: 1;
+
+        &Item {
+            padding: 13px 17px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            &Name {
+                display: flex;
+                align-items: center;
+                text-align: left;
+                margin-right: 20px;
+
+                img {
+                    display: inline-block;
+                    margin-right: 6px;
+                    width: 22px;
+                    height: 22px;
+                }
+            }
+
+            &Info {
+                display: flex;
+
+                &Balance {
+
+                }
+
+                &Change {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    color: $positive-text-color;
+                    margin-left: 6px;
+
+                    &_negative {
+                        color: $negative-text-color;
+                    }
+                }
+            }
+        }
+    }
+
+    &__footer {
+        height: 49px;
+        border-top: 2px solid #454545;
+        @include hcenter;
+
+        &Item {
+            padding: 13px 17px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            &Name {
+                display: flex;
+                align-items: center;
+                text-align: left;
+                margin-right: 20px;
+            }
+
+            &Info {
+                display: flex;
+
+                &Balance {}
+
+                &Change {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    color: $positive-text-color;
+                    margin-left: 6px;
+
+                    &_negative {
+                        color: $negative-text-color;
+                    }
+                }
+            }
+        }
+    }
+}

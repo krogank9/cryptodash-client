@@ -52,7 +52,6 @@ icons["swap-vertical-outline"].noFill = true
 
 export default function IonIcon(props) {
     let Elem = icons[props.name]
-    console.log(props)
     return (
         <Elem {...props} viewBox="0 0  512 512" className={(Elem.noFill? css.noFill:"")+" "+css.ionIcon+" "+(props.className||"")} />
     )

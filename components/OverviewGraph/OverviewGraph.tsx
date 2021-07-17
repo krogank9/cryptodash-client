@@ -36,7 +36,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
 
     componentDidMount() {
         let new_graphOptions = {
-            width: this.containerRef.current.offsetWidth, height: 550,
+            width: this.containerRef.current.offsetWidth, height: 555,
             xMin: 0, xMax: 12,
             yMin: 0, yMax: 15,
             yInterval: 3, xInterval: 2,

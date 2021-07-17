@@ -4,3 +4,6 @@
 -hamburger menu icon needs to be like a staggered menu icon visually hinting that it will slide menu in and out.
  might change icon packs or just find an icon only for the hamburger menu part that works
 -organize css properties by type so it looks really pretty (do when done maybe)
+
+-graph is going to need to be made a bit more dynamic, modular. need to add candlestick, some type of slider/scrubber, intro animations,
+ more interactivity. this will be a big part of remaining frontend work

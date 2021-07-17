@@ -13,3 +13,25 @@
     border-left: 2px solid #454545;
   }
 }
+
+.halfSplit {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  >* {
+    flex-grow: 1;
+    padding: 5px 25px;
+    background-color: $foreground-color;
+    border-radius: 5px;
+    height: 500px;
+    width: calc(50% - 7.5px);
+  }
+
+  >:first-child {
+    margin-right: 7.5px;
+  }
+  >:last-child {
+    margin-left: 7.5px;
+  }
+}
