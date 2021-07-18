@@ -5,8 +5,7 @@ import OverviewGraph from '../components/OverviewGraph/OverviewGraph'
 import MarketCapTable from '../components/MarketCapTable/MarketCapTable'
 import IonIcon from '../components/IonIcon/IonIcon'
 import TrendingCurrenciesTable from '../components/TrendingCurrenciesTable/TrendingCurrenciesTable'
-
-
+import CryptoNewsfeed from '../components/CryptoNewsfeed/CryptoNewsfeed'
 
 export default function Overview({ Component, pageProps, className }) {
   return (
@@ -19,16 +18,7 @@ export default function Overview({ Component, pageProps, className }) {
 
       <div className={css.halfSplit}>
         <TrendingCurrenciesTable />
-        <div>
-          <h3>Crypto Newsfeed</h3>
-          <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-            <li>
-              <h4>Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'</h4>
-              <span>CoinDesk - Bitcoin News, Blockchain News - 4h ago</span>
-              <p>Also, Circle might be an attractive "starter stock for the cautious" when it goes public, according to one analyst.</p>
-            </li>
-          </ul>
-        </div>
+        <CryptoNewsfeed />
       </div>
     </>
   )

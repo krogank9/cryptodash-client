@@ -1,0 +1,43 @@
+import css from './CryptoNewsfeed.module.scss'
+import IonIcon from '../IonIcon/IonIcon'
+import React, { Component } from 'react';
+
+interface CryptoNewsfeedProps {
+    className?: string
+}
+
+class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
+
+    makeList(data) {
+        return data.map((d, i) => (
+            <li className={css.storyPreview}>
+                <h4 className={css.storyPreview__header}>{d[0]}</h4>
+                <span className={css.storyPreview__subtext}>{d[1]}</span>
+                <p className={css.storyPreview__description}>{d[2]}</p>
+            </li>
+        ))
+    }
+
+    render() {
+        let data = [
+            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
+            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
+            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
+        ]
+        return (
+            <div className={css.cryptoNewsfeed}>
+                <div className={css.headerSection}>
+                    <h3 className={css.headerSection__title}>Crypto Newsfeed</h3>
+                    <div className={css.headerSection__buttonContainer}>
+                        <a href="#" className={css.headerSection__subscribeButton}>Subscribe to RSS Feed</a>
+                    </div>
+                </div>
+                <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+                    {this.makeList(data)}
+                </ul>
+            </div>
+        )
+    }
+}
+
+export default CryptoNewsfeed

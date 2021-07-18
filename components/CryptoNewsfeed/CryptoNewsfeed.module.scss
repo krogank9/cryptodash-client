@@ -1,0 +1,56 @@
+.cryptoNewsfeed {
+    padding: 25px;
+}
+
+.headerSection {
+    display: flex;
+    justify-content: space-between;
+
+    &__title {
+        margin: 0;
+    }
+    
+    &__buttonContainer {
+        @include vcenter;
+    }
+
+    &__subscribeButton {
+        display: block;
+        padding: 7px 28px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        background-color: #2A4357;
+        margin-left: 35px;
+
+        &:hover {
+            background-color: #4d789b;
+        }
+    }
+}
+
+.storyPreview {
+    border: 2px solid #454545;
+    border-radius: 5px;
+    padding: 10px 20px;
+
+    &:not(:last-child) {
+         margin-bottom: 15px;
+    }
+
+    &__header {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    &__subtext {
+        margin-bottom: 0px;
+        font-size: 14px;
+        color: $inactive-text-color;
+    }
+
+     &__description {
+         margin-bottom: 0;
+         margin-top: 5px;
+     }
+}

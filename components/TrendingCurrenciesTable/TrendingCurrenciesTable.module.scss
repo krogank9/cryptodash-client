@@ -1,92 +1,58 @@
-.marketCapTable {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.TrendingCurrenciesTable {
 
-    &__header {
-        padding: 13px 17px;
-        border: 2px solid transparent;
-        border-bottom: 2px solid #454545;
+    td:first-child, td:last-child, th:first-child, th:last-child {
+        width: 1px;
+        white-space: nowrap;
     }
 
-    &__list {
-        flex-grow: 1;
+    td, th {
+        padding-top: 7px;
+        padding-bottom: 15px;
+    }
 
-        &Item {
-            padding: 13px 17px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+    td > a {
+        padding: 7px 28px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        background-color: #2A4357;
+        margin-left: 35px;
 
-            &Name {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                margin-right: 20px;
-
-                img {
-                    display: inline-block;
-                    margin-right: 6px;
-                    width: 22px;
-                    height: 22px;
-                }
-            }
-
-            &Info {
-                display: flex;
-
-                &Balance {
-
-                }
-
-                &Change {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    color: $positive-text-color;
-                    margin-left: 6px;
-
-                    &_negative {
-                        color: $negative-text-color;
-                    }
-                }
-            }
+        &:hover {
+            background-color: #4d789b;
         }
     }
 
-    &__footer {
-        height: 49px;
-        border-top: 2px solid #454545;
-        @include hcenter;
+    th:last-child {
+        padding-left: 35px;
+    }
 
-        &Item {
-            padding: 13px 17px;
+    &__headerRow {
+        color: $active-text-color;
+    }
+
+    &__row:not(:last-child) {
+        > td:not(:last-child) {
+            border-bottom: 1px solid #454545;
+        }
+    }
+
+    &__row {
+        &Change {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            justify-content: center;
 
-            &Name {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                margin-right: 20px;
+            &Num {
+
             }
+            &Pct {
+                @include vcenter;
+                margin-left: 6px;
 
-            &Info {
-                display: flex;
+                color: $positive-text-color;
 
-                &Balance {}
-
-                &Change {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    color: $positive-text-color;
-                    margin-left: 6px;
-
-                    &_negative {
-                        color: $negative-text-color;
-                    }
+                &_negative {
+                    color: $negative-text-color;
                 }
             }
         }
