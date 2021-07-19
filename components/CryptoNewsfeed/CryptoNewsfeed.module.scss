@@ -6,8 +6,18 @@
     display: flex;
     justify-content: space-between;
 
-    &__title {
-        margin: 0;
+    &__titleContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &Icon {
+            margin-right: 12px;
+            font-size: 22px;
+        }
+        &Text {
+            margin: 0;
+        }
     }
     
     &__buttonContainer {
@@ -30,7 +40,7 @@
 }
 
 .storyPreview {
-    border: 2px solid #454545;
+    border: 1px solid #454545;
     border-radius: 5px;
     padding: 10px 20px;
 

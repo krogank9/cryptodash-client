@@ -41,9 +41,12 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
             ["BTC", "$20,012", "+$4,032", "1.2%"],
         ]
         return (
-            <div className={this.props.className}>
-                <h3 className={css.TrendingCurrenciesTableTitle}>Top Trending Currencies</h3>
-                <table className={css.TrendingCurrenciesTable} style={{ width: "100%", textAlign: "center" }} border={0} cellSpacing={0}>
+            <div className={this.props.className||""}>
+                <div className={css.TrendingCurrenciesTitle}>
+                    <IonIcon className={css.TrendingCurrenciesTitle__icon} name="stats-chart" />
+                    <h3 className={css.TrendingCurrenciesTableTitle__text}>Top Trending Currencies</h3>
+                </div>
+                <table className={css.TrendingCurrenciesTable} style={{ width: "100%", textAlign: "center" }} cellSpacing={0}>
                     <tr className={css.TrendingCurrenciesTable__headerRow}>
                         <th>#</th>
                         <th>Currency</th>

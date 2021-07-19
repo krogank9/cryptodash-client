@@ -27,9 +27,12 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
         return (
             <div className={css.cryptoNewsfeed}>
                 <div className={css.headerSection}>
-                    <h3 className={css.headerSection__title}>Crypto Newsfeed</h3>
+                    <div className={css.headerSection__titleContainer} >
+                        <IonIcon className={css.headerSection__titleContainerIcon} name="newspaper-outline" />
+                        <h3 className={css.headerSection__titleContainerText}>Crypto Newsfeed</h3>
+                    </div>
                     <div className={css.headerSection__buttonContainer}>
-                        <a href="#" className={css.headerSection__subscribeButton}>Subscribe to RSS Feed</a>
+                        <a href="https://cointelegraph.com/rss-feeds" target="_blank" className={css.headerSection__subscribeButton}>Subscribe to RSS Feed</a>
                     </div>
                 </div>
                 <ul style={{ listStyleType: "none", paddingLeft: 0 }}>

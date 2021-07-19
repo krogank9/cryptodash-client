@@ -1,3 +1,17 @@
+.TrendingCurrenciesTitle {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
+    &__icon {
+        margin-right: 12px;
+        font-size: 22px;
+    }
+    &__text {
+        margin: 0;
+    }
+}
+
 .TrendingCurrenciesTable {
 
     td:first-child, td:last-child, th:first-child, th:last-child {
