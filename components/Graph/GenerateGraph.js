@@ -1,57 +1,5 @@
 import React, { Component } from 'react';
 
-function mToR(x) {
-    if (x <= 12) {
-        return x + "AM";
-    }
-    if (x >= 24) {
-        x -= 12
-        return x + "AM"
-    }
-    if (x > 12) {
-        x %= 12
-        return x + "PM"
-    }
-}
-
-
-/*
-
-let chart_container = document.getElementById("chart")
-let width = chart_container.offsetWidth
-let height = chart_container.offsetHeight
-
-chart_container.appendChild(makeChart({
-    width: width, height: height,
-    xMin: 0, xMax: 12,
-    yMin: 0, yMax: 15,
-    yInterval: 3, xInterval: 2,
-    dataObjs: [
-        {name: "Total Portfolio", data: generateData(0.5, 0.75, 15, 3.5), solidFill: false},
-        {name: "BTC", data: generateData(0.5, 0.6/2, 15, 4/2), solidFill: false},
-    ],
-    yLabelCallback: (y) => "$"+(y*1.25).toLocaleString(undefined, {minimumIntegerDigits: 1,  maximumFractionDigits: 2, minimumFractionDigits: 2 })+"K",
-    xLabelCallback: (x) => mToR(x+12)
-}))
-
-for(let wg of Array.from(document.getElementsByClassName("wallet-graph"))) {
-    wg.appendChild(makeChart({
-        width: wg.offsetWidth, height: 65,
-        xMin: 0, xMax: 10,
-        yMin: 0, yMax: 10,
-        showGrid: false,
-        showLabels: false,
-        strokeWidth: 1.5,
-        dataObjs: [
-            {name: "BTC", data: generateData(0.5, 0.5, 10, 2), color: "#5FA3D2"}
-        ]
-    }))
-}
-
-*/
-
-//chart_container.innerHTML = svg
-
 function createElementSVG(e, props = {}, innerHTML) {
     return React.createElement(e, props, [innerHTML])
 }
