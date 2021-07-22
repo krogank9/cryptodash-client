@@ -28,7 +28,16 @@ ion-icon {
 .content {
     padding: calc(100px + 30px) 45px;
     padding-bottom: 0px;
-    margin-left: 335px;
+
+    transition: margin-left 0.2s ease-out;
+
+    @include on-desktop-and-up {
+        margin-left: 335px;
+
+        &_sideBarToggled {
+            margin-left: 0;
+        }
+    }
 }
 
 .content > * {

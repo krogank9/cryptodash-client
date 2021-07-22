@@ -83,7 +83,7 @@ export var makeChart = function (options = {}) {
     children = children.map( (el,key) => React.cloneElement(el, {key}) );
 
     return (
-        <svg viewBox={`0 0 ${options.width} ${options.height}`}>
+        <svg style={{width: "100%", height: options.height}}>
             {children}
         </svg>
     )

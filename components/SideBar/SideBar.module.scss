@@ -12,6 +12,24 @@
     display: flex;
     flex-direction: column;
 
+    left: 0;
+
+    transition: left 0.2s ease-out;
+
+    // For tablet and under, default should be hidden.
+    @include on-tablet-and-under {
+        left: -335px;
+        
+        &_toggled {
+            left: 0px;
+        }
+    }
+    @include on-desktop-and-up {
+        &_toggled {
+            left: -335px;
+        }
+    }
+
     &__item {
         display: flex;
         flex-direction: row;
