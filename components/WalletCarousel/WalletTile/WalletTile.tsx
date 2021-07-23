@@ -1,8 +1,9 @@
 import css from './WalletTile.module.scss'
 import IonIcon from '../../IonIcon/IonIcon'
 import { generateData } from '../../Graph/GenerateGraph.js'
-import Graph from '../../Graph/Graph'
 import React, { Component } from 'react';
+import Graph, { GraphWithResize } from '../../Graph/Graph'
+
 
 class WalletTile extends React.Component {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -55,7 +56,7 @@ class WalletTile extends React.Component {
                     </div>
                 </div>
                 <div className={css.walletTile__graph}>
-                    <Graph options={this.state.graphOptions} />
+                    <GraphWithResize options={this.state.graphOptions} />
                 </div>
             </div>
         )

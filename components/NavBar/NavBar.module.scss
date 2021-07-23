@@ -30,6 +30,9 @@
     &__searchBox {
         @include vcenter;
 
+        @include on-tablet-and-under {
+            display: none;
+        }
 
         &Input {
             background-color: #0C1117;
@@ -60,6 +63,10 @@
     }
     
     &__sourceCodeButton {
+        @include on-tablet-and-under {
+            display: none;
+        }
+
         font-size: 16px;
         text-decoration: none;
         color: white;

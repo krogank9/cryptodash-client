@@ -21,9 +21,9 @@ class NavBar extends React.Component<IProps> {
         return (
             <div className={css.navBar}>
                 <Image className={css.navBar__logo} alt="Cryptodash" src="/cryptodash_logo.png" width={277} height={80} />
-                <a href="#" className={css.navBar__hamburgerButton} onClick={ this._toggleHamburgerCallback }>
+                <span className={css.navBar__hamburgerButton} onClick={ this._toggleHamburgerCallback }>
                     <IonIcon className={css.navBar__hamburgerButtonIcon} name="menu" />
-                </a>
+                </span>
                 <div className={css.navBar__searchBox}>
                     <input type="text" className={css.navBar__searchBoxInput} placeholder='Type an action... "Add 5 BTC"' />
                     <a href="#" className={css.navBar__searchBoxButton}>

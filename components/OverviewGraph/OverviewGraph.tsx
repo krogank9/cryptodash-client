@@ -1,6 +1,6 @@
 import css from './OverviewGraph.module.scss'
 import { generateData } from '../Graph/GenerateGraph.js'
-import Graph from '../Graph/Graph'
+import Graph, { GraphWithResize } from '../Graph/Graph'
 
 import React, { Component } from 'react';
 
@@ -70,7 +70,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
                     </div>
                 </div>
                 <div id="chart" className={css.overviewGraph__graphContainer}>
-                    <Graph options={this.state.graphOptions} />
+                    <GraphWithResize options={this.state.graphOptions} />
                 </div>
             </div>
         )
