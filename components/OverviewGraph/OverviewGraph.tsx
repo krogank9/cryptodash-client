@@ -4,6 +4,7 @@ import Graph, { GraphWithResize } from '../Graph/Graph'
 
 import React, { Component } from 'react';
 
+
 function mToR(x) {
     if (x <= 12) {
         return x + "AM";
@@ -51,24 +52,59 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         this.setState({ graphOptions: new_graphOptions })
     }
 
+    makeControls() {
+        const desktopPlotButton = (
+            <div className={css.overviewGraph__controlsDesktopPlot}>
+                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + css.overviewGraph__controlsDesktopPlotButton_active}>Line</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton}>Candlestick</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton}>Predictive</a>
+            </div>
+        )
+        const mobilePlotButton = (
+            <select className={css.overviewGraph__controlsMobilePlot}>
+                <option className={css.overviewGraph__controlsMobilePlotButton + " " + css.overviewGraph__controlsMobilePlotButton_active}>Line plot</option>
+                <option className={css.overviewGraph__controlsMobilePlotButton}>Candlestick chart</option>
+                <option className={css.overviewGraph__controlsMobilePlotButton}>Predictive</option>
+            </select>
+        )
+
+        const desktopTimeButton = (
+            <div className={css.overviewGraph__controlsDesktopTime}>
+                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton + " " + css.overviewGraph__controlsDesktopTimeButton_active}>Day</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Week</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Month</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Year</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>All</a>
+            </div>
+        )
+        const mobileTimeButton = (
+            <select className={css.overviewGraph__controlsMobileTime}>
+                <option className={css.overviewGraph__controlsMobileTimeButton + " " + css.overviewGraph__controlsMobileTimeButton_active}>One day</option>
+                <option className={css.overviewGraph__controlsMobileTimeButton}>One week</option>
+                <option className={css.overviewGraph__controlsMobileTimeButton}>One month</option>
+                <option className={css.overviewGraph__controlsMobileTimeButton}>One year</option>
+                <option className={css.overviewGraph__controlsMobileTimeButton}>All</option>
+            </select>
+        )
+
+        return (
+            <>
+                <div className={css.overviewGraph__controlsDesktop}>
+                    {desktopPlotButton}
+                    {desktopTimeButton}
+                </div>
+                <div className={css.overviewGraph__controlsMobile}>
+                    {mobilePlotButton}
+                    {mobileTimeButton}
+                </div>
+            </>
+        )
+    }
+
     render() {
         return (
             <div className={css.overviewGraph + " " + (this.props.className || "")} ref={this.containerRef}>
-                <div className={css.overviewGraph__controls}>
-                    <div className={css.overviewGraph__controlsPlot}>
-                        <a href="#" className={css.overviewGraph__controlsPlotButton + " " + css.overviewGraph__controlsPlotButton_active}>Line</a>
-                        <a href="#" className={css.overviewGraph__controlsPlotButton}>Candlestick</a>
-                        <a href="#" className={css.overviewGraph__controlsPlotButton}>Predictive</a>
-                    </div>
-
-                    <div className={css.overviewGraph__controlsTime}>
-                        <a href="#" className={css.overviewGraph__controlsTimeButton + " " + css.overviewGraph__controlsTimeButton_active}>Day</a>
-                        <a href="#" className={css.overviewGraph__controlsTimeButton}>Week</a>
-                        <a href="#" className={css.overviewGraph__controlsTimeButton}>Month</a>
-                        <a href="#" className={css.overviewGraph__controlsTimeButton}>Year</a>
-                        <a href="#" className={css.overviewGraph__controlsTimeButton}>All</a>
-                    </div>
-                </div>
+                {this.makeControls()}
                 <div id="chart" className={css.overviewGraph__graphContainer}>
                     <GraphWithResize options={this.state.graphOptions} />
                 </div>

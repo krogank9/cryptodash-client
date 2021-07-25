@@ -44,6 +44,18 @@ ion-icon {
     margin-bottom: $tile-margin;
 }
 
+.show-desktop-only {
+    @include on-tablet-and-under {
+        display: none;
+    }
+}
+
+.show-tablet-and-under {
+    @include on-desktop-and-up {
+        display: none;
+    }
+}
+
 /*----------------------------------*/
 
 /*
