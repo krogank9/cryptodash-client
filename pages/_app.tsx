@@ -29,7 +29,7 @@ class App extends React.Component<IProps, IState> {
     return (
       <div className="container">
         <Head>
-          <title>Create Next App</title>
+          <title>Cryptodash</title>
           <link rel="icon" href="/favicon.ico" />
           {/* Eat the 300kb to prevent FOUT. In the future might remove bold to save a bit and fetch that after. */}
           <link rel="stylesheet" href="/webfonts/nunito-stylesheet.css"></link>
