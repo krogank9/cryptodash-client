@@ -4,8 +4,11 @@
     justify-content: space-between;
 
     &__header {
-        padding: 13px 17px;
-        border: 2px solid transparent;
+        //padding: 13px 17px;
+        //border: 2px solid transparent;
+        // Need to do this to make border not look glitchy. Corners are diagonal due to where transparent meets grey border.
+        // The 13px 17px padding plus 2px transparent border but in padding:
+        padding: 15px 19px 13px 19px;
         border-bottom: 2px solid #454545;
     }
 
