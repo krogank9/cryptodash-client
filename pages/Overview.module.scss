@@ -32,8 +32,7 @@
 }
 
 .halfSplit {
-  >* {
-    padding: 5px 25px;
+  > * {
     background-color: $foreground-color;
     border-radius: 5px;
     box-sizing: border-box;
