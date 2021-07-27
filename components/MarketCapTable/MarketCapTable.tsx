@@ -42,7 +42,8 @@ class MarketCapTable extends React.Component<MarketCapTableProps> {
                     <div className={css.marketCapTable__footerItem}>
                         <div className={css.marketCapTable__footerItemName}>
                             <span className="show-desktop-only">Balance:</span>
-                            <span className="show-tablet-and-under">Total Portfolio Balance:</span>
+                            <span className="show-tablet-only">Total Portfolio Balance:</span>
+                            <span className="show-mobile-only">Balance:</span>
                         </div>
                         <div className={css.marketCapTable__footerItemInfo}>
                             <div className={css.marketCapTable__footerItemInfoBalance}>

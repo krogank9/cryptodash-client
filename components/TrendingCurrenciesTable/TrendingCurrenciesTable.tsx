@@ -11,7 +11,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
     makeList(data) {
         return data.map((d, i) => (
             <tr className={css.TrendingCurrenciesTable__row}>
-                <td>{i + 1}</td>
+                <td className="show-desktop-only">{i + 1}</td>
                 <td>{d[0]}</td>
                 <td>{d[1]}</td>
                 <td className={css.TrendingCurrenciesTable__rowChange}>
@@ -22,7 +22,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                         <span>{d[3]}</span><IonIcon name={d[2].charAt(0) == "+" ? "arrow-up-outline" : "arrow-down-outline"} />
                     </div>
                 </td>
-                <td>
+                <td className="show-desktop-only">
                     <a href="#">Analyze</a>
                 </td>
             </tr>
@@ -48,11 +48,18 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                 </div>
                 <table className={css.TrendingCurrenciesTable} style={{ width: "100%", textAlign: "center" }} cellSpacing={0}>
                     <tr className={css.TrendingCurrenciesTable__headerRow}>
-                        <th>#</th>
-                        <th>Currency</th>
-                        <th>Current Price</th>
+                        <th className="show-desktop-only">#</th>
+                        <th>
+                            <span className="show-desktop-only">
+                                Currency
+                            </span>
+                            <span className="show-tablet-and-under">
+                                Coin
+                            </span>
+                        </th>
+                        <th>Price</th>
                         <th>Change (24h)</th>
-                        <th>Action</th>
+                        <th className="show-desktop-only">Action</th>
                     </tr>
                     {this.makeList(data)}
                 </table>

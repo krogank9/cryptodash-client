@@ -12,6 +12,13 @@
     left: 0;
     right: 0;
     box-sizing: border-box;
+
+    &__logoText {
+        @include on-tablet-and-under {
+            width: 0% !important;
+            display: none !important;
+        }
+    }
     
     &__hamburgerButton {
         @include vcenter;
@@ -21,6 +28,10 @@
         margin-left: 30px;
         padding: 12px 20px;
         cursor: pointer;
+
+        @include on-tablet-and-under {
+            margin-left: 0;
+        }
 
         &Checkbox {
             display: none;
@@ -115,6 +126,10 @@
 
         &Text {
             margin: 0 10px;
+
+            @include on-tablet-and-under {
+                display: none;
+            }
         }
     }
 }

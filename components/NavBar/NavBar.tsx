@@ -20,7 +20,8 @@ class NavBar extends React.Component<IProps> {
     render() {
         return (
             <div className={css.navBar}>
-                <Image className={css.navBar__logo} alt="Cryptodash" src="/cryptodash_logo.png" width={277} height={80} />
+                <img className={css.navBar__logoIcon} alt="Cryptodash Logo" src="/cryptodash_logo_icon.png" width={67} height={80} />
+                <img className={css.navBar__logoText} alt="Cryptodash" src="/cryptodash_logo_text.png" width={210} height={80} />
                 <span className={css.navBar__hamburgerButton} onClick={ this._toggleHamburgerCallback }>
                     <IonIcon className={css.navBar__hamburgerButtonIcon} name="menu" />
                 </span>
