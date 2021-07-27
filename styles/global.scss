@@ -10,7 +10,7 @@ body {
     font-size: 16px;
 }
 
-input {
+input, select, option {
     font-family: 'Nunito', sans-serif;
 }
 
@@ -75,6 +75,12 @@ ion-icon {
         display: none;
     }
     @include on-mobile-only {
+        display: none;
+    }
+}
+
+.show-1550-and-up {
+    @include on-1550-and-under {
         display: none;
     }
 }

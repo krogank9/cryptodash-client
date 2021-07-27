@@ -54,11 +54,15 @@
 
 .overviewGraph__controlsMobile {    
 
-    padding: 14px;
     border-bottom: 2px solid $gridlines-color;
 
     @include on-1550-and-up {
         display: none;
+    }
+
+    padding: 8px; // for between tablet and 1550
+    @include on-tablet-and-under {
+        padding: 14px;
     }
 
     &Plot {

@@ -22,7 +22,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                         <span>{d[3]}</span><IonIcon name={d[2].charAt(0) == "+" ? "arrow-up-outline" : "arrow-down-outline"} />
                     </span>
                 </td>
-                <td className="show-desktop-only">
+                <td className="show-1550-and-up">
                     <a href="#">Analyze</a>
                 </td>
             </tr>
@@ -59,7 +59,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                         </th>
                         <th>Price</th>
                         <th>Change (24h)</th>
-                        <th className="show-desktop-only">Action</th>
+                        <th className="show-1550-and-up">Action</th>
                     </tr>
                     {this.makeList(data)}
                 </table>
