@@ -9,10 +9,9 @@
     padding: 14px;
     border-bottom: 2px solid $gridlines-color;
 
-    @include on-tablet-and-under {
+    @include on-1550-and-under {
         display: none;
     }
-
     &Plot {
         display: inline-block;
 
@@ -58,7 +57,7 @@
     padding: 14px;
     border-bottom: 2px solid $gridlines-color;
 
-    @include on-desktop-and-up {
+    @include on-1550-and-up {
         display: none;
     }
 

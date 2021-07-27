@@ -15,12 +15,12 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                 <td>{d[0]}</td>
                 <td>{d[1]}</td>
                 <td className={css.TrendingCurrenciesTable__rowChange}>
-                    <div className={css.TrendingCurrenciesTable__rowChangeNum}>
+                    <span className={css.TrendingCurrenciesTable__rowChangeNum}>
                         {d[2]}
-                    </div>
-                    <div className={css.TrendingCurrenciesTable__rowChangePct + " " + (d[2].charAt(0) == "+" ? css.TrendingCurrenciesTable__rowChangePct_positive : css.TrendingCurrenciesTable__rowChangePct_negative)}>
+                    </span>
+                    <span className={css.TrendingCurrenciesTable__rowChangePct + " " + (d[2].charAt(0) == "+" ? css.TrendingCurrenciesTable__rowChangePct_positive : css.TrendingCurrenciesTable__rowChangePct_negative)}>
                         <span>{d[3]}</span><IonIcon name={d[2].charAt(0) == "+" ? "arrow-up-outline" : "arrow-down-outline"} />
-                    </div>
+                    </span>
                 </td>
                 <td className="show-desktop-only">
                     <a href="#">Analyze</a>

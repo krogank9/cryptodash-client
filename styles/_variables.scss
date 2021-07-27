@@ -24,18 +24,64 @@ $tile-margin: 15px;
     justify-content: center;
 }
 
+/*
 @mixin on-mobile-only {
-    @media only screen and (max-width: 767px){ @content; }
+    @media only screen and (max-width: 767px) {
+        @content;
+    }
 }
 
 @mixin on-tablet-and-under {
-    @media only screen and (max-width: 1279px){ @content; }
+    @media only screen and (max-width: 1279px) {
+        @content;
+    }
 }
 
 @mixin on-tablet-and-up {
-    @media only screen and (min-width: 768px){ @content; }
+    @media only screen and (min-width: 768px) {
+        @content;
+    }
 }
 
 @mixin on-desktop-and-up {
-    @media only screen and (min-width: 1280px){ @content; }
+    @media only screen and (min-width: 1280px) {
+        @content;
+    }
+}
+*/
+
+@mixin on-mobile-only {
+    @media only screen and (max-width: 767px) {
+        @content;
+    }
+}
+
+@mixin on-tablet-and-under {
+    @media only screen and (max-width: 1279px) {
+        @content;
+    }
+}
+
+@mixin on-tablet-and-up {
+    @media only screen and (min-width: 768px) {
+        @content;
+    }
+}
+
+@mixin on-desktop-and-up {
+    @media only screen and (min-width: 1280px) {
+        @content;
+    }
+}
+
+// Midway between tablet and desktop -- added this for the graph... Need some breakpoints halfway between desktop/tablet for correct rendering.
+@mixin on-1550-and-under {
+    @media only screen and (max-width: 1549px) {
+        @content;
+    }
+}
+@mixin on-1550-and-up {
+    @media only screen and (min-width: 1550px) {
+        @content;
+    }
 }

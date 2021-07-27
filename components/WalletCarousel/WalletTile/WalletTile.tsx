@@ -48,7 +48,7 @@ class WalletTile extends React.Component {
                             <div className={css.walletTile__cryptoTextName}>Bitcoin</div>
                         </div>
                     </div>
-                    <div className={css.walletTile__currency}>
+                    <div className={css.walletTile__currency + " show-desktop-only"}>
                         <div className={css.walletTile__currencyAmount}>$39,034</div>
                         <div className={css.walletTile__currencyChange + " " + css.walletTile__currencyChange_positive}>
                             <span>1.2%</span><IonIcon name="arrow-up-outline" />

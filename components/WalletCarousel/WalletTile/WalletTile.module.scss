@@ -9,6 +9,11 @@
     width: calc(20% - 12px);
     box-sizing: border-box;
 
+    @include on-tablet-and-under {
+        width: calc(50% - 7.5px);
+        margin-bottom: 12px;
+    }
+
     &:last-child {
         margin-right: 0;
     }
@@ -54,7 +59,7 @@
     }
 
     &__graph {
-        margin: 0 -10px -10px;
+        margin: 0 -10px -10px -10px;
         height: 65px;
     }
 }

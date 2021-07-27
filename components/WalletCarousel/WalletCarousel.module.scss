@@ -1,5 +1,11 @@
 .walletCarousel {
 
+    &__header {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+    }
+
     &__sectionTitle {
         display: inline-block;
         background: transparent;
@@ -20,7 +26,8 @@
     }
 
     &__controls {
-        float: right;
+        display: inline-block;
+        margin-left: auto;
     }
 
     &__actionButton {
@@ -40,6 +47,16 @@
         line-height: 0;
         > * {
             line-height: initial;
+        }
+
+        // Goes to at most 4 wallets displayed at once on tablet
+        @include on-tablet-and-under {
+            >:nth-child(2n) {
+                margin-right: 0;
+            }
+            >:nth-child(5) {
+                display: none;
+            }
         }
     }
 }

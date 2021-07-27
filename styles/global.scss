@@ -32,7 +32,6 @@ ion-icon {
     transition: margin-left 0.2s ease-out;
 
     box-sizing: border-box;
-    overflow-x: hidden;
 
     @include on-tablet-and-under {
         width: 100%;
