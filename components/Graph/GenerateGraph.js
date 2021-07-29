@@ -135,7 +135,7 @@ yLabelCallback // default (y)=>y, callback to optionally transform y axis labels
 
 showGrid // default true, show gridlines
 */
-var fillCount = 0
+var chartCount = 0
 export var makeChart = function (options = {}) {
     let minMax = findMinMax(options.dataObjs || [])
 
@@ -160,6 +160,8 @@ export var makeChart = function (options = {}) {
     // setup some internal values
     options = {
         ...options,
+
+        _chartCount: chartCount++,
 
         _leftPadding: 0, // Set later in makeGrid to give space for labels
         _rightPadding: 0,
@@ -296,7 +298,7 @@ function makeGrid(options) {
     for (let y = yMin; y < yMax; y += yInterval) {
         let line = createElementSVG("line", {
             y1: _yToGraph(y), y2: _yToGraph(y),
-            x1: y == 0 || y == _lastY ? 0 : _xToGraph(0), x2: _xToGraph(_lastX),
+            x1: y == yMin || y == _lastY ? 0 : _xToGraph(xMin), x2: _xToGraph(_lastX),
             stroke: "#454545",
             strokeWidth: 1.5
         })
@@ -319,7 +321,7 @@ function makeGrid(options) {
 
 function plotData(options) {
     let svgElems = []
-    const { width, height, strokeWidth, yMin, yMax, xMin, xMax, _lastX, _lastY, _xToGraph, _yToGraph, _posToGraph } = options
+    const { width, height, strokeWidth, yMin, yMax, xMin, xMax, _lastX, _lastY, _xToGraph, _yToGraph, _posToGraph, _chartCount } = options
 
     options.dataObjs.forEach(({ data, color, fillColor }, i) => {
         let lineTos = data.map(_posToGraph)
@@ -339,13 +341,13 @@ function plotData(options) {
             fillOpacity: 0.75,
             strokeWidth: 0,
             d: fill_d,
-            mask: i == 0 && options.dataObjs.length >= 2 ? "url(#clipNum1)" : undefined
+            mask: options.dataObjs.length == 2 && i == 0 ? `url(#clipNum1${_chartCount})` : `url(#clipNum0${_chartCount})`
         })
 
         let clipPath = (
-            <mask id={`clipNum${i}`}>
-                <rect width={width} height={height} fill={"white"}></rect>
-                <path fill={"black"} d={fill_d}></path>
+            <mask id={`clipNum${i}${_chartCount}`}>
+                <rect width={Math.abs(_xToGraph(xMax) - _xToGraph(xMin))} height={Math.abs(_yToGraph(yMax) - _yToGraph(yMin))} x={_xToGraph(xMin)} y="0" fill="white"></rect>
+                {i == 1 ? <path fill="black" d={fill_d}></path> : []}
             </mask>
         )
 
