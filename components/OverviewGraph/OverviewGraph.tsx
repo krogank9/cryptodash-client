@@ -11,21 +11,23 @@ interface OverviewGraphProps { className?: string }
 class OverviewGraph extends React.Component<OverviewGraphProps> {
     containerRef: React.RefObject<HTMLDivElement>;
     state: {
-        graphOptions: {}
+        graphOptions: any,
+        candlestick: boolean,
     }
 
     constructor(props) {
         super(props)
         this.containerRef = React.createRef()
         this.state = {
-            graphOptions: {}
+            graphOptions: {},
+            candlestick: false,
         }
     }
 
-    componentDidMount() {
+    setGraphOptions = () => {
         let new_graphOptions = {
             width: this.containerRef.current.offsetWidth, height: 555,
-            candlestick: true,
+            candlestick: this.state.candlestick,
             dataObjs: [
                 { name: "Total Portfolio", data: BTCPrices.prices, solidFill: false },
                 { name: "BTC", data: BTCPrices.prices.map(p => [p[0], p[1]*0.9]).map((p, i, arr) => [p[0], arr[arr.length - 1 - i][1]]), solidFill: false },
@@ -35,22 +37,36 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
             //xLabelCallback: (x) => timeConverter
         }
 
-        this.setState({ graphOptions: new_graphOptions })
+        this.setState({...this.state, graphOptions: new_graphOptions })
+    }
+
+    componentDidMount() {
+        this.setGraphOptions()
+    }
+
+    setcandlestick = (b) => {
+        let graphOptions = this.state.graphOptions
+        graphOptions.candlestick = b
+        this.setState({...this.state, graphOptions})
+    }
+
+    selectChange = (evt) => {
+        this.setcandlestick(evt.target.value === "candlestick")
     }
 
     makeControls() {
         const desktopPlotButton = (
             <div className={css.overviewGraph__controlsDesktopPlot}>
-                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + css.overviewGraph__controlsDesktopPlotButton_active}>Line</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton}>Candlestick</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(false)}>Line</a>
+                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(true)}>Candlestick</a>
                 <a href="#" className={css.overviewGraph__controlsDesktopPlotButton}>Predictive</a>
             </div>
         )
         const mobilePlotButton = (
-            <select className={css.overviewGraph__controlsMobilePlot}>
-                <option className={css.overviewGraph__controlsMobilePlotButton + " " + css.overviewGraph__controlsMobilePlotButton_active}>Line plot</option>
-                <option className={css.overviewGraph__controlsMobilePlotButton}>Candlestick</option>
-                <option className={css.overviewGraph__controlsMobilePlotButton}>Predictive</option>
+            <select className={css.overviewGraph__controlsMobilePlot} onChange={this.selectChange} value={this.state.graphOptions.candlestick ? "candlestick" : "line"}>
+                <option className={css.overviewGraph__controlsMobilePlotButton + " " + css.overviewGraph__controlsMobilePlotButton_active} value="line" {...this.state.graphOptions.candlestick ? {} : {selected: true}}>Line plot</option>
+                <option className={css.overviewGraph__controlsMobilePlotButton} value="candlestick">Candlestick</option>
+                <option className={css.overviewGraph__controlsMobilePlotButton} value="predictive">Predictive</option>
             </select>
         )
 

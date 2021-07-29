@@ -131,13 +131,12 @@ showGrid // default true, show gridlines
 */
 var chartCount = 0
 export var makeChart = function (options = {}) {
+    options = JSON.parse(JSON.stringify(options))
+
     if(options.candlestick && options.dataObjs.length > 1)
         options.dataObjs.length = 1
 
     let minMax = findMinMax(options.dataObjs || [])
-
-    console.log("options.width")
-    console.log(options.width)
 
     options._mobile = options.width < options.height
 
@@ -147,8 +146,6 @@ export var makeChart = function (options = {}) {
     let numYTicks = 4
     let xInterval = xSpan / numXTicks
     let yInterval = ySpan / (numYTicks + 1) // +1 because the first at the x axis isn't labeled
-
-    console.log(xInterval, yInterval)
 
     let defaults = {
         ...minMax,
@@ -268,7 +265,6 @@ function makeGrid(options) {
     let _bottomPadding = options._bottomPadding = 50
 
     for (let x = xMin; x < xMax; x += xInterval) {
-        console.log("creating grid marker x: " + x)
         let line = createElementSVG("line", {
             x1: _xToGraph(x), x2: _xToGraph(x),
             y1: _yToGraph(yMin), y2: _yToGraph(_lastY),
@@ -395,8 +391,6 @@ function plotCandlestick(options) {
     let numCandlesticks = intervalSizes[getGraphGranularity(options)]
     let candlestickInterval = xSpan/numCandlesticks
     let candlestickWidthPx = Math.abs(_xToGraph(xMax) - _xToGraph(xMin)) / numCandlesticks
-    console.log("numCandlesticks")
-    console.log(numCandlesticks)
 
     let dataI = 0
 
