@@ -4,6 +4,8 @@ import { generateData } from '../../Graph/GenerateGraph.js'
 import React, { Component } from 'react';
 import Graph, { GraphWithResize } from '../../Graph/Graph'
 
+import BTCPrices from '../../../sample_data/bitcoin_1day every5mins.json'
+
 
 class WalletTile extends React.Component {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -26,7 +28,7 @@ class WalletTile extends React.Component {
             showLabels: false,
             strokeWidth: 1.5,
             dataObjs: [
-                { data: generateData(0.5, 0.5, 10, 2), color: "#5FA3D2" }
+                { data: BTCPrices.prices, color: "#5FA3D2" },
             ]
         }
 
