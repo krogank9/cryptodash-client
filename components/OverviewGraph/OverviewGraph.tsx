@@ -25,6 +25,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     componentDidMount() {
         let new_graphOptions = {
             width: this.containerRef.current.offsetWidth, height: 555,
+            candlestick: true,
             dataObjs: [
                 { name: "Total Portfolio", data: BTCPrices.prices, solidFill: false },
                 { name: "BTC", data: BTCPrices.prices.map(p => [p[0], p[1]*0.9]).map((p, i, arr) => [p[0], arr[arr.length - 1 - i][1]]), solidFill: false },

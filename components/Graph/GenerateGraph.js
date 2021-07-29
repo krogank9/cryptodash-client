@@ -43,35 +43,36 @@ function findMinMax(dataObjs) {
     }
 }
 
+function getGraphGranularity(options) {
+    if ("_granularity" in options)
+        return options._granularity
+
+    let timeSpan = options.xMax - options.xMin
+
+    let possible_granularities = {
+        "day": 1000 * 60 * 60 * 24,
+        "week": 1000 * 60 * 60 * 24 * 7,
+        "month": 1000 * 60 * 60 * 24 * 7 * 30,
+        "year": 1000 * 60 * 60 * 24 * 7 * 30 * 12,
+        "decade": 1000 * 60 * 60 * 24 * 7 * 30 * 12 * 10
+    }
+
+
+    // Find the granularity option closest to the given time span
+    let best_g = "day"
+    for (const g in possible_granularities) {
+        let best_diff = Math.abs(possible_granularities[best_g] - timeSpan)
+        let diff = Math.abs(possible_granularities[g] - timeSpan)
+        if (diff < best_diff)
+            best_g = g
+    }
+
+    return options._granularity = best_g
+}
+
 function formatTimestamp(unixTimestamp, options) {
     // Find the best fit granularity option for our data. This will be what we mark our x axis with.
     // If the timespan is <= a day, we display time as 6,8,10,12PM/AM etc...
-    if (!options._granularity) {
-        let timeSpan = options.xMax - options.xMin
-
-        console.log("timeSpan")
-        console.log(timeSpan)
-
-        let possible_granularities = {
-            "day": 1000 * 60 * 60 * 24,
-            "week": 1000 * 60 * 60 * 24 * 7,
-            "month": 1000 * 60 * 60 * 24 * 7 * 30,
-            "year": 1000 * 60 * 60 * 24 * 7 * 30 * 12,
-            "decade": 1000 * 60 * 60 * 24 * 7 * 30 * 12 * 10
-        }
-
-
-        // Find the granularity option closest to the given time span
-        let best_g = "day"
-        for (const g in possible_granularities) {
-            let best_diff = Math.abs(possible_granularities[best_g] - timeSpan)
-            let diff = Math.abs(possible_granularities[g] - timeSpan)
-            if (diff < best_diff)
-                best_g = g
-        }
-
-        options._granularity = best_g
-    }
 
     const d = new Date(unixTimestamp)
 
@@ -80,9 +81,7 @@ function formatTimestamp(unixTimestamp, options) {
     let hours12 = (d.getHours() + roundedMinutes) % 12
     hours12 = hours12 === 0 ? 12 : hours12
 
-    console.log(options._granularity)
-
-    switch (options._granularity) {
+    switch (getGraphGranularity(options)) {
         case "day":
             return `${hours12}${d.getHours() >= 12 ? "PM" : "AM"}`
         case "week":
@@ -132,7 +131,13 @@ showGrid // default true, show gridlines
 */
 var chartCount = 0
 export var makeChart = function (options = {}) {
+    if(options.candlestick && options.dataObjs.length > 1)
+        options.dataObjs.length = 1
+
     let minMax = findMinMax(options.dataObjs || [])
+
+    console.log("options.width")
+    console.log(options.width)
 
     options._mobile = options.width < options.height
 
@@ -176,6 +181,14 @@ export var makeChart = function (options = {}) {
             let yScale = (options.height - options._bottomPadding - options._topPadding) / (options.yMax - options.yMin)
             return Math.round(options.height - (y - options.yMin) * yScale - options._bottomPadding) + options._topPadding
         },
+        _pxToDataScale: (x, y) => {
+            let xScale = (options.width - options._leftPadding - options._rightPadding) / (options.xMax - options.xMin)
+            let yScale = (options.height - options._bottomPadding - options._topPadding) / (options.yMax - options.yMin)
+            return [
+                x / xScale,
+                y / yScale
+            ]
+        },
         _posToGraph: (pos) => [options._xToGraph(pos[0]), options._yToGraph(pos[1])],
     }
 
@@ -203,7 +216,7 @@ export var makeChart = function (options = {}) {
         legend = makeLegend(options)
     }
 
-    let plots = plotData(options)
+    let plots = options.candlestick ? plotCandlestick(options) : plotData(options)
 
     let children = defs.concat(grid, legend, plots)
     // Keep react from complaining even though it isn't really a list
@@ -322,7 +335,8 @@ function plotData(options) {
 
     options.dataObjs.forEach(({ data, color, fillColor }, i) => {
         // Simplify data a bit, was lagging browser to have so many lineTos seemed like.
-        data = data.filter((d, i, a) => i === 0 || i === a.length - 1 || i % 2 === 0)
+        data = data.filter((d, ii, a) => ii === 0 || ii === a.length - 1 || ii % 2 === 0)
+
         let lineTos = data.map(_posToGraph)
         let line_d = `M${lineTos[0][0]},${lineTos[0][1]}`
         line_d += lineTos.map(lt => `L${lt[0]},${lt[1]}`).join("")
@@ -358,6 +372,83 @@ function plotData(options) {
     return svgElems
 }
 
+function plotCandlestick(options) {
+    let svgElems = []
+    const { width, height, strokeWidth, yMin, yMax, xMin, xMax, _lastX, _lastY, _xToGraph, _yToGraph, _posToGraph, _chartCount } = options
+
+    let dataObj = options.dataObjs[0]
+    const { data, color, fillColor, i } = dataObj
+
+    // ------
+
+    let xSpan = xMax - xMin
+
+    // Typically, each candle on a candlestick chart represents one trading day. We can also use intervals shorter/longer than a day.
+    const intervalSizes = {
+        day: 48, // Twice-hourly intervals (48 candles)
+        week: 24*7, // Per-hour, 24*7 candles. May lessen depending on how it looks
+        month: 30, // Per month, standard 1 day intervals, 30 candles
+        year: 24, // Twice-monthly, 24 candles. May increase
+        decade: 40 // Per decade, quarterly intervals, 40 candles
+    }
+
+    let numCandlesticks = intervalSizes[getGraphGranularity(options)]
+    let candlestickInterval = xSpan/numCandlesticks
+    let candlestickWidthPx = Math.abs(_xToGraph(xMax) - _xToGraph(xMin)) / numCandlesticks
+    console.log("numCandlesticks")
+    console.log(numCandlesticks)
+
+    let dataI = 0
+
+    for (let i = 0; i < numCandlesticks; i++) {
+        const x = xMin + candlestickInterval * i
+        const endX = x + candlestickInterval
+
+        // The body indicates the opening/closing values for the given time period.
+        // The shadow indicates the highest/lowest values for the given time period.
+
+        let bodyStart = data[dataI][1]
+        let shadowMin = data[dataI][1]
+        let shadowMax = data[dataI][1]
+        let bodyEnd = bodyStart
+        for(; dataI < data.length && data[dataI][0] <= endX; dataI++) {
+            shadowMin = Math.min(shadowMin, data[dataI][1])
+            shadowMax = Math.max(shadowMax, data[dataI][1])
+            bodyEnd = data[dataI][1]
+        }
+        dataI-- // Start value of each wick should overlap with the end value of the previous and include it in its min/max calculations.
+        
+
+        let candleHeight = _yToGraph(bodyEnd) - _yToGraph(bodyStart)
+        let fill = "#d46d6f"
+        if(candleHeight < 0) {
+            candleHeight *= -1
+            fill = "#6dd598"
+        }
+
+        let realBody = createElementSVG("rect", {
+            fill: fill,
+            width: candlestickWidthPx - (options._mobile ? 2 : 6),
+            height: Math.max(candleHeight, 1),
+            x: _xToGraph(x) + (options._mobile ? 1 : 3),
+            y: _yToGraph(Math.max(bodyStart, bodyEnd)),
+            rx: options._mobile ? 1 : 2
+        })
+
+        let shadow = createElementSVG("line", {
+            x1: _xToGraph(x) + candlestickWidthPx/2, x2: _xToGraph(x) + candlestickWidthPx/2,
+            y1: _yToGraph(shadowMin) - 1, y2: _yToGraph(shadowMax) + 1, // - 1 to account for linecap nubs
+            stroke: fill,
+            strokeWidth: 2,
+            strokeLinecap: "round"
+        })
+
+        svgElems.push(realBody)
+        svgElems.push(shadow)
+    }
+
+    return svgElems
+}
 
 /*----------------------------------------*/
 
