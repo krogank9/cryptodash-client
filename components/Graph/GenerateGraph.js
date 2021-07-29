@@ -53,10 +53,10 @@ function formatTimestamp(unixTimestamp, options) {
         console.log(timeSpan)
 
         let possible_granularities = {
-            "day"   : 1000 * 60 * 60 * 24,
-            "week"  : 1000 * 60 * 60 * 24 * 7,
-            "month" : 1000 * 60 * 60 * 24 * 7 * 30,
-            "year"  : 1000 * 60 * 60 * 24 * 7 * 30 * 12,
+            "day": 1000 * 60 * 60 * 24,
+            "week": 1000 * 60 * 60 * 24 * 7,
+            "month": 1000 * 60 * 60 * 24 * 7 * 30,
+            "year": 1000 * 60 * 60 * 24 * 7 * 30 * 12,
             "decade": 1000 * 60 * 60 * 24 * 7 * 30 * 12 * 10
         }
 
@@ -94,7 +94,7 @@ function formatTimestamp(unixTimestamp, options) {
     }
 }
 
-function nFormatter(num, digits) {
+function nFormatter(num, options) {
     const lookup = [
         { value: 1e18, symbol: "E" },
         { value: 1e15, symbol: "P" },
@@ -104,15 +104,10 @@ function nFormatter(num, digits) {
         { value: 1e3, symbol: "K" },
         { value: 1, symbol: "" },
     ];
-    var item = lookup.find(function(item) {
-      return num >= item.value;
+    var item = lookup.find(function (item) {
+        return num >= item.value;
     });
-    return item ? "$" + (num / item.value).toFixed(digits) + item.symbol : "0";
-  }
-
-function formatCurrency(price) {
-    //return "$" + price.toLocaleString(undefined, { minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2 })// + "K"
-    return nFormatter(price, 2)
+    return item ? "$" + (num / item.value).toFixed(options._mobile ? 0 : 2) + item.symbol : "0";
 }
 
 /*
@@ -139,12 +134,14 @@ var chartCount = 0
 export var makeChart = function (options = {}) {
     let minMax = findMinMax(options.dataObjs || [])
 
+    options._mobile = options.width < options.height
+
     let xSpan = minMax.xMax - minMax.xMin
     let ySpan = minMax.yMax - minMax.yMin
-    let numXTicks = 6
-    let numYTicks = 5 // actually 4 but the first at the x axis isn't labeled
+    let numXTicks = options._mobile ? 5 : 6
+    let numYTicks = 4
     let xInterval = xSpan / numXTicks
-    let yInterval = ySpan / numYTicks
+    let yInterval = ySpan / (numYTicks + 1) // +1 because the first at the x axis isn't labeled
 
     console.log(xInterval, yInterval)
 
@@ -153,7 +150,7 @@ export var makeChart = function (options = {}) {
         xInterval: xInterval, yInterval: yInterval,
         showGrid: true, showLabels: true, strokeWidth: 2,
         xLabelCallback: (x) => formatTimestamp(x, options),
-        yLabelCallback: (y) => formatCurrency(y),
+        yLabelCallback: (y) => nFormatter(y, options),
     }
     options = Object.assign(defaults, options)
 
@@ -254,7 +251,7 @@ function makeGrid(options) {
     const { xMin, xMax, yMin, yMax, xInterval, yInterval, width, height, strokeWidth, _lastX, _lastY, _xToGraph, _yToGraph, xLabelCallback, yLabelCallback } = options
 
     // Measure space for axis labels, and add appropriate padding
-    let _leftPadding = options._leftPadding = 90
+    let _leftPadding = options._leftPadding = options._mobile ? 60 : 90
     let _bottomPadding = options._bottomPadding = 50
 
     for (let x = xMin; x < xMax; x += xInterval) {
@@ -323,11 +320,9 @@ function plotData(options) {
     let svgElems = []
     const { width, height, strokeWidth, yMin, yMax, xMin, xMax, _lastX, _lastY, _xToGraph, _yToGraph, _posToGraph, _chartCount } = options
 
-    options.dataObjs.forEach(({ data, color, fillColor }, i) => {        
+    options.dataObjs.forEach(({ data, color, fillColor }, i) => {
         // Simplify data a bit, was lagging browser to have so many lineTos seemed like.
-        data = data.filter((d, i, a) => {
-            return i === 0 || i === a.length - 1 || i % 2 === 0
-        })
+        data = data.filter((d, i, a) => i === 0 || i === a.length - 1 || i % 2 === 0)
         let lineTos = data.map(_posToGraph)
         let line_d = `M${lineTos[0][0]},${lineTos[0][1]}`
         line_d += lineTos.map(lt => `L${lt[0]},${lt[1]}`).join("")
