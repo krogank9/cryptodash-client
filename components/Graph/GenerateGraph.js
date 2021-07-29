@@ -323,7 +323,11 @@ function plotData(options) {
     let svgElems = []
     const { width, height, strokeWidth, yMin, yMax, xMin, xMax, _lastX, _lastY, _xToGraph, _yToGraph, _posToGraph, _chartCount } = options
 
-    options.dataObjs.forEach(({ data, color, fillColor }, i) => {
+    options.dataObjs.forEach(({ data, color, fillColor }, i) => {        
+        // Simplify data a bit, was lagging browser to have so many lineTos seemed like.
+        data = data.filter((d, i, a) => {
+            return i === 0 || i === a.length - 1 || i % 2 === 0
+        })
         let lineTos = data.map(_posToGraph)
         let line_d = `M${lineTos[0][0]},${lineTos[0][1]}`
         line_d += lineTos.map(lt => `L${lt[0]},${lt[1]}`).join("")
@@ -341,7 +345,7 @@ function plotData(options) {
             fillOpacity: 0.75,
             strokeWidth: 0,
             d: fill_d,
-            mask: options.dataObjs.length == 2 && i == 0 ? `url(#clipNum1${_chartCount})` : `url(#clipNum0${_chartCount})`
+            mask: options.dataObjs.length == 2 && i == 0 ? `url(#clipNum1${_chartCount})` : ""//`url(#clipNum0${_chartCount})`
         })
 
         let clipPath = (
