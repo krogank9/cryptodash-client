@@ -22,8 +22,6 @@ class WalletTile extends React.Component {
     componentDidMount() {
         let new_graphOptions = {
             width: this.containerRef.current.offsetWidth, height: 65,
-            xMin: 0, xMax: 10,
-            yMin: 0, yMax: 10,
             showGrid: false,
             showLabels: false,
             strokeWidth: 1.5,

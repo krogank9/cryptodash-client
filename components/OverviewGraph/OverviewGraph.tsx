@@ -1,23 +1,10 @@
 import css from './OverviewGraph.module.scss'
 import { generateData } from '../Graph/GenerateGraph.js'
 import Graph, { GraphWithResize } from '../Graph/Graph'
+import BTCPrices from '../../sample_data/bitcoin_1day every5mins.json'
+import ETHPrices from '../../sample_data/ethereum_1day every5mins.json'
 
 import React, { Component } from 'react';
-
-
-function mToR(x) {
-    if (x <= 12) {
-        return x + "AM";
-    }
-    if (x >= 24) {
-        x -= 12
-        return x + "AM"
-    }
-    if (x > 12) {
-        x %= 12
-        return x + "PM"
-    }
-}
 
 interface OverviewGraphProps { className?: string }
 
@@ -38,15 +25,13 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     componentDidMount() {
         let new_graphOptions = {
             width: this.containerRef.current.offsetWidth, height: 555,
-            xMin: 0, xMax: 12,
-            yMin: 0, yMax: 15,
-            yInterval: 3, xInterval: 2,
             dataObjs: [
-                { name: "Total Portfolio", data: generateData(0.5, 0.75, 15, 3.5), solidFill: false },
-                { name: "BTC", data: generateData(0.5, 0.6 / 2, 15, 4 / 2), solidFill: false },
+                { name: "Total Portfolio", data: BTCPrices.prices, solidFill: false },
+                { name: "BTC", data: BTCPrices.prices.map(p => [p[0], p[1]*0.9]).map((p, i, arr) => [p[0], arr[arr.length - 1 - i][1]]), solidFill: false },
+                //{ name: "ETH", data: ETHPrices.prices, solidFill: false },
             ],
-            yLabelCallback: (y) => "$" + (y * 1.25).toLocaleString(undefined, { minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2 }) + "K",
-            xLabelCallback: (x) => mToR(x + 12)
+            //yLabelCallback: (y) => "$" + (y * 1.25).toLocaleString(undefined, { minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2 }) + "K",
+            //xLabelCallback: (x) => timeConverter
         }
 
         this.setState({ graphOptions: new_graphOptions })
