@@ -1,5 +1,7 @@
 .graphSplit {
 
+  user-select: none;
+
   @include on-tablet-and-under {
     &__graph {
       margin-bottom: 15px;
