@@ -7,3 +7,5 @@
 
 -graph is going to need to be made a bit more dynamic, modular. need to add candlestick, some type of slider/scrubber, intro animations,
  more interactivity. this will be a big part of remaining frontend work
+
+-some form of css transform on graph plot svg so we're not redrawing every frame on transitions
