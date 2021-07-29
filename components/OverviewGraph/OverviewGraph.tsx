@@ -57,9 +57,9 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     makeControls() {
         const desktopPlotButton = (
             <div className={css.overviewGraph__controlsDesktopPlot}>
-                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(false)}>Line</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(true)}>Candlestick</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopPlotButton}>Predictive</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(false)}>Line</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setcandlestick(true)}>Candlestick</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton}>Predictive</a>
             </div>
         )
         const mobilePlotButton = (
@@ -72,11 +72,11 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
 
         const desktopTimeButton = (
             <div className={css.overviewGraph__controlsDesktopTime}>
-                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton + " " + css.overviewGraph__controlsDesktopTimeButton_active}>Day</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Week</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Month</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>Year</a>
-                <a href="#" className={css.overviewGraph__controlsDesktopTimeButton}>All</a>
+                <a className={css.overviewGraph__controlsDesktopTimeButton + " " + css.overviewGraph__controlsDesktopTimeButton_active}>Day</a>
+                <a className={css.overviewGraph__controlsDesktopTimeButton}>Week</a>
+                <a className={css.overviewGraph__controlsDesktopTimeButton}>Month</a>
+                <a className={css.overviewGraph__controlsDesktopTimeButton}>Year</a>
+                <a className={css.overviewGraph__controlsDesktopTimeButton}>All</a>
             </div>
         )
         const mobileTimeButton = (

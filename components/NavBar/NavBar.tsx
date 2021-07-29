@@ -27,7 +27,7 @@ class NavBar extends React.Component<IProps> {
                 </span>
                 <div className={css.navBar__searchBox}>
                     <input type="text" className={css.navBar__searchBoxInput} placeholder='Type an action... "Add 5 BTC"' />
-                    <a href="#" className={css.navBar__searchBoxButton}>
+                    <a className={css.navBar__searchBoxButton}>
                         <IonIcon name="return-down-forward" />
                     </a>
                 </div>
@@ -39,13 +39,13 @@ class NavBar extends React.Component<IProps> {
                     {" "}
                     <span>Source code</span>
                 </a>
-                <a href="#" className={css.navBar__notificationsButton}>
+                <a className={css.navBar__notificationsButton}>
                     <IonIcon className={css.navBar__icon} name="notifications" />
                 </a>
-                <a href="#" className={css.navBar__mailButton}>
+                <a className={css.navBar__mailButton}>
                     <IonIcon className={css.navBar__icon} name="mail" />
                 </a>
-                <a href="#" className={css.navBar__profileButton}>
+                <a className={css.navBar__profileButton}>
                     <div className={css.navBar__profileButtonIcon} />
                     <span className={css.navBar__profileButtonText}>Guest</span>
                 </a>

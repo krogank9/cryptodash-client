@@ -7,8 +7,8 @@ export default function WalletCarousel() {
         <div className={css.walletCarousel}>
             <div className={css.walletCarousel__header}>
                 <div className={css.walletCarousel__sectionTitle}>Your Portfolio</div>
-                <a href="#" className={css.walletCarousel__textButton+" show-desktop-only"}>Add wallet</a>
-                <a href="#" className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>
+                <a className={css.walletCarousel__textButton+" show-desktop-only"}>Add wallet</a>
+                <a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>
 
                 <div className={css.walletCarousel__controls}>
                     <IonIcon className={css.walletCarousel__actionButton} name="close-outline" />
