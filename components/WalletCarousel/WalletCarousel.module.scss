@@ -13,7 +13,9 @@
         font-weight: 600;
         font-size: 26px;
         margin-bottom: 20px;
-        margin-right: 19px;
+        @include on-desktop-and-up {
+            margin-right: 19px;
+        }
     }
 
     &__textButton {
