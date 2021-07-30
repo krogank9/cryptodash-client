@@ -235,11 +235,6 @@ function makeLegend(options) {
         const [x, y] = [_leftPadding + 40, _topPadding + 40]
         const spacing = 30
         const text_offset = 2
-        let circle = createElementSVG("circle", {
-            cx: x, cy: y + spacing * i,
-            r: 4,
-            fill: color
-        })
 
         let label = createElementSVG("text", {
             x: x + 15, y: (y + spacing * i) + text_offset,
@@ -249,7 +244,27 @@ function makeLegend(options) {
             fontSize: 18
         }, name)
 
-        svgElems.push(circle)
+        if(options.candlestick) {
+            let halfCircleTop = createElementSVG("path", {
+                fill: "#6dd598",
+                d: `M${x - 4},${y + spacing * i} a1,1 0,0 1 8,0`
+            })
+            let halfCircleBottom = createElementSVG("path", {
+                fill: "#d46d6f",
+                d: `M${x - 4},${y + spacing * i} a1,1 0,0 0 8,0`
+            })
+
+            svgElems.push(halfCircleTop)
+            svgElems.push(halfCircleBottom)
+        }
+        else {
+            let circle = createElementSVG("circle", {
+                cx: x, cy: y + spacing * i,
+                r: 4,
+                fill: color
+            })
+            svgElems.push(circle)
+        }
         svgElems.push(label)
     })
 
