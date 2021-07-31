@@ -428,11 +428,11 @@ function plotCandlestick(options) {
         dataI-- // Start value of each wick should overlap with the end value of the previous and include it in its min/max calculations.
         
 
-        let candleHeight = _yToGraph(bodyEnd) - _yToGraph(bodyStart)
-        let fill = "#d46d6f"
+        let candleHeight = _yToGraph(bodyStart) - _yToGraph(bodyEnd)
+        let fill = "#6dd598"
         if(candleHeight < 0) {
             candleHeight *= -1
-            fill = "#6dd598"
+            fill = "#d46d6f"
         }
 
         let realBody = createElementSVG("rect", {
