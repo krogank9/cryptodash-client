@@ -1,5 +1,19 @@
 .cryptoNewsfeed {
     padding: 25px;
+    display: flex;
+    flex-direction: column;
+
+    @include hide_scrollbar;
+
+    &__storyList {
+
+        list-style-type: "none";
+        padding-left: 0;
+
+        flex: 1;
+        margin-bottom: 0;
+        overflow-y: scroll;
+    }
 }
 
 .headerSection {

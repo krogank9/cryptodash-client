@@ -38,7 +38,7 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
                         </a>
                     </div>
                 </div>
-                <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+                <ul className={css.cryptoNewsfeed__storyList}>
                     {this.makeList(data)}
                 </ul>
             </div>

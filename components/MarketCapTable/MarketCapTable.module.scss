@@ -3,6 +3,8 @@
     flex-direction: column;
     justify-content: space-between;
 
+    @include hide_scrollbar;
+
     &__header {
         //padding: 13px 17px;
         //border: 2px solid transparent;
@@ -12,8 +14,21 @@
         border-bottom: 2px solid #454545;
     }
 
-    &__list {
+    &__listContainer {
         flex-grow: 1;
+        overflow-y: scroll;
+        height: 100%;
+        position: relative;
+    }
+
+    &__list {
+        @include on-desktop-and-up {
+            position: absolute;
+        }
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        width: 100%;
 
         &Item {
             padding: 13px 17px;

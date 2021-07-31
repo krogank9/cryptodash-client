@@ -13,6 +13,8 @@
     right: 0;
     box-sizing: border-box;
 
+    z-index: 999;
+
     &__logoText {
         @include on-tablet-and-under {
             width: 0% !important;

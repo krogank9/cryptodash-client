@@ -24,6 +24,19 @@ $tile-margin: 15px;
     justify-content: center;
 }
 
+
+@mixin hide_scrollbar {
+    ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    * {
+        scrollbar-width: none;
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+}
+
 /*
 @mixin on-mobile-only {
     @media only screen and (max-width: 767px) {
