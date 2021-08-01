@@ -78,7 +78,7 @@ class PricesTable extends React.Component<PricesTableProps> {
                         <div className={css.pricesTable__footerItemName}>
                             <span className="show-desktop-only">Balance:</span>
                             <span className="show-tablet-only">Total Portfolio Balance:</span>
-                            <span className="show-mobile-only">Balance:</span>
+                            <span className="show-mobile-only">Portfolio Balance:</span>
                         </div>
                         <div className={css.pricesTable__footerItemInfo}>
                             <div className={css.pricesTable__footerItemInfoBalance}>
