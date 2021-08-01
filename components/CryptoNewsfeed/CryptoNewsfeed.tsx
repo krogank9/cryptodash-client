@@ -19,9 +19,11 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
 
             return (
                 <li className={css.storyPreview}>
-                    <h4 className={css.storyPreview__header}>{story.title[0]}</h4>
-                    <span className={css.storyPreview__subtext}>{`CoinTelegraph - Bitcoin News, Blockchain News - ${pubAgo}h ago`}</span>
-                    <p className={css.storyPreview__description}>{story.description[0]}</p>
+                    <a className={css.storyPreview__link} href={story.link[0]} target="_blank">
+                        <h4 className={css.storyPreview__header}>{story.title[0]}</h4>
+                        <span className={css.storyPreview__subtext}>{`CoinTelegraph - Bitcoin News, Blockchain News - ${pubAgo}h ago`}</span>
+                        <p className={css.storyPreview__description}>{story.description[0]}</p>
+                    </a>
                 </li>
             )
         })
