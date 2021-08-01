@@ -11,8 +11,6 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
 
     makeList(data) {
 
-        console.log(data)
-
         data = data.slice(0).sort((a, b) => b["market_cap"] - a["market_cap"])
 
         return data.slice(0,20).map((d, i) => {

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+    xmlns:media="http://search.yahoo.com/mrss/"
+	>
+	<channel>
+		<title>Cointelegraph.com News</title>
+
+		<atom:link href="https://cointelegraph.com/editors_pick_rss" rel="self" type="application/rss+xml" />
+
+		<link>https://cointelegraph.com</link>
+		<description>Cointelegraph covers fintech, blockchain and Bitcoin bringing you the latest news and analyses on the future of money.</description>
+		<generator>cointelegraph.com</generator>
+		<lastBuildDate>Sun, 01 Aug 2021 06:58:52 +0100</lastBuildDate>
+		<language>en</language>
+		<sy:updatePeriod>hourly</sy:updatePeriod>
+		<sy:updateFrequency>1</sy:updateFrequency>
+
+		<image>
+			<title>Cointelegraph.com News</title>
+			<link>https://cointelegraph.com</link>
+			<url>https://cointelegraph.com/assets/img/CT_Logo_YG_tag.png</url>
+			<description>Cointelegraph covers fintech, blockchain and Bitcoin bringing you the latest news and analyses on the future of money.</description>
+		</image>
+
+					<item>
+			<title><![CDATA[German law allowing institutional funds to hold crypto comes into effect Aug. 2]]></title>
+			<link>https://cointelegraph.com/news/german-law-allowing-institutional-funds-to-hold-crypto-comes-into-effect-aug-2</link>
+			<dc:creator><![CDATA[Sam Bourgi]]></dc:creator>
+			<description>
+				<![CDATA[As much as $415 billion worth of investments could flow into cryptocurrencies as new laws governing German Spezialfonds go into effect.  ]]>
+			</description>
+			<pubDate>Sat, 31 Jul 2021 17:36:45 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[Bitcoin 'supercycle' sets up Q4 BTC price top as illiquid supply hits all-time high]]></title>
+			<link>https://cointelegraph.com/news/bitcoin-supercycle-sets-up-q4-btc-price-top-as-illiquid-supply-hits-all-time-high</link>
+			<dc:creator><![CDATA[William Suberg]]></dc:creator>
+			<description>
+				<![CDATA[Recent events mean that a Q4 "blow-off top" is now back on the menu as BTC price recovery clings to its 23% weekly gains. ]]>
+			</description>
+			<pubDate>Sat, 31 Jul 2021 16:25:16 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[Pro traders look for this classic pattern to spot Bitcoin price reversals]]></title>
+			<link>https://cointelegraph.com/news/pro-traders-look-for-this-classic-pattern-to-spot-bitcoin-price-reversals</link>
+			<dc:creator><![CDATA[Rakesh Upadhyay]]></dc:creator>
+			<description>
+				<![CDATA[Crypto and stock traders view the inverse head-and-shoulders pattern as an early signal that a bullish trend reversal is in the making.]]>
+			</description>
+			<pubDate>Sat, 31 Jul 2021 21:11:09 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[NFTs can be a good pathway to draw women into crypto, says Lavinia Osbourne]]></title>
+			<link>https://cointelegraph.com/news/nfts-can-be-a-good-pathway-to-draw-women-into-crypto-says-lavinia-osbourne</link>
+			<dc:creator><![CDATA[Turner Wright]]></dc:creator>
+			<description>
+				<![CDATA[Though nonfungible token projects are one path to entry, women are still underrepresented in many crypto and blockchain firms.]]>
+			</description>
+			<pubDate>Fri, 30 Jul 2021 18:45:33 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[Avalanche launches upgraded bridge, prepping DApps for mainstream adoption]]></title>
+			<link>https://cointelegraph.com/news/avalanche-launches-upgraded-bridge-prepping-dapps-for-mainstream-adoption</link>
+			<dc:creator><![CDATA[Max Moeller]]></dc:creator>
+			<description>
+				<![CDATA[The new bridge is allegedly five times cheaper, faster, and more secure than before. The company says it is meant to act as a "growth engine" for future expansi...]]>
+			</description>
+			<pubDate>Fri, 30 Jul 2021 18:12:39 +0100</pubDate>
+		</item>
+			
+	</channel>
+</rss>

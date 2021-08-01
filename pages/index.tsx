@@ -14,16 +14,19 @@ import CryptoNewsfeed from '../components/CryptoNewsfeed/CryptoNewsfeed'
 import CoinIconList32B64 from "../public/coins_32_color_b64_icon_list.json"
 
 var fs = require('fs');
+var xml2js = require('xml2js')
+var parser = new xml2js.Parser();
 
 export async function getServerSideProps(context) {
 
   var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
+  var rssJson = await parser.parseStringPromise(fs.readFileSync( 'static_data/crypto_rss.xml', 'utf8'));
 
-  marketData.length = 20
   return {
     props: {
       marketData: marketData,
-      coinImagesB64: CoinIconList32B64
+      coinImagesB64: CoinIconList32B64,
+      rssJson: rssJson.rss.channel[0].item.slice(0,5)
     }
   }
 }
@@ -41,7 +44,7 @@ export default function Overview(props) {
 
       <div className={css.halfSplit}>
         <TrendingCurrenciesTable data={props.marketData} />
-        <CryptoNewsfeed />
+        <CryptoNewsfeed data={props.rssJson} />
       </div>
     </>
   )

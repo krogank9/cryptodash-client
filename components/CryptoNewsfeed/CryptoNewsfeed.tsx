@@ -3,27 +3,31 @@ import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 
 interface CryptoNewsfeedProps {
-    className?: string
+    className?: string,
+    data?: any
 }
 
 class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
 
     makeList(data) {
-        return data.map((d, i) => (
-            <li className={css.storyPreview}>
-                <h4 className={css.storyPreview__header}>{d[0]}</h4>
-                <span className={css.storyPreview__subtext}>{d[1]}</span>
-                <p className={css.storyPreview__description}>{d[2]}</p>
-            </li>
-        ))
+        return data.map((story, i) => {
+            
+            let pubAgo = Date.now() - (new Date(story.pubDate)).getTime()
+            pubAgo = Math.round(pubAgo / (3600*1000))
+            if(pubAgo === 0)
+                pubAgo = 1
+
+            return (
+                <li className={css.storyPreview}>
+                    <h4 className={css.storyPreview__header}>{story.title[0]}</h4>
+                    <span className={css.storyPreview__subtext}>{`CoinTelegraph - Bitcoin News, Blockchain News - ${pubAgo}h ago`}</span>
+                    <p className={css.storyPreview__description}>{story.description[0]}</p>
+                </li>
+            )
+        })
     }
 
     render() {
-        let data = [
-            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
-            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
-            ["Bitcoin Holds Above $30K but Price Chart Looks 'Ugly'", "CoinDesk - Bitcoin News, Blockchain News - 4h ago", "Also, Circle might be an attractive \"starter stock for the cautious\" when it goes public, according to one analyst."],
-        ]
         return (
             <div className={css.cryptoNewsfeed}>
                 <div className={css.headerSection}>
@@ -39,7 +43,7 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
                     </div>
                 </div>
                 <ul className={css.cryptoNewsfeed__storyList}>
-                    {this.makeList(data)}
+                    {this.makeList(this.props.data)}
                 </ul>
             </div>
         )
