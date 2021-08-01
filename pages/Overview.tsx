@@ -7,13 +7,20 @@ import IonIcon from '../components/IonIcon/IonIcon'
 import TrendingCurrenciesTable from '../components/TrendingCurrenciesTable/TrendingCurrenciesTable'
 import CryptoNewsfeed from '../components/CryptoNewsfeed/CryptoNewsfeed'
 
-export default function Overview({ Component, pageProps, className }) {
+export default function Overview(props) {
+  let data = [
+    ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "-1.2%"],
+    ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "-1.2%"],
+    ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "-1.2%"],
+    ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "+1.2%"], ["BTC", "$39,034", "-1.2%"],
+  ]
+  
   return (
     <>
       <WalletCarousel />
       <div className={css.graphSplit}>
         <OverviewGraph className={css.graphSplit__graph} />
-        <MarketCapTable className={css.graphSplit__table} />
+        <MarketCapTable className={css.graphSplit__table} data={props.marketData}/>
       </div>
 
       <div className={css.halfSplit}>
