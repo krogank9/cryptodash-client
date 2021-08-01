@@ -25,7 +25,7 @@ $tile-margin: 15px;
 }
 
 
-@mixin hide_scrollbar {
+@mixin hide-scrollbar {
     ::-webkit-scrollbar {
         width: 0px;
         background: transparent; /* make scrollbar transparent */

@@ -1,5 +1,13 @@
-.TrendingCurrenciesTableContainer {
+.TrendingCurrenciesTableTile {
     padding: 25px;
+    display: flex;
+    flex-direction: column;
+    @include hide-scrollbar;
+}
+
+.TrendingCurrenciesTableContainer {
+    overflow-y: scroll;
+    flex: 1;
 }
 
 .TrendingCurrenciesTitle {
