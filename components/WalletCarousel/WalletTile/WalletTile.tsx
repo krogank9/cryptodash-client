@@ -4,7 +4,7 @@ import { generateData } from '../../Graph/GenerateGraph.js'
 import React, { Component } from 'react';
 import Graph, { GraphWithResize } from '../../Graph/Graph'
 
-import BTCPrices from '../../../sample_data/bitcoin_1day every5mins.json'
+import BTCPrices from '../../../static_data/bitcoin_1day every5mins.json'
 
 
 class WalletTile extends React.Component {
