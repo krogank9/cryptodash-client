@@ -11,6 +11,8 @@ import CryptoNewsfeed from '../components/CryptoNewsfeed/CryptoNewsfeed'
 // Serverside static/initial props -- updated with cron job that fetches coingecko api
 // Then, we can use cookie from user's request to determine which of the market data is relevant and what they have in their portfolio
 
+import CoinIconList32B64 from "../public/coins_32_color_b64_icon_list.json"
+
 var fs = require('fs');
 
 function nFormatter(num) {
@@ -42,7 +44,8 @@ export async function getServerSideProps(context) {
   marketData = marketData.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1)+"%"])
   return {
     props: {
-      marketData: marketData
+      marketData: marketData,
+      coinImagesB64: CoinIconList32B64
     }
   }
 }
@@ -55,7 +58,7 @@ export default function Overview(props) {
       <WalletCarousel />
       <div className={css.graphSplit}>
         <OverviewGraph className={css.graphSplit__graph} />
-        <PricesTable className={css.graphSplit__table} data={props.marketData}/>
+        <PricesTable className={css.graphSplit__table} data={props.marketData} coinImagesB64={props.coinImagesB64}/>
       </div>
 
       <div className={css.halfSplit}>
