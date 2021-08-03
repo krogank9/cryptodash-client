@@ -33,7 +33,8 @@ interface PricesTableProps {
 class PricesTable extends React.Component<PricesTableProps> {
 
     makeList(data) {
-        data = data.slice(0,20).map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1)+"%"])
+        data.sort((a, b) => b.current_price - a.current_price)
+        data = data.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1)+"%"])
 
         return data.map((d, i) => {
             if(d[2].charAt(0) !== "-" && d[2].charAt(0) !== "+") {
