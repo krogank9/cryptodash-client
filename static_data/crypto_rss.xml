@@ -15,7 +15,7 @@
 		<link>https://cointelegraph.com</link>
 		<description>Cointelegraph covers fintech, blockchain and Bitcoin bringing you the latest news and analyses on the future of money.</description>
 		<generator>cointelegraph.com</generator>
-		<lastBuildDate>Mon, 02 Aug 2021 19:22:32 +0100</lastBuildDate>
+		<lastBuildDate>Tue, 03 Aug 2021 07:35:19 +0100</lastBuildDate>
 		<language>en</language>
 		<sy:updatePeriod>hourly</sy:updatePeriod>
 		<sy:updateFrequency>1</sy:updateFrequency>
@@ -28,6 +28,42 @@
 		</image>
 
 					<item>
+			<title><![CDATA[Bitcoin outflows from centralized exchanges surge to 100K BTC monthly ]]></title>
+			<link>https://cointelegraph.com/news/bitcoin-outflows-from-centralized-exchanges-surge-to-100k-btc-monthly</link>
+			<dc:creator><![CDATA[Martin Young]]></dc:creator>
+			<description>
+				<![CDATA[Centralized exchanges have experienced their heaviest week of Bitcoin withdrawals since November 2020.]]>
+			</description>
+			<pubDate>Tue, 03 Aug 2021 05:37:49 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[Brad Garlinghouse's lawyers file request for Binance documents in 'international' challenge to SEC lawsuit]]></title>
+			<link>https://cointelegraph.com/news/brad-garlinghouse-s-lawyers-file-request-for-binance-documents-in-international-challenge-to-sec-lawsuit</link>
+			<dc:creator><![CDATA[Turner Wright]]></dc:creator>
+			<description>
+				<![CDATA["The offers and sales that the SEC challenges did not occur in this country and are not subject to the law that the SEC has invoked in this case," said the lega...]]>
+			</description>
+			<pubDate>Mon, 02 Aug 2021 19:30:00 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[Price analysis 8/2: BTC, ETH, BNB, ADA, XRP, DOGE, DOT, UNI, BCH, LINK]]></title>
+			<link>https://cointelegraph.com/news/price-analysis-8-2-btc-eth-bnb-ada-xrp-doge-dot-uni-bch-link</link>
+			<dc:creator><![CDATA[Rakesh Upadhyay]]></dc:creator>
+			<description>
+				<![CDATA[Bitcoin price has hit a few barriers but many altcoins appear positioned for continuation.]]>
+			</description>
+			<pubDate>Mon, 02 Aug 2021 20:36:18 +0100</pubDate>
+		</item>
+			<item>
+			<title><![CDATA[OpenSea's daily volume is exceeding its 2020 total]]></title>
+			<link>https://cointelegraph.com/news/opensea-s-daily-volume-is-exceeding-its-2020-total</link>
+			<dc:creator><![CDATA[Brian Quarmby]]></dc:creator>
+			<description>
+				<![CDATA[Nonfungible tokens appear to be bubbling again, with marketplace OpenSea now processing more volume daily than it did for the entirety of 2020. ]]>
+			</description>
+			<pubDate>Tue, 03 Aug 2021 04:51:36 +0100</pubDate>
+		</item>
+			<item>
 			<title><![CDATA[Monero’s former maintainer arrested in the US for allegations unrelated to cryptocurrency ]]></title>
 			<link>https://cointelegraph.com/news/monero-s-former-maintainer-arrested-in-u-s-for-allegations-unrelated-to-cryptocurrency</link>
 			<dc:creator><![CDATA[Sam Bourgi]]></dc:creator>
@@ -35,42 +71,6 @@
 				<![CDATA[An arrest warrant for Riccardo Spagni was issued on July 20, 2021, at the request of the South African government. He was apprehended the same day in the United...]]>
 			</description>
 			<pubDate>Mon, 02 Aug 2021 18:41:00 +0100</pubDate>
-		</item>
-			<item>
-			<title><![CDATA[There’s no reason not to hold Bitcoin for 100 years, Michael Saylor says]]></title>
-			<link>https://cointelegraph.com/news/there-s-no-reason-not-to-hold-bitcoin-for-100-years-michael-saylor-says</link>
-			<dc:creator><![CDATA[Marie Huillet ]]></dc:creator>
-			<description>
-				<![CDATA[Nobody is in a hurry with Bitcoin, according to MicroStrategy CEO Michael Saylor: “We’re thinking that it’s the future of the property.”]]>
-			</description>
-			<pubDate>Mon, 02 Aug 2021 11:15:44 +0100</pubDate>
-		</item>
-			<item>
-			<title><![CDATA[South Korean regulator to reportedly shut down 11 crypto exchanges]]></title>
-			<link>https://cointelegraph.com/news/south-korean-regulator-to-reportedly-shut-down-11-crypto-exchanges</link>
-			<dc:creator><![CDATA[Helen Partz]]></dc:creator>
-			<description>
-				<![CDATA[Sources claim that several mid-sized crypto exchanges in South Korea will be unable to get approval from the FSC.]]>
-			</description>
-			<pubDate>Mon, 02 Aug 2021 11:04:15 +0100</pubDate>
-		</item>
-			<item>
-			<title><![CDATA[Square to acquire Australian fintech Afterpay in $29B deal]]></title>
-			<link>https://cointelegraph.com/news/square-to-acquire-australian-fintech-afterpay-in-29b-deal</link>
-			<dc:creator><![CDATA[Helen Partz]]></dc:creator>
-			<description>
-				<![CDATA[Square will acquire Australian fintech firm Afterpay in a $29-billion stock deal, expecting to close the transaction in Q1 2022.]]>
-			</description>
-			<pubDate>Mon, 02 Aug 2021 09:32:06 +0100</pubDate>
-		</item>
-			<item>
-			<title><![CDATA[Betting on tax bill FUD: 5 things to watch in Bitcoin this week]]></title>
-			<link>https://cointelegraph.com/news/betting-on-tax-bill-fud-5-things-to-watch-in-bitcoin-this-week</link>
-			<dc:creator><![CDATA[William Suberg]]></dc:creator>
-			<description>
-				<![CDATA[Fresh hurdles to overcome for Bitcoin sentiment come as fundamentals stay solid and $40,000 refuses to go without a fight.]]>
-			</description>
-			<pubDate>Mon, 02 Aug 2021 09:27:41 +0100</pubDate>
 		</item>
 			
 	</channel>

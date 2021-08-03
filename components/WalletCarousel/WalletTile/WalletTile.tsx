@@ -1,10 +1,9 @@
 import css from './WalletTile.module.scss'
 import IonIcon from '../../IonIcon/IonIcon'
-import { generateData } from '../../Graph/GenerateGraph.js'
 import React, { Component } from 'react';
 import Graph, { GraphWithResize } from '../../Graph/Graph'
 
-import BTCPrices from '../../../static_data/bitcoin_1day every5mins.json'
+import BTCPrices from '../../../static_data/btc_1d.json'
 
 
 class WalletTile extends React.Component {

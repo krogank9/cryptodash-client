@@ -143,9 +143,11 @@ export var makeChart = function (options = {}) {
     let xSpan = minMax.xMax - minMax.xMin
     let ySpan = minMax.yMax - minMax.yMin
     let numXTicks = options._mobile ? 5 : 6
-    let numYTicks = 4
+    let numYTicks = 3
     let xInterval = xSpan / numXTicks
-    let yInterval = ySpan / (numYTicks + 1) // +1 because the first at the x axis isn't labeled
+    // + 1 to numYTicks because gridline which would be at very top is always hidden.
+    // Simplest way to give even spacing to the rest of the gridlines and labels.
+    let yInterval = ySpan / (numYTicks + 1)
 
     let defaults = {
         ...minMax,
@@ -316,7 +318,8 @@ function makeGrid(options) {
         }
     }
 
-    for (let y = yMin; y < yMax; y += yInterval) {
+    // yMax - 1 below prevents gridline & label from appearing at very top pixel of graph and getting cut off.
+    for (let y = yMin; y < yMax - 1; y += yInterval) {
         let line = createElementSVG("line", {
             y1: _yToGraph(y), y2: _yToGraph(y),
             x1: y == yMin || y == _lastY ? 0 : _xToGraph(xMin), x2: _xToGraph(_lastX),
