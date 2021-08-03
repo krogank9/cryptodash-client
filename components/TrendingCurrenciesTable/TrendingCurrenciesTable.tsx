@@ -16,7 +16,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
         return data.slice(0,20).map((d, i) => {
             let priceChange = Number(d["price_change_24h"])
             let positiveChange = priceChange >= 0
-            let priceChangeFmt = priceChange.toLocaleString("en-US")
+            let priceChangeFmt = priceChange.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2})
             if(priceChange == 0) {
                 priceChangeFmt = "$0.00"
             }
