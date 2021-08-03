@@ -362,7 +362,7 @@ function plotData(options) {
             d: line_d
         })
 
-        let fill_d = line_d + `L${width},${_yToGraph(yMin)}L${_xToGraph(xMin)},${_yToGraph(yMin)}z`
+        let fill_d = line_d + `L${_xToGraph(_lastX)},${_yToGraph(yMin)}L${_xToGraph(xMin)},${_yToGraph(yMin)}z`
         let fillPath = createElementSVG("path", {
             fill: fillColor,
             fillOpacity: 0.75,
