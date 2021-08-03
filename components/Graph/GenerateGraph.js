@@ -142,7 +142,7 @@ export var makeChart = function (options = {}) {
 
     let xSpan = minMax.xMax - minMax.xMin
     let ySpan = minMax.yMax - minMax.yMin
-    let numXTicks = options._mobile ? 5 : 6
+    let numXTicks = options._mobile ? 4 : 6
     let numYTicks = 3
     let xInterval = xSpan / numXTicks
     // + 1 to numYTicks because gridline which would be at very top is always hidden.
