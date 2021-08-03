@@ -27,10 +27,15 @@
             width: 32px;
             height: 32px;
         }
+        
 
         &Text {
             display: inline-block;
+            &Amount {
+                text-transform: uppercase;
+            }
             &Name {
+                text-transform: capitalize;
                 color: #85a3c2;
             }
         }

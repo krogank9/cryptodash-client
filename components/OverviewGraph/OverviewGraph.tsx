@@ -5,7 +5,7 @@ import BTCPrices from '../../static_data/btc_1d.json'
 
 import React, { Component } from 'react';
 
-interface OverviewGraphProps { className?: string }
+interface OverviewGraphProps { className?: string, data?: any, balances?: any }
 
 class OverviewGraph extends React.Component<OverviewGraphProps> {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -23,17 +23,34 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         }
     }
 
-    setGraphOptions = () => {
+    addData(data, amounts) {
+        let cumulativeGraph = data[0].map(e => [e[0], e[1] * amounts[0]])
+        data.slice(1).forEach((coinGraph, coinGraphIndex) => {
+            coinGraph.forEach((graphPoint, i) => {
+                cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex + 1]
+            })
+        })
+        return cumulativeGraph
+    }
+
+    weighData(data, amount) {
+        return data.map(d => [d[0], d[1] * amount])
+    }
+
+    setGraphOptions = (candlestick?: false) => {
+
+        let amounts = Object.keys(this.props.data).map(c => this.props.balances[c])
+        let portfolio = this.addData(Object.values(this.props.data).map((d:any) => d.prices), amounts)
+
+        //console.log(this.props.walletData)
+
         let new_graphOptions = {
             width: this.containerRef.current.offsetWidth, height: 555,
-            candlestick: this.state.candlestick,
+            candlestick: candlestick,
             dataObjs: [
-                { name: "Total Portfolio", data: BTCPrices.prices, solidFill: false },
-                { name: "BTC", data: BTCPrices.prices.map(p => [p[0], p[1]*0.9]).map((p, i, arr) => [p[0], arr[arr.length - 1 - i][1]]), solidFill: false },
-                //{ name: "ETH", data: ETHPrices.prices, solidFill: false },
+                { name: "Total Portfolio", data: portfolio, solidFill: false },
+                { name: "BTC", data: this.weighData(this.props.data["btc"].prices, candlestick ? 1 : this.props.balances["btc"]), solidFill: false },
             ],
-            //yLabelCallback: (y) => "$" + (y * 1.25).toLocaleString(undefined, { minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2 }) + "K",
-            //xLabelCallback: (x) => timeConverter
         }
 
         this.setState({...this.state, graphOptions: new_graphOptions })
@@ -44,9 +61,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     }
 
     setcandlestick = (b) => {
-        let graphOptions = this.state.graphOptions
-        graphOptions.candlestick = b
-        this.setState({...this.state, graphOptions})
+        this.setGraphOptions(b)
     }
 
     selectChange = (evt) => {

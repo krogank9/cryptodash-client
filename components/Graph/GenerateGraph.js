@@ -134,7 +134,7 @@ export var makeChart = function (options = {}) {
     options = JSON.parse(JSON.stringify(options))
 
     if(options.candlestick && options.dataObjs.length > 1)
-        options.dataObjs.length = 1
+        options.dataObjs = options.dataObjs.slice(-1)
 
     let minMax = findMinMax(options.dataObjs || [])
 
