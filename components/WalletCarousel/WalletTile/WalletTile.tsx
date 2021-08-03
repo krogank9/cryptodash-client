@@ -68,7 +68,7 @@ class WalletTile extends React.Component<WalletTileProps> {
                     <div className={css.walletTile__currency + " show-1550-and-up"}>
                         <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data.graphData.prices.slice(-1)[0][1] * this.props.data.amount)}</div>
                         <div className={css.walletTile__currencyChange + " " + (changePct > 0 ? css.walletTile__currencyChange_positive : css.walletTile__currencyChange_negative)}>
-                            <span>{changePct.toFixed(1)}%</span><IonIcon name={changePct > 0 ? "arrow-up-outline" : "arrow-down-outline"} />
+                            <span>{changePct > 0 ? "+":""}{changePct.toFixed(1)}%</span><IonIcon name={changePct > 0 ? "arrow-up-outline" : "arrow-down-outline"} />
                         </div>
                     </div>
                 </div>

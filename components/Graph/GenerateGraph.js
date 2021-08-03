@@ -281,7 +281,7 @@ function makeGrid(options) {
     let _leftPadding = options._leftPadding = options._mobile ? 60 : 90
     let _bottomPadding = options._bottomPadding = 50
 
-    for (let x = xMin; x < xMax; x += xInterval) {
+    for (let x = xMin; x < xMax - 1; x += xInterval) {
         let line = createElementSVG("line", {
             x1: _xToGraph(x), x2: _xToGraph(x),
             y1: _yToGraph(yMin), y2: _yToGraph(_lastY),

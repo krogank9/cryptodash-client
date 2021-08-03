@@ -23,7 +23,9 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         }
     }
 
-    addData(data, amounts) {
+    addData(data, amounts?) {
+        if(!amounts)
+            amounts = data.map(_ => 1)
         let cumulativeGraph = data[0].map(e => [e[0], e[1] * amounts[0]])
         data.slice(1).forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {

@@ -27,6 +27,7 @@ interface PricesTableProps {
     className?: string,
     data?: any,
     coinImagesB64?: any,
+    walletData?: any
 }
 
 class PricesTable extends React.Component<PricesTableProps> {
@@ -61,7 +62,40 @@ class PricesTable extends React.Component<PricesTableProps> {
         )
     }
 
+
+    // Refactor into utilties file... reuse.
+    formatCurrency(amount) {
+        if(amount < 10000) 
+            return "$" + Number(amount).toLocaleString("en-US", {maximumFractionDigits: 2, minimumFractionDigits: 2})
+        else
+            return "$" + Number(amount).toLocaleString("en-US", {maximumFractionDigits: 0, minimumFractionDigits: 0})
+    }
+
+    getChangePct(data) {
+        let start = data[0][1]
+        let end = data[data.length - 1][1]
+        let change = end / start
+        let changePct = Number((change - 1) * 100)
+        return changePct
+    }
+
+    addData(data, amounts?) {
+        if(!amounts)
+            amounts = data.map(_ => 1)
+        let cumulativeGraph = data[0].map(e => [e[0], e[1] * amounts[0]])
+        data.slice(1).forEach((coinGraph, coinGraphIndex) => {
+            coinGraph.forEach((graphPoint, i) => {
+                cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex + 1]
+            })
+        })
+        return cumulativeGraph
+    }
+
     render() {
+        let totalGraph = this.addData(this.props.walletData.map(w => w.graphData.prices), this.props.walletData.map(w => w.amount))
+        let curTotal = totalGraph[totalGraph.length - 1][1]
+        let changePct = this.getChangePct(totalGraph)
+
         return (
             <div className={css.pricesTable + " " + (this.props.className || "")}>
                 <div className={css.pricesTable__header}>
@@ -82,10 +116,10 @@ class PricesTable extends React.Component<PricesTableProps> {
                         </div>
                         <div className={css.pricesTable__footerItemInfo}>
                             <div className={css.pricesTable__footerItemInfoBalance}>
-                                $1,234.12
+                                {this.formatCurrency(curTotal)}
                             </div>
-                            <div className={css.pricesTable__footerItemInfoChange + " " + css.pricesTable__footerItemInfoChange_positive}>
-                                <span>+1.2%</span><IonIcon name="arrow-up-outline" />
+                            <div className={css.pricesTable__footerItemInfoChange + " " + (changePct >= 0 ? css.pricesTable__footerItemInfoChange_positive : css.pricesTable__footerItemInfoChange_negative)}>
+                                <span>{changePct > 0 ? "+" : ""}{changePct.toFixed(1)}%</span><IonIcon name={changePct >= 0 ? "arrow-up-outline" : "arrow-down-outline"} />
                             </div>
                         </div>
                     </div>

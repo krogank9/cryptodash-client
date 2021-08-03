@@ -84,7 +84,7 @@ export default function Overview(props) {
       <WalletCarousel data={props.walletData} coinImagesB64={props.coinImagesB64} />
       <div className={css.graphSplit}>
         <OverviewGraph className={css.graphSplit__graph} data={props.coinData} balances={props.balances} />
-        <PricesTable className={css.graphSplit__table} data={props.marketData.slice(0, 12)} coinImagesB64={props.coinImagesB64} />
+        <PricesTable className={css.graphSplit__table} data={props.marketData.slice(0, 12)} coinImagesB64={props.coinImagesB64} walletData={props.walletData} />
       </div>
 
       <div className={css.halfSplit}>
