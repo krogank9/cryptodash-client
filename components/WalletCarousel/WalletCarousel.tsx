@@ -3,6 +3,8 @@ import WalletTile from './WalletTile/WalletTile'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react'
 
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+
 interface WalletCarouselProps { data?: any, coinImagesB64?: any }
 
 export default class WalletCarousel extends React.Component<WalletCarouselProps> {
@@ -22,11 +24,11 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
                     </div>
                 </div>
                 <div className={css.walletCarousel__track}>
-                    <WalletTile data={this.props.data[0]} coinImagesB64={this.props.coinImagesB64} />
-                    <WalletTile data={this.props.data[1]} coinImagesB64={this.props.coinImagesB64} />
-                    <WalletTile data={this.props.data[2]} coinImagesB64={this.props.coinImagesB64} />
-                    <WalletTile data={this.props.data[3]} coinImagesB64={this.props.coinImagesB64} />
-                    <WalletTile data={this.props.data[4]} coinImagesB64={this.props.coinImagesB64} />
+                    <WalletTile data={StoreSingleton.walletData[0]} />
+                    <WalletTile data={StoreSingleton.walletData[1]} />
+                    <WalletTile data={StoreSingleton.walletData[2]} />
+                    <WalletTile data={StoreSingleton.walletData[3]} />
+                    <WalletTile data={StoreSingleton.walletData[4]} />
                 </div>
             </div>
         )

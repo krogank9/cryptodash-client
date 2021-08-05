@@ -2,6 +2,8 @@ import css from './PricesTable.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+
 function nFormatter(num) {
 
     if(num < 1000) {
@@ -24,10 +26,7 @@ function nFormatter(num) {
   }
 
 interface PricesTableProps {
-    className?: string,
-    data?: any,
-    coinImagesB64?: any,
-    walletData?: any
+    className?: string
 }
 
 class PricesTable extends React.Component<PricesTableProps> {
@@ -41,7 +40,7 @@ class PricesTable extends React.Component<PricesTableProps> {
                 d[2] = "+"+d[2]
             }
 
-            let coinBase64 = this.props.coinImagesB64[d[0].toLowerCase()] || this.props.coinImagesB64["generic"]
+            let coinBase64 = StoreSingleton.coinImagesB64[d[0].toLowerCase()] || StoreSingleton.coinImagesB64["generic"]
             
             return (
                 <li className={css.pricesTable__listItem} key={i}>
@@ -93,7 +92,7 @@ class PricesTable extends React.Component<PricesTableProps> {
     }
 
     render() {
-        let totalGraph = this.addData(this.props.walletData.map(w => w.graphData.prices), this.props.walletData.map(w => w.amount))
+        let totalGraph = this.addData(StoreSingleton.walletData.map(w => w.graphData), StoreSingleton.walletData.map(w => w.amount))
         let curTotal = totalGraph[totalGraph.length - 1][1]
         let changePct = this.getChangePct(totalGraph)
 
@@ -105,7 +104,7 @@ class PricesTable extends React.Component<PricesTableProps> {
                 </div>
                 <div className={css.pricesTable__listContainer}>
                     <ul className={css.pricesTable__list}>
-                        {this.makeList(this.props.data)}
+                        {this.makeList(StoreSingleton.marketData)}
                     </ul>
                 </div>
                 <div className={css.pricesTable__footer}>

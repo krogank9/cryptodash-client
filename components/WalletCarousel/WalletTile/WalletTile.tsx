@@ -6,7 +6,9 @@ import Graph, { GraphWithResize } from '../../Graph/Graph'
 import BTCPrices from '../../../static_data/btc_1d.json'
 import CoinNames from '../../../static_data/coin_name_map.json'
 
-interface WalletTileProps { data?: any, coinImagesB64?: any }
+import StoreSingleton from '../../../store/CryptodashStoreSingleton.js'
+
+interface WalletTileProps { data?: any }
 
 class WalletTile extends React.Component<WalletTileProps> {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -29,7 +31,7 @@ class WalletTile extends React.Component<WalletTileProps> {
             showLabels: false,
             strokeWidth: 1.5,
             dataObjs: [
-                { data: this.props.data.graphData.prices, color: "#5FA3D2" },
+                { data: this.props.data.graphData, color: "#5FA3D2" },
             ]
         }
 
@@ -52,13 +54,13 @@ class WalletTile extends React.Component<WalletTileProps> {
     }
 
     render() {
-        let changePct = this.getChangePct(this.props.data.graphData.prices)
+        let changePct = this.getChangePct(this.props.data.graphData)
         return (
             <div className={css.walletTile} ref={this.containerRef}>
                 <div className={css.walletTile__info}>
                     <div className={css.walletTile__crypto}>
                         <div className={css.walletTile__cryptoIcon}>
-                            <img src={"data:image/png;base64,"+this.props.coinImagesB64[this.props.data.coin]} />
+                            <img src={"data:image/png;base64,"+StoreSingleton.coinImagesB64[this.props.data.coin]} />
                         </div>
                         <div className={css.walletTile__cryptoText}>
                             <div className={css.walletTile__cryptoTextAmount}>{this.props.data.amount} {this.props.data.coin}</div>
@@ -66,7 +68,7 @@ class WalletTile extends React.Component<WalletTileProps> {
                         </div>
                     </div>
                     <div className={css.walletTile__currency + " show-1550-and-up"}>
-                        <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data.graphData.prices.slice(-1)[0][1] * this.props.data.amount)}</div>
+                        <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data.graphData.slice(0).pop()[1] * this.props.data.amount)}</div>
                         <div className={css.walletTile__currencyChange + " " + (changePct > 0 ? css.walletTile__currencyChange_positive : css.walletTile__currencyChange_negative)}>
                             <span>{changePct > 0 ? "+":""}{changePct.toFixed(1)}%</span><IonIcon name={changePct > 0 ? "arrow-up-outline" : "arrow-down-outline"} />
                         </div>

@@ -1,11 +1,14 @@
 import css from './Overview.module.scss'
 
+import React, { Component } from 'react';
 import WalletCarousel from '../components/WalletCarousel/WalletCarousel'
 import OverviewGraph from '../components/OverviewGraph/OverviewGraph'
 import PricesTable from '../components/PricesTable/PricesTable'
 import IonIcon from '../components/IonIcon/IonIcon'
 import TrendingCurrenciesTable from '../components/TrendingCurrenciesTable/TrendingCurrenciesTable'
 import CryptoNewsfeed from '../components/CryptoNewsfeed/CryptoNewsfeed'
+
+import StoreSingleton from '../store/CryptodashStoreSingleton.js'
 
 //-------------------------------------------------------------
 // Serverside static/initial props -- updated with cron job that fetches coingecko api
@@ -28,7 +31,7 @@ function getCoinData() {
     let coin = file.replace("_1d.json", "")
     file = "./static_data/" + file
 
-    coinData[coin] = JSON.parse(fs.readFileSync(file, 'utf8'))
+    coinData[coin] = JSON.parse(fs.readFileSync(file, 'utf8')).prices
   })
   return coinData
 }
@@ -58,39 +61,50 @@ export async function getServerSideProps(context) {
     }
   })
 
-  let balances = {}
-  DefaultCoins.forEach(c => {
-    balances[c] = DefaultCoinAmounts[c]
-  })
-
   return {
     props: {
       trendingData: trendingData,
       marketData: marketData,
       coinImagesB64: coinsFiltered,
-      rssJson: rssJson.rss.channel[0].item.slice(0, 5),
-      coinData: coinData,
+      rss: rssJson.rss.channel[0].item.slice(0, 5),
       walletData: walletData,
-      balances: balances
     }
   }
 }
 
 //-------------------------------------------------------------
 
-export default function Overview(props) {
-  return (
-    <>
-      <WalletCarousel data={props.walletData} coinImagesB64={props.coinImagesB64} />
-      <div className={css.graphSplit}>
-        <OverviewGraph className={css.graphSplit__graph} data={props.coinData} balances={props.balances} />
-        <PricesTable className={css.graphSplit__table} data={props.marketData.slice(0, 12)} coinImagesB64={props.coinImagesB64} walletData={props.walletData} />
-      </div>
+interface OverviewProps {
+  coinImagesB64?: any,
+  marketData?: any,
+  walletData?: any,
+  trendingData?: any
+  rss?: any
+}
 
-      <div className={css.halfSplit}>
-        <TrendingCurrenciesTable data={props.trendingData} />
-        <CryptoNewsfeed data={props.rssJson} />
-      </div>
-    </>
-  )
+export default class Overview extends React.Component<OverviewProps> {
+  constructor(props) {
+    super(props)
+
+    StoreSingleton.setWalletData(this.props.walletData)
+    StoreSingleton.setMarketData(this.props.marketData)
+    StoreSingleton.setCoinImagesB64(this.props.coinImagesB64)
+  }
+
+  render() {
+    return (
+      <>
+        <WalletCarousel data={this.props.walletData} />
+        <div className={css.graphSplit}>
+          <OverviewGraph className={css.graphSplit__graph} />
+          <PricesTable className={css.graphSplit__table} />
+        </div>
+
+        <div className={css.halfSplit}>
+          <TrendingCurrenciesTable data={this.props.trendingData} />
+          <CryptoNewsfeed data={this.props.rss} />
+        </div>
+      </>
+    )
+  }
 }

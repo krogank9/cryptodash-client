@@ -3,9 +3,11 @@ import { generateData } from '../Graph/GenerateGraph.js'
 import Graph, { GraphWithResize } from '../Graph/Graph'
 import BTCPrices from '../../static_data/btc_1d.json'
 
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+
 import React, { Component } from 'react';
 
-interface OverviewGraphProps { className?: string, data?: any, balances?: any }
+interface OverviewGraphProps { className?: string }
 
 class OverviewGraph extends React.Component<OverviewGraphProps> {
     containerRef: React.RefObject<HTMLDivElement>;
@@ -23,13 +25,13 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         }
     }
 
-    addData(data, amounts?) {
-        if(!amounts)
-            amounts = data.map(_ => 1)
-        let cumulativeGraph = data[0].map(e => [e[0], e[1] * amounts[0]])
-        data.slice(1).forEach((coinGraph, coinGraphIndex) => {
+    addData(data, balances?) {
+        if(!balances)
+            balances = data.map(_ => 1)
+        let cumulativeGraph = data[0].map(e => [e[0], 0])
+        data.forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {
-                cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex + 1]
+                cumulativeGraph[i][1] += graphPoint[1] * balances[coinGraphIndex]
             })
         })
         return cumulativeGraph
@@ -41,8 +43,9 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
 
     setGraphOptions = (candlestick?: false) => {
 
-        let amounts = Object.keys(this.props.data).map(c => this.props.balances[c])
-        let portfolio = this.addData(Object.values(this.props.data).map((d:any) => d.prices), amounts)
+        let balances = StoreSingleton.walletData.reduce((acc, cur) => {acc[cur.coin] = cur.amount; return acc}, {})
+        let balances_arr = StoreSingleton.walletData.map(w => balances[w.coin])
+        let portfolio = this.addData(StoreSingleton.walletData.map(w => w.graphData), balances_arr)
 
         //console.log(this.props.walletData)
 
@@ -51,7 +54,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
             candlestick: candlestick,
             dataObjs: [
                 { name: "Total Portfolio", data: portfolio, solidFill: false },
-                { name: "BTC", data: this.weighData(this.props.data["btc"].prices, candlestick ? 1 : this.props.balances["btc"]), solidFill: false },
+                { name: "BTC", data: this.weighData(StoreSingleton.walletData.find(w => w.coin === "btc").graphData, candlestick ? 1 : balances["btc"]), solidFill: false },
             ],
         }
 
