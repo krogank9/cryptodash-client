@@ -39,14 +39,13 @@ function getCoinData() {
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
 
-  var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
   var rssJson = await parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
 
+  var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
   var stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc"]
   var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1)
 
-  marketData = marketData.filter((m) => DefaultCoins.indexOf(m.symbol) !== -1)
-  let coinsFiltered = Object.keys(CoinIconList32B64).reduce(function (filtered, key) {
+  let coinsB64Filtered = Object.keys(CoinIconList32B64).reduce(function (filtered, key) {
     if (DefaultCoins.indexOf(key) !== -1) filtered[key] = CoinIconList32B64[key];
     return filtered;
   }, {});
@@ -57,15 +56,14 @@ export async function getServerSideProps(context) {
     return {
       coin: c,
       amount: DefaultCoinAmounts[c],
-      graphData: coinData[c]
+      graph_1d: coinData[c]
     }
   })
 
   return {
     props: {
       trendingData: trendingData,
-      marketData: marketData,
-      coinImagesB64: coinsFiltered,
+      coinImagesB64: coinsB64Filtered,
       rss: rssJson.rss.channel[0].item.slice(0, 5),
       walletData: walletData,
     }

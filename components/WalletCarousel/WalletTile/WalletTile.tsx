@@ -44,14 +44,14 @@ class WalletTile extends React.Component<WalletTileProps> {
     }
 
     render() {
-        let changePct = this.getChangePct(this.props.data.graphData)
+        let changePct = this.getChangePct(this.props.data["graph_1d"])
         let graphOptions = !this.state.didMount ? {} : {
             width: this.containerRef.current.offsetWidth, height: 65,
             showGrid: false,
             showLabels: false,
             strokeWidth: 1.5,
             dataObjs: [
-                { data: this.props.data.graphData, color: "#5FA3D2" },
+                { data: this.props.data["graph_1d"], color: "#5FA3D2" },
             ]
         }
 
@@ -68,7 +68,7 @@ class WalletTile extends React.Component<WalletTileProps> {
                         </div>
                     </div>
                     <div className={css.walletTile__currency + " show-1550-and-up"}>
-                        <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data.graphData.slice(0).pop()[1] * this.props.data.amount)}</div>
+                        <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data["graph_1d"].slice(0).pop()[1] * this.props.data.amount)}</div>
                         <div className={css.walletTile__currencyChange + " " + (changePct > 0 ? css.walletTile__currencyChange_positive : css.walletTile__currencyChange_negative)}>
                             <span>{changePct > 0 ? "+":""}{changePct.toFixed(1)}%</span><IonIcon name={changePct > 0 ? "arrow-up-outline" : "arrow-down-outline"} />
                         </div>

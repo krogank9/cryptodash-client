@@ -18,7 +18,7 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
                 pubAgo = 1
 
             return (
-                <li className={css.storyPreview}>
+                <li className={css.storyPreview} key={i}>
                     <a className={css.storyPreview__link} href={story.link[0]} target="_blank">
                         <h4 className={css.storyPreview__header}>{story.title[0]}</h4>
                         <span className={css.storyPreview__subtext}>{`CoinTelegraph - Bitcoin News, Blockchain News - ${pubAgo}h ago`}</span>

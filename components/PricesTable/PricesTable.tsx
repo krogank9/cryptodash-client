@@ -32,6 +32,11 @@ interface PricesTableProps {
 class PricesTable extends React.Component<PricesTableProps> {
 
     makeList(data) {
+        data = data.map(w => ({
+            symbol: w.coin,
+            current_price: w.graph_1d.slice(0).pop()[1],
+            price_change_percentage_24h: this.getChangePct(w.graph_1d)
+        }))
         data.sort((a, b) => b.current_price - a.current_price)
         data = data.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1)+"%"])
 
@@ -92,7 +97,7 @@ class PricesTable extends React.Component<PricesTableProps> {
     }
 
     render() {
-        let totalGraph = this.addData(StoreSingleton.walletData.map(w => w.graphData), StoreSingleton.walletData.map(w => w.amount))
+        let totalGraph = this.addData(StoreSingleton.walletData.map(w => w.graph_1d), StoreSingleton.walletData.map(w => w.amount))
         let curTotal = totalGraph[totalGraph.length - 1][1]
         let changePct = this.getChangePct(totalGraph)
 
@@ -104,7 +109,7 @@ class PricesTable extends React.Component<PricesTableProps> {
                 </div>
                 <div className={css.pricesTable__listContainer}>
                     <ul className={css.pricesTable__list}>
-                        {this.makeList(StoreSingleton.marketData)}
+                        {this.makeList(StoreSingleton.walletData)}
                     </ul>
                 </div>
                 <div className={css.pricesTable__footer}>

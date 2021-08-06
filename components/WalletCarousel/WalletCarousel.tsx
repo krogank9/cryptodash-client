@@ -56,17 +56,18 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
     }
 
     makeWalletTiles() {
-        let tiles = StoreSingleton.walletData.slice(this.state.scrollPos, this.state.scrollPos+5).map(w => {
-            return <WalletTile data={w} />
+        let tiles = StoreSingleton.walletData.slice(this.state.scrollPos, this.state.scrollPos+5).map((w, i) => {
+            return <WalletTile data={w} key={i+this.state.scrollPos} />
         })
 
         // Push empty divs for remaining spaces at end of scroll
-        while(tiles.length < 5)
-            tiles.push(<div></div>)
+        let filledReal = tiles.length
+        let emptyNeeded = 5 - tiles.length
+        for(let i = 0; i < emptyNeeded; i++) {
+            tiles.push(<div key={filledReal + this.state.scrollPos + i + 1}></div>)
+        }
 
-        return (<>
-            {tiles}
-        </>)
+        return tiles
     }
 
     render() {

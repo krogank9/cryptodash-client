@@ -52,9 +52,9 @@ function getGraphGranularity(options) {
     let possible_granularities = {
         "day": 1000 * 60 * 60 * 24,
         "week": 1000 * 60 * 60 * 24 * 7,
-        "month": 1000 * 60 * 60 * 24 * 7 * 30,
-        "year": 1000 * 60 * 60 * 24 * 7 * 30 * 12,
-        "decade": 1000 * 60 * 60 * 24 * 7 * 30 * 12 * 10
+        "month": 1000 * 60 * 60 * 24 * 30,
+        "year": 1000 * 60 * 60 * 24 * 30 * 12,
+        "decade": 1000 * 60 * 60 * 24 * 30 * 12 * 10
     }
 
 
@@ -400,13 +400,15 @@ function plotCandlestick(options) {
     // Typically, each candle on a candlestick chart represents one trading day. We can also use intervals shorter/longer than a day.
     const intervalSizes = {
         day: 48, // Twice-hourly intervals (48 candles)
-        week: 24*7, // Per-hour, 24*7 candles. May lessen depending on how it looks
+        week: 48, // Twice daily
         month: 30, // Per month, standard 1 day intervals, 30 candles
-        year: 24, // Twice-monthly, 24 candles. May increase
-        decade: 40 // Per decade, quarterly intervals, 40 candles
+        year: 48, // 4x monthly
+        decade: 48
     }
 
     let numCandlesticks = intervalSizes[getGraphGranularity(options)]
+    console.log("getGraphGranularity(options)")
+    console.log(getGraphGranularity(options))
     let candlestickInterval = xSpan/numCandlesticks
     let candlestickWidthPx = Math.abs(_xToGraph(xMax) - _xToGraph(xMin)) / numCandlesticks
 
