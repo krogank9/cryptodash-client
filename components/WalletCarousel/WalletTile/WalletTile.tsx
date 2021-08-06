@@ -13,29 +13,19 @@ interface WalletTileProps { data?: any }
 class WalletTile extends React.Component<WalletTileProps> {
     containerRef: React.RefObject<HTMLDivElement>;
     state: {
-        graphOptions: {}
+        didMount: false
     }
 
     constructor(props) {
         super(props)
         this.containerRef = React.createRef()
         this.state = {
-            graphOptions: {}
+            didMount: false
         }
     }
 
     componentDidMount() {
-        let new_graphOptions = {
-            width: this.containerRef.current.offsetWidth, height: 65,
-            showGrid: false,
-            showLabels: false,
-            strokeWidth: 1.5,
-            dataObjs: [
-                { data: this.props.data.graphData, color: "#5FA3D2" },
-            ]
-        }
-
-        this.setState({graphOptions: new_graphOptions})
+        this.setState({didMount: true})
     }
 
     formatCurrency(amount) {
@@ -55,6 +45,16 @@ class WalletTile extends React.Component<WalletTileProps> {
 
     render() {
         let changePct = this.getChangePct(this.props.data.graphData)
+        let graphOptions = !this.state.didMount ? {} : {
+            width: this.containerRef.current.offsetWidth, height: 65,
+            showGrid: false,
+            showLabels: false,
+            strokeWidth: 1.5,
+            dataObjs: [
+                { data: this.props.data.graphData, color: "#5FA3D2" },
+            ]
+        }
+
         return (
             <div className={css.walletTile} ref={this.containerRef}>
                 <div className={css.walletTile__info}>
@@ -75,7 +75,7 @@ class WalletTile extends React.Component<WalletTileProps> {
                     </div>
                 </div>
                 <div className={css.walletTile__graph}>
-                    <GraphWithResize options={this.state.graphOptions} />
+                    <GraphWithResize options={graphOptions} />
                 </div>
             </div>
         )

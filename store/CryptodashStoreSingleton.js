@@ -1,15 +1,15 @@
 import { makeObservable, autorun, observable, computed, action } from "mobx"
-//import {observer} from 'mobx-react';
+//import { Observer } from 'mobx-react'
 
 class CryptodashStore {
     walletData = [
         //{
         //    coin: c,
         //    amount: DefaultCoinAmounts[c],
-        //    graph_1d: [[t,v], ...]
-        //    graph_1w: [[t,v], ...]
-        //    graph_1m: [[t,v], ...]
-        //    graph_1y: [[t,v], ...]
+        //    graph_1d: [[t,v], ...],
+        //    graph_1w: [[t,v], ...],
+        //    graph_1m: [[t,v], ...],
+        //    graph_1y: [[t,v], ...],
         //    graph_all: [[t,v], ...]
         //}, ...
     ]
