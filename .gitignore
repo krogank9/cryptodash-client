@@ -28,3 +28,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# static price data
+/static_data/*_1d.json
+/static_data/crypto_rss.xml
+/static_data/coins_markets_list.json
