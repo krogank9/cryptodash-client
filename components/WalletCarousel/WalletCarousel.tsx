@@ -12,22 +12,34 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
         scrollPos: 1
     }
 
+    carouselTrackRef: React.RefObject<HTMLDivElement>;
+
     constructor(props) {
         super(props)
 
         this.state = {
             scrollPos: 0
         }
+
+        this.carouselTrackRef = React.createRef()
     }
 
     getIsMobile = () => {
-        // I was thinking some sort of css query on how many elements are visible. mobile will always be 4, desktop will be 5.
-        return false
+        if(!this.carouselTrackRef.current)
+            return false // Cannot determine until page load. Not needed until scrolling anyway.
+        
+        // On mobile, the track will only display 4 children per page per the css.
+        let numVisibleChildren = Array.from(this.carouselTrackRef.current.children).filter((el:any) => el.offsetParent !== null).length
+        return numVisibleChildren < 5
     }
 
     getMaxScrollPos = () => {
-        //return StoreSingleton.walletData.length - (this.getIsMobile() ? 4 : 5)
-        return Math.floor(StoreSingleton.walletData.length / 5) * 5
+        //return StoreSingleton.walletData.length - (this.getIsMobile() ? 4 : 5) // Other scroll style, I like below better I think.
+
+        let maxScroll = Math.floor(StoreSingleton.walletData.length / (this.getIsMobile() ? 4 : 5)) * (this.getIsMobile() ? 4 : 5)
+        if(maxScroll === StoreSingleton.walletData.length)
+            maxScroll = StoreSingleton.walletData.length - (this.getIsMobile() ? 4 : 5)
+        return maxScroll
     }
 
     getStride = () => {
@@ -72,7 +84,7 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos < this.getMaxScrollPos() ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-forward-outline" onClick={() => this.scroll(1)} />
                     </div>
                 </div>
-                <div className={css.walletCarousel__track}>
+                <div className={css.walletCarousel__track} ref={this.carouselTrackRef}>
                     {this.makeWalletTiles()}
                 </div>
             </div>
