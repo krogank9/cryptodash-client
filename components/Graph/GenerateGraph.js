@@ -76,7 +76,7 @@ function formatTimestamp(unixTimestamp, options) {
 
     const d = new Date(unixTimestamp)
 
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     const roundedMinutes = Math.round(d.getMinutes() / 60)
     let hours12 = (d.getHours() + roundedMinutes) % 12
     hours12 = hours12 === 0 ? 12 : hours12
