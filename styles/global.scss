@@ -83,8 +83,8 @@ a {
     }
 }
 
-.show-1550-and-up {
-    @include on-1550-and-under {
+.show-1650-and-up {
+    @include on-1650-and-under {
         display: none;
     }
 }

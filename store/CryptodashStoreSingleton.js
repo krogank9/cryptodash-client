@@ -50,9 +50,6 @@ class CryptodashStore {
 
         [].concat(data).forEach((wallet, i) => {
             this.walletData.push(wallet)
-
-            if(i !== 0)
-                return
             
             timeFrames.filter(t => !wallet.hasOwnProperty("graph_"+t)).forEach(timeFrame => {
                 //console.log(`fetching.... ${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}`)
@@ -61,7 +58,7 @@ class CryptodashStore {
                     .then(graph => {
                         //console.log(graph)
                         //wallet["graph_"+timeFrame] = graph.data.prices
-                        this.addGraphToWallet(wallet.coin, timeFrame, graph.data.prices)
+                        this.addGraphToWallet(wallet.coin, timeFrame, graph)
                     })
             })
         })
@@ -74,7 +71,7 @@ class CryptodashStore {
     addGraphToWallet(coin, timeFrame, graph) {
         const wallet = this.walletData.find(w => w.coin === coin)
         wallet["graph_"+timeFrame] = graph
-        console.log(`added ${timeFrame} graph to wallet ${coin}`)
+        //console.log(`added ${timeFrame} graph to wallet ${coin}`)
         //console.log(toJS(wallet))
     }
 

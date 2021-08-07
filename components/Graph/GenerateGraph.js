@@ -133,7 +133,7 @@ var chartCount = 0
 export var makeChart = function (options = {}) {
     options = JSON.parse(JSON.stringify(options))
 
-    if(options.candlestick && options.dataObjs.length > 1)
+    if (options.candlestick && options.dataObjs.length > 1)
         options.dataObjs = options.dataObjs.slice(-1)
 
     let minMax = findMinMax(options.dataObjs || [])
@@ -246,7 +246,7 @@ function makeLegend(options) {
             fontSize: 18
         }, name)
 
-        if(options.candlestick) {
+        if (options.candlestick) {
             let halfCircleTop = createElementSVG("path", {
                 fill: "#6dd598",
                 d: `M${x - 4},${y + spacing * i} a1,1 0,0 1 8,0`
@@ -362,7 +362,9 @@ function plotData(options) {
             d: line_d
         })
 
-        let fill_d = line_d + `L${_xToGraph(_lastX)},${_yToGraph(yMin)}L${_xToGraph(xMin)},${_yToGraph(yMin)}z`
+        const expandBeyond = 50 // Prevents visual glitching of edge of graph
+
+        let fill_d = line_d + `L${width + expandBeyond},${_yToGraph(_lastY)}L${width + expandBeyond},${_yToGraph(yMin)}L${_xToGraph(xMin)},${_yToGraph(yMin)}z`
         let fillPath = createElementSVG("path", {
             fill: fillColor,
             fillOpacity: 0.75,
@@ -373,7 +375,7 @@ function plotData(options) {
 
         let clipPath = (
             <mask id={`clipNum${i}${_chartCount}`}>
-                <rect width={Math.abs(_xToGraph(xMax) - _xToGraph(xMin))} height={Math.abs(_yToGraph(yMax) - _yToGraph(yMin))} x={_xToGraph(xMin)} y="0" fill="white"></rect>
+                <rect width={Math.abs(width - _xToGraph(xMin)) + expandBeyond} height={Math.abs(_yToGraph(yMax) - _yToGraph(yMin))} x={_xToGraph(xMin)} y="0" fill="white"></rect>
                 {i == 1 ? <path fill="black" d={fill_d}></path> : []}
             </mask>
         )
@@ -409,7 +411,7 @@ function plotCandlestick(options) {
     let numCandlesticks = intervalSizes[getGraphGranularity(options)]
     console.log("getGraphGranularity(options)")
     console.log(getGraphGranularity(options))
-    let candlestickInterval = xSpan/numCandlesticks
+    let candlestickInterval = xSpan / numCandlesticks
     let candlestickWidthPx = Math.abs(_xToGraph(xMax) - _xToGraph(xMin)) / numCandlesticks
 
     let dataI = 0
@@ -425,17 +427,17 @@ function plotCandlestick(options) {
         let shadowMin = data[dataI][1]
         let shadowMax = data[dataI][1]
         let bodyEnd = bodyStart
-        for(; dataI < data.length && data[dataI][0] <= endX; dataI++) {
+        for (; dataI < data.length && data[dataI][0] <= endX; dataI++) {
             shadowMin = Math.min(shadowMin, data[dataI][1])
             shadowMax = Math.max(shadowMax, data[dataI][1])
             bodyEnd = data[dataI][1]
         }
         dataI-- // Start value of each wick should overlap with the end value of the previous and include it in its min/max calculations.
-        
+
 
         let candleHeight = _yToGraph(bodyStart) - _yToGraph(bodyEnd)
         let fill = "#6dd598"
-        if(candleHeight < 0) {
+        if (candleHeight < 0) {
             candleHeight *= -1
             fill = "#d46d6f"
         }
@@ -450,7 +452,7 @@ function plotCandlestick(options) {
         })
 
         let shadow = createElementSVG("line", {
-            x1: _xToGraph(x) + candlestickWidthPx/2, x2: _xToGraph(x) + candlestickWidthPx/2,
+            x1: _xToGraph(x) + candlestickWidthPx / 2, x2: _xToGraph(x) + candlestickWidthPx / 2,
             y1: _yToGraph(shadowMin) - 1, y2: _yToGraph(shadowMax) + 1, // - 1 to account for linecap nubs
             stroke: fill,
             strokeWidth: 2,

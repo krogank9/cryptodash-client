@@ -42,7 +42,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                             <span>{Number(d["price_change_percentage_24h"]).toFixed(1).replace("-", "") + "%"}</span><IonIcon name={positiveChange ? "arrow-up-outline" : "arrow-down-outline"} />
                         </span>
                     </td>
-                    <td className="show-1550-and-up">
+                    <td className="show-1650-and-up">
                         <a>Analyze</a>
                     </td>
                 </tr>
@@ -72,7 +72,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                                 </th>
                                 <th>Price</th>
                                 <th>Change (24h)</th>
-                                <th className="show-1550-and-up">Action</th>
+                                <th className="show-1650-and-up">Action</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -67,7 +67,7 @@ class WalletTile extends React.Component<WalletTileProps> {
                             <div className={css.walletTile__cryptoTextName}>{CoinNames[this.props.data.coin]}</div>
                         </div>
                     </div>
-                    <div className={css.walletTile__currency + " show-1550-and-up"}>
+                    <div className={css.walletTile__currency + " show-1650-and-up"}>
                         <div className={css.walletTile__currencyAmount}>{this.formatCurrency(this.props.data["graph_1d"].slice(0).pop()[1] * this.props.data.amount)}</div>
                         <div className={css.walletTile__currencyChange + " " + (changePct > 0 ? css.walletTile__currencyChange_positive : css.walletTile__currencyChange_negative)}>
                             <span>{changePct > 0 ? "+":""}{changePct.toFixed(1)}%</span><IonIcon name={changePct > 0 ? "arrow-up-outline" : "arrow-down-outline"} />

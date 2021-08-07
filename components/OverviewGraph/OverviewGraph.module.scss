@@ -9,7 +9,7 @@
     padding: 14px;
     border-bottom: 2px solid $gridlines-color;
 
-    @include on-1550-and-under {
+    @include on-1650-and-under {
         display: none;
     }
     &Plot {
@@ -56,11 +56,12 @@
 
     border-bottom: 2px solid $gridlines-color;
 
-    @include on-1550-and-up {
+    @include on-1650-and-up {
         display: none;
     }
 
-    padding: 8px; // for between tablet and 1550
+    padding: 8px; // for between tablet and 1650
+    
     @include on-tablet-and-under {
         padding: 14px;
     }

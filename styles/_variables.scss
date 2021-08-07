@@ -97,13 +97,13 @@ $tile-margin: 15px;
 }
 
 // Midway between tablet and desktop -- added this for the graph... Need some breakpoints halfway between desktop/tablet for correct rendering.
-@mixin on-1550-and-under {
-    @media only screen and (max-width: 1549px) {
+@mixin on-1650-and-under {
+    @media only screen and (max-width: 1649px) {
         @content;
     }
 }
-@mixin on-1550-and-up {
-    @media only screen and (min-width: 1550px) {
+@mixin on-1650-and-up {
+    @media only screen and (min-width: 1650px) {
         @content;
     }
 }
