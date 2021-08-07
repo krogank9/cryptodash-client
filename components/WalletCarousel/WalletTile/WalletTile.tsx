@@ -3,7 +3,6 @@ import IonIcon from '../../IonIcon/IonIcon'
 import React, { Component } from 'react';
 import Graph, { GraphWithResize } from '../../Graph/Graph'
 
-import BTCPrices from '../../../static_data/btc_1d.json'
 import CoinNames from '../../../static_data/coin_name_map.json'
 
 import StoreSingleton from '../../../store/CryptodashStoreSingleton.js'
