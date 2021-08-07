@@ -31,7 +31,7 @@ function getCoinData() {
     let coin = file.replace("_1d.json", "")
     file = "./static_data/" + file
 
-    coinData[coin] = JSON.parse(fs.readFileSync(file, 'utf8')).prices
+    coinData[coin] = JSON.parse(fs.readFileSync(file, 'utf8'))
   })
   return coinData
 }
