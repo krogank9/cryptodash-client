@@ -31,6 +31,16 @@ class CryptodashStore {
     // I think no need for coin images to be observable, static except for lazy loading
     coinImagesB64 = {/* coinSymbol: b64 */}
 
+    saveToLocalStorage() {
+        //localStorage.setItem('walletData', this.walletData);
+        //localStorage.setItem('marketData', this.marketData);
+    }
+
+    loadFromLocalStorage() {
+        // Todo this involves cookies probably
+        //localStorage.getItem('walletData');
+    }
+
     constructor() {
         makeObservable(this, {
             walletData: observable,

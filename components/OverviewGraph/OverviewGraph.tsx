@@ -175,7 +175,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
             </div>
         )
         const mobilePlotButton = (
-            <select className={css.overviewGraph__controlsMobilePlot} onChange={this.graphTypeSelect} value={this.state.graphOptions.candlestick ? "candlestick" : "line"} value={this.state.candlestick ? "candlestick" : "line"}>
+            <select className={css.overviewGraph__controlsMobilePlot} onChange={this.graphTypeSelect} value={this.state.candlestick ? "candlestick" : "line"}>
                 <option className={css.overviewGraph__controlsMobilePlotButton + " " + css.overviewGraph__controlsMobilePlotButton_active} value="line">Line plot</option>
                 <option className={css.overviewGraph__controlsMobilePlotButton} value="candlestick">Candlestick</option>
                 <option className={css.overviewGraph__controlsMobilePlotButton} value="predictive">Predictive</option>
