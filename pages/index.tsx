@@ -1,4 +1,4 @@
-import css from './index.module.scss'
+import css from './Overview.module.scss'
 
 import React, { Component } from 'react';
 import WalletCarousel from '../components/WalletCarousel/WalletCarousel'
