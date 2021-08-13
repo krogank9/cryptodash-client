@@ -9,3 +9,5 @@
  more interactivity. this will be a big part of remaining frontend work
 
 -some form of css transform on graph plot svg so we're not redrawing every frame on transitions
+
+-anything that touches server/fetch code should handle malformed inputs gracefully

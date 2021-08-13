@@ -1,0 +1,68 @@
+.halfSplit {
+  > * {
+    background-color: $foreground-color;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 10px 25px;
+  }
+
+  @include on-desktop-and-up {
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    >* {
+      flex-grow: 1;
+      width: calc(50% - 7.5px);
+    } 
+
+    >:first-child {
+      margin-right: 7.5px;
+    }
+    >:last-child {
+      margin-left: 7.5px;
+    }
+  }
+
+  @include on-tablet-and-under {
+    >:first-child, >:last-child {
+      margin-bottom: 15px;  
+    }
+  }
+}
+
+.graphSplit {
+
+  user-select: none;
+
+  @include on-tablet-and-under {
+    &__graph {
+      margin-bottom: 15px;
+      background-color: $foreground-color;
+      border-radius: 5px;
+    }
+  
+    &__table {
+      margin-bottom: 15px;
+      background-color: $foreground-color;
+      border-radius: 5px;
+    }
+  }
+
+  @include on-desktop-and-up {
+    background-color: $foreground-color;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+  
+    &__graph {
+      flex-grow: 1;
+      margin-bottom: 0;
+    }
+  
+    &__table {
+      border-left: 2px solid #454545;
+    }
+  }
+}

@@ -94,6 +94,9 @@ function formatTimestamp(unixTimestamp, options) {
 }
 
 function nFormatter(num, options) {
+    if(num < 1) {
+        return "$" + num.toFixed(options._mobile ? 2 : 4);
+    }
     const lookup = [
         { value: 1e18, symbol: "E" },
         { value: 1e15, symbol: "P" },
@@ -130,8 +133,22 @@ yLabelCallback // default (y)=>y, callback to optionally transform y axis labels
 showGrid // default true, show gridlines
 */
 var chartCount = 0
-export var makeChart = function (options = {}) {
+export var makeChart = function(options = {}) {
+    try {
+        return _makeChart(options)
+    }
+    catch(err) {
+        //console.log(err)
+        return (
+            <svg style={{ width: "100%", height: options.height || 0 }}>
+            </svg>
+        )
+    }
+}
+function _makeChart(options) {
     options = JSON.parse(JSON.stringify(options))
+
+    console.log("_makeChart")
 
     if (options.candlestick && options.dataObjs.length > 1)
         options.dataObjs = options.dataObjs.slice(-1)
@@ -214,10 +231,11 @@ export var makeChart = function (options = {}) {
         grid = makeGrid(options)
         legend = makeLegend(options)
     }
+    let predictionLine = makePredictionLine(options)
 
     let plots = options.candlestick ? plotCandlestick(options) : plotData(options)
 
-    let children = defs.concat(grid, legend, plots)
+    let children = defs.concat(grid, legend, plots, predictionLine)
     // Keep react from complaining even though it isn't really a list
     children = children.map((el, key) => React.cloneElement(el, { key }));
 
@@ -226,6 +244,27 @@ export var makeChart = function (options = {}) {
             {children}
         </svg>
     )
+}
+
+function makePredictionLine(options) {
+    if(!options.lastRealTime)
+        return []
+    
+    let svgElems = []
+
+    let line = createElementSVG("line", {
+        x1: _xToGraph(options.lastRealTime), x2: _xToGraph(options.lastRealTime),
+        y1: _yToGraph(options.yMin), y2: 0,
+        stroke: "#76C9FF",
+        strokeWidth: 1.5
+    })
+
+    svgElems.push(line)
+
+    console.log("options.lastRealTime")
+    console.log(options.lastRealTime)
+
+    return svgElems
 }
 
 function makeLegend(options) {
@@ -281,7 +320,7 @@ function makeGrid(options) {
     let _leftPadding = options._leftPadding = options._mobile ? 60 : 90
     let _bottomPadding = options._bottomPadding = 50
 
-    for (let x = xMin; x < xMax - 1; x += xInterval) {
+    for (let x = xMin; x < xMax - xInterval/2; x += xInterval) {
         let line = createElementSVG("line", {
             x1: _xToGraph(x), x2: _xToGraph(x),
             y1: _yToGraph(yMin), y2: _yToGraph(_lastY),
@@ -319,7 +358,7 @@ function makeGrid(options) {
     }
 
     // yMax - 1 below prevents gridline & label from appearing at very top pixel of graph and getting cut off.
-    for (let y = yMin; y < yMax - 1; y += yInterval) {
+    for (let y = yMin; y < yMax - yInterval/2; y += yInterval) {
         let line = createElementSVG("line", {
             y1: _yToGraph(y), y2: _yToGraph(y),
             x1: y == yMin || y == _lastY ? 0 : _xToGraph(xMin), x2: _xToGraph(_lastX),
@@ -351,6 +390,10 @@ function plotData(options) {
         // Simplify data a bit, was lagging browser to have so many lineTos seemed like.
         data = data.filter((d, ii, a) => ii === 0 || ii === a.length - 1 || ii % 2 === 0)
 
+        let firstX = data[0][0]
+        let lastX = data.slice(0).pop()[0]
+        let isLastDataObj = i === options.dataObjs.length - 1
+
         let lineTos = data.map(_posToGraph)
         let line_d = `M${lineTos[0][0]},${lineTos[0][1]}`
         line_d += lineTos.map(lt => `L${lt[0]},${lt[1]}`).join("")
@@ -362,9 +405,11 @@ function plotData(options) {
             d: line_d
         })
 
-        const expandBeyond = 50 // Prevents visual glitching of edge of graph
+        let expandBeyond = 50 // Prevents visual glitching of edge of graph
+        if(options.lastRealTime)
+            expandBeyond = isLastDataObj ? 50 : 0 // Multiple graphs next to each other so only expand last one for predictive graph
 
-        let fill_d = line_d + `L${width + expandBeyond},${_yToGraph(_lastY)}L${width + expandBeyond},${_yToGraph(yMin)}L${_xToGraph(xMin)},${_yToGraph(yMin)}z`
+        let fill_d = line_d + `L${_xToGraph(lastX) + expandBeyond},${_yToGraph(_lastY)}L${_xToGraph(lastX) + expandBeyond},${_yToGraph(yMin)}L${_xToGraph(firstX)},${_yToGraph(yMin)}z`
         let fillPath = createElementSVG("path", {
             fill: fillColor,
             fillOpacity: 0.75,
@@ -375,14 +420,15 @@ function plotData(options) {
 
         let clipPath = (
             <mask id={`clipNum${i}${_chartCount}`}>
-                <rect width={Math.abs(width - _xToGraph(xMin)) + expandBeyond} height={Math.abs(_yToGraph(yMax) - _yToGraph(yMin))} x={_xToGraph(xMin)} y="0" fill="white"></rect>
+                <rect width={Math.abs(_xToGraph(lastX) - _xToGraph(firstX)) + expandBeyond} height={Math.abs(_yToGraph(yMax) - _yToGraph(yMin))} x={_xToGraph(firstX)} y="0" fill="white"></rect>
                 {i == 1 ? <path fill="black" d={fill_d}></path> : []}
             </mask>
         )
 
         svgElems.push(fillPath)
         svgElems.push(linePath)
-        options.defs.push(clipPath)
+        if(!options.lastRealTime)
+            options.defs.push(clipPath)
     })
 
     return svgElems
