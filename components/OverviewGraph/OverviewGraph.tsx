@@ -6,7 +6,7 @@ import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
 
-import Utils from '../../utils'
+import Utils from '../../Utils'
 
 interface OverviewGraphProps { className?: string }
 
@@ -77,6 +77,8 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
 
     addData(data) {
         let cumulativeGraph = data[0].map(e => [e[0], 0])
+        console.log("cumulativeGraph (Overview) data")
+        console.log(data)
         data.forEach(coinGraph => {
             coinGraph.forEach((graphPoint, i) => {
                 cumulativeGraph[i][1] += graphPoint[1]

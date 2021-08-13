@@ -94,6 +94,8 @@ function formatTimestamp(unixTimestamp, options) {
 }
 
 function nFormatter(num, options) {
+    num = Number(num)
+    
     if(num < 1) {
         return "$" + num.toFixed(options._mobile ? 2 : 4);
     }

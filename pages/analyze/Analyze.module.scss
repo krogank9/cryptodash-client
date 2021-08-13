@@ -1,3 +1,22 @@
+.analyzeCoinHeader {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+
+  &Icon {
+    margin-left: 10px;
+    margin-right: 6px;
+  }
+
+  a {
+    color: white;
+  }
+}
+
+.coinDescription a {
+  color: white;
+}
+
 .halfSplit {
   > * {
     background-color: $foreground-color;
@@ -7,7 +26,6 @@
   }
 
   @include on-desktop-and-up {
-    height: 200px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -36,6 +54,10 @@
 
   user-select: none;
 
+  &__table {
+    padding: 10px 25px;
+  }
+
   @include on-tablet-and-under {
     &__graph {
       margin-bottom: 15px;
@@ -62,6 +84,7 @@
     }
   
     &__table {
+      max-width: 25%;
       border-left: 2px solid #454545;
     }
   }

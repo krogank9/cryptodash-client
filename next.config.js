@@ -10,4 +10,13 @@ module.exports = {
 
     return config
   },
+  async redirects() {
+    return [
+      {
+        source: '/analyze',
+        destination: '/analyze/btc',
+        permanent: true,
+      },
+    ]
+  },
 };

@@ -1,0 +1,20 @@
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-top: 15px;
+    
+    &Icon {
+        margin-right: 12px;
+        font-size: 22px;
+    }
+    &Text {
+        margin: 0;
+    }
+}
+
+
+.dcaCalculator select {
+    color: white;
+    background-color: $foreground-color;
+  }

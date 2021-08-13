@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 
 import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
 
+import Utils from '../../Utils'
+
 function nFormatter(num) {
 
     if(num < 1000) {
@@ -87,9 +89,14 @@ class PricesTable extends React.Component<PricesTableProps> {
     addData(data, amounts?) {
         if(!amounts)
             amounts = data.map(_ => 1)
-        let cumulativeGraph = data[0].map(e => [e[0], e[1] * amounts[0]])
-        data.slice(1).forEach((coinGraph, coinGraphIndex) => {
+        
+        let cumulativeGraph = data[0].map(e => [e[0], 0])
+        console.log("cumulativeGraph (Overview) data")
+        console.log(data)
+        data.forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {
+                if(!cumulativeGraph[i])
+                    console.log(`could not find i ${i}. cumulativeGraphLen = ${cumulativeGraph.length}, coinGraphLen=${coinGraph.length}`)
                 cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex + 1]
             })
         })
@@ -97,7 +104,22 @@ class PricesTable extends React.Component<PricesTableProps> {
     }
 
     render() {
-        let totalGraph = this.addData(StoreSingleton.walletData.map(w => w.graph_1d), StoreSingleton.walletData.map(w => w.amount))
+        let oneDayData = StoreSingleton.walletData.map(w => w.graph_1d)
+        let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
+
+        //console.log(largestTimespanData)
+        // Transform all data to the largest spanning graphs space.
+        // Have to do this so indices & times will match up for when we add the graph.
+        // Mostly for "all time" graphs where each coin's graph may have a different starting day, month, year.
+        // Also good to normalize all for safety before we add them incase CoinGecko's API returns something unexpected.
+        let sameSpaceData = oneDayData.map(g => {
+            if (g === largestTimespanData)
+                return g
+            else
+                return Utils.transformGraphSpace(g, largestTimespanData)
+        })
+
+        let totalGraph = this.addData(sameSpaceData, StoreSingleton.walletData.map(w => w.amount))
         let curTotal = totalGraph[totalGraph.length - 1][1]
         let changePct = this.getChangePct(totalGraph)
 

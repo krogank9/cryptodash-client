@@ -2,15 +2,27 @@ import css from './SideBar.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 import Link from 'next/link'
+import { withRouter, NextRouter } from 'next/router'
 
 interface IProps {
-  toggled: boolean
+  toggled: boolean,
+  router: NextRouter
 }
 interface IState {
 }
 
-class SideBar extends React.Component<IProps, IState> {
+export default withRouter(class SideBar extends React.Component<IProps, IState> {
+  matchPage(regex) {
+    let s = ""
+    try { s = this.props.router.asPath || "" } catch(e){}
+
+    return s.match(regex) ? " " + css.sideBar__item_active : ""
+  }
+
   render() {
+    let alreadyMatchedPage = false
+    console.log("this.props.router")
+    console.log(this.props.router)
     return (
       <div className={css.sideBar + " " + (this.props.toggled ? css.sideBar_toggled : "")}>
 
@@ -19,13 +31,13 @@ class SideBar extends React.Component<IProps, IState> {
         </h2>
 
         <Link href="/">
-          <a className={css.sideBar__item + " " + css.sideBar__item_active}>
+          <a className={css.sideBar__item + this.matchPage(/\/$/g)}>
             <IonIcon name="pie-chart" />
             <span>Overview</span>
           </a>
         </Link>
         <Link href="/analyze">
-          <a className={css.sideBar__item}>
+          <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
             <IonIcon name="stats-chart" />
             <span>Analyze</span>
           </a>
@@ -59,6 +71,4 @@ class SideBar extends React.Component<IProps, IState> {
       </div>
     )
   }
-}
-
-export default SideBar
+})
