@@ -43,7 +43,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                         </span>
                     </td>
                     <td className="show-1650-and-up">
-                        <a>Analyze</a>
+                        <a href={`/analyze/${d["symbol"]}`}>Analyze</a>
                     </td>
                 </tr>
             )
