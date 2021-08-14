@@ -123,7 +123,6 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
             <h2>{coinName} Price Prediction</h2>
             <p>
               To the left is a prediction for the next 14 days as forecasted by an HTM neural network.
-              Prediction and analysis of market data have an important role in today's economy.
               This prediction is a basic experimental example to show what is possible, and shouldn't be taken as investment advice.
             </p>
           </div>
