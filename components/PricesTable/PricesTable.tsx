@@ -86,25 +86,23 @@ class PricesTable extends React.Component<PricesTableProps> {
         return changePct
     }
 
-    addData(data, amounts?) {
-        if(!amounts)
-            amounts = data.map(_ => 1)
-        
+    addData(data, amounts) {        
         let cumulativeGraph = data[0].map(e => [e[0], 0])
-        console.log("cumulativeGraph (Overview) data")
+        console.log("cumulativeGraph (PricesTable) data:")
         console.log(data)
         data.forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {
                 if(!cumulativeGraph[i])
                     console.log(`could not find i ${i}. cumulativeGraphLen = ${cumulativeGraph.length}, coinGraphLen=${coinGraph.length}`)
-                cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex + 1]
+                cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex]
             })
         })
         return cumulativeGraph
     }
 
     render() {
-        let oneDayData = StoreSingleton.walletData.map(w => w.graph_1d)
+        let oneDayData = StoreSingleton.getWalletData().map(w => w.graph_1d)
+        console.log(oneDayData)
         let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
         //console.log(largestTimespanData)
@@ -119,8 +117,14 @@ class PricesTable extends React.Component<PricesTableProps> {
                 return Utils.transformGraphSpace(g, largestTimespanData)
         })
 
+        console.log("largestTimespanData")
+        console.log(sameSpaceData)
+        console.log("^largestTimespanData")
+
         let totalGraph = this.addData(sameSpaceData, StoreSingleton.walletData.map(w => w.amount))
-        let curTotal = totalGraph[totalGraph.length - 1][1]
+        console.log("totalGraph")
+        console.log(totalGraph)
+        let curTotal = totalGraph.slice(0).pop()[1]
         let changePct = this.getChangePct(totalGraph)
 
         return (

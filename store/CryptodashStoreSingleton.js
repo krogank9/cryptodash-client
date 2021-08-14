@@ -21,12 +21,14 @@ class CryptodashStore {
         //    graph_all: [[t,v], ...]
         //}, ...
     ]
+    getWalletData = () => toJS(this.walletData)
 
     marketData = [
         //{
         //    ...from API
         //}
     ]
+    getMarketData = () => toJS(this.marketData)
 
     // I think no need for coin images to be observable, static except for lazy loading
     coinImagesB64 = {/* coinSymbol: b64 */}

@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
 
   var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
   var stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc"]
-  var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1)
+  var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1).sort((a, b) => b.market_cap_change_24h - a.market_cap_change_24h).slice(0, 20)
 
   let coinsB64Filtered = Object.keys(CoinIconList32B64).reduce(function (filtered, key) {
     if (DefaultCoins.indexOf(key) !== -1) filtered[key] = CoinIconList32B64[key];
