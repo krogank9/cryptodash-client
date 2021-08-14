@@ -88,8 +88,6 @@ class PricesTable extends React.Component<PricesTableProps> {
 
     addData(data, amounts) {        
         let cumulativeGraph = data[0].map(e => [e[0], 0])
-        console.log("cumulativeGraph (PricesTable) data:")
-        console.log(data)
         data.forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {
                 if(!cumulativeGraph[i])
@@ -117,13 +115,7 @@ class PricesTable extends React.Component<PricesTableProps> {
                 return Utils.transformGraphSpace(g, largestTimespanData)
         })
 
-        console.log("largestTimespanData")
-        console.log(sameSpaceData)
-        console.log("^largestTimespanData")
-
         let totalGraph = this.addData(sameSpaceData, StoreSingleton.walletData.map(w => w.amount))
-        console.log("totalGraph")
-        console.log(totalGraph)
         let curTotal = totalGraph.slice(0).pop()[1]
         let changePct = this.getChangePct(totalGraph)
 
