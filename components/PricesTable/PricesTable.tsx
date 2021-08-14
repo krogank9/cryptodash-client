@@ -99,7 +99,7 @@ class PricesTable extends React.Component<PricesTableProps> {
     }
 
     render() {
-        let oneDayData = StoreSingleton.getWalletData().map(w => w.graph_1d)
+        let oneDayData = StoreSingleton.walletData.map(w => w.graph_1d)
         console.log(oneDayData)
         let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 

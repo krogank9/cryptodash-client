@@ -1,13 +1,18 @@
--navbar and sidebar need some filler. too bare right now
--graph colors could maybe use some work. seem slightly too close or something. maybe make not transparent.
--webpack? something clean and fancy to speed up file loading base64 prevent FOUT etc
--hamburger menu icon needs to be like a staggered menu icon visually hinting that it will slide menu in and out.
- might change icon packs or just find an icon only for the hamburger menu part that works
--organize css properties by type so it looks really pretty (do when done maybe)
+-Finish all actual features
+	-Analyze page
+		-DCA calculator functional
+		-Prediction graph more info below description: predicted raise/dip, cur price, predicted price
+	-Overview page
+		-ability to select other currencies via clicking on wallet or price table
+		-add wallet popup
+		-remove wallet button for selected coin
+	-Filler pages, mostly just css to write here
+	-Real Login
+	-Searchbar thing at least basic functionality
+		-Commands
+		-Suggestions
 
--graph is going to need to be made a bit more dynamic, modular. need to add candlestick, some type of slider/scrubber, intro animations,
- more interactivity. this will be a big part of remaining frontend work
-
--some form of css transform on graph plot svg so we're not redrawing every frame on transitions
-
--anything that touches server/fetch code should handle malformed inputs gracefully
+-Anything that touches server/fetch code should handle malformed inputs gracefully.
+-Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
+-Check CSS for different DPIs
+-Organize code/CSS

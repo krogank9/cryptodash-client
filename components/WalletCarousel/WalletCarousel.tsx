@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 
 import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
 
-interface WalletCarouselProps { data?: any, coinImagesB64?: any }
+interface WalletCarouselProps { data?: any }
 
 export default class WalletCarousel extends React.Component<WalletCarouselProps> {
     state = {
@@ -76,7 +76,7 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
                 <div className={css.walletCarousel__header}>
                     <div className={css.walletCarousel__sectionTitle}>Your Portfolio</div>
                     <a className={css.walletCarousel__textButton+" show-desktop-only"}>Add wallet</a>
-                    <a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>
+                    {/*<a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>*/}
     
                     <div className={css.walletCarousel__controls}>
                         <IonIcon className={css.walletCarousel__actionButton} name="close-outline" />

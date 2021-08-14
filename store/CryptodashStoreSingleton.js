@@ -10,6 +10,9 @@ class CryptodashStore {
     // When wallet data is added, I think I want to lazy load in the rest of the graphs besides graph_1d
     // This will also allow for just adding a coin like {coin: "btc", amount: 1}
 
+    selectedCoin = ""
+    get selectedCoin() { return toJS(this.selectedCoin) || (this.walletData[0] || {}).coin || "" }
+
     walletData = [
         //{
         //    coin: c,
@@ -21,14 +24,18 @@ class CryptodashStore {
         //    graph_all: [[t,v], ...]
         //}, ...
     ]
-    getWalletData = () => toJS(this.walletData)
+    get walletData() {
+        return toJS(this.walletData)
+    }
 
     marketData = [
         //{
         //    ...from API
         //}
     ]
-    getMarketData = () => toJS(this.marketData)
+    get marketData() {
+        return toJS(this.marketData)
+    }
 
     // I think no need for coin images to be observable, static except for lazy loading
     coinImagesB64 = {/* coinSymbol: b64 */}
