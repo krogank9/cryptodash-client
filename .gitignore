@@ -33,5 +33,3 @@ yarn-error.log*
 /static_data/*_1d.json
 /static_data/crypto_rss.xml
 /static_data/coins_markets_list.json
-/static_data/coin_name_map.json
-/static_data/coin_id_map.json
