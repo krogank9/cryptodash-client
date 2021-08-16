@@ -10,7 +10,7 @@
     box-sizing: border-box;
 
     &_selected {
-        box-shadow: rgba(95, 163, 210, 0.4) 0px 0px 0px 1px;
+        box-shadow: rgba(95, 163, 210, 0.5) 0px 0px 0px 1px;
     }
 
     @include on-tablet-and-under {
