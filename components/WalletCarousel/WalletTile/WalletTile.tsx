@@ -48,6 +48,18 @@ export default class WalletTile extends React.Component<WalletTileProps> {
         StoreSingleton.setSelectedCoin(this.props.data.coin)
     }
 
+    lastSelected = null
+    shouldComponentUpdate(nextProps, nextState) {
+        // Should only need to re-render from parent props change if selected changed
+        if(nextProps.selected !== this.lastSelected) {
+            this.lastSelected = nextProps.selected
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
     render() {
         let changePct = this.getChangePct(this.props.data["graph_1d"])
         let graphOptions = !this.state.didMount ? {} : {

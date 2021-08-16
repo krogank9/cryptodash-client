@@ -58,8 +58,8 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
     getGraphOptions = () => {
         let walletData = toJS(this.props.walletData).slice(0)//.slice(0,2)
 
-        console.log("walletData")
-        console.log(walletData)
+        //console.log("walletData")
+        //console.log(walletData)
 
         let graphTimeFrame = "graph_" + this.state.timeFrame
 
@@ -186,6 +186,7 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
     }
 
     render() {
+        console.log("Render OverviewGraph")
         let graphOptions = {}
         //graphOptions = this.getGraphOptions()
         try { graphOptions = this.getGraphOptions() } catch { }

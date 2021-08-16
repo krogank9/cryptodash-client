@@ -13,6 +13,15 @@ interface IState {
 
 class Graph extends React.Component<IProps, IState> {
 
+    /*
+    shouldComponentUpdate(nextProps, nextState) {
+        // Should be able to just check if prev and next dataObjs === each other
+        // That + any prop differences
+        // + maybe shim thing for resize detector, i think that passes width
+        return true
+    }
+    */
+
     render() {
         if (!this.props || Object.keys(this.props).length === 0 || Object.keys(this.props.options).length === 0)
             return (<></>)

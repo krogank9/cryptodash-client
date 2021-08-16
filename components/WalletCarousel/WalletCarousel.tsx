@@ -5,9 +5,9 @@ import React, { Component } from 'react'
 
 import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton.js'
 
-interface WalletCarouselProps { data?: any, selectedCoin: {coin: string} }
+interface WalletCarouselProps { data?: any, selectedCoin: {coin: string}, walletData: any }
 
-export default makeObserver("selectedCoin", class WalletCarousel extends React.Component<WalletCarouselProps> {
+export default makeObserver(["selectedCoin", "walletData"], class WalletCarousel extends React.Component<WalletCarouselProps> {
     state = {
         scrollPos: 1
     }
@@ -34,11 +34,11 @@ export default makeObserver("selectedCoin", class WalletCarousel extends React.C
     }
 
     getMaxScrollPos = () => {
-        //return StoreSingleton.walletData.length - (this.getIsMobile() ? 4 : 5) // Other scroll style, I like below better I think.
+        //return this.props.walletData.length - (this.getIsMobile() ? 4 : 5) // Other scroll style, I like below better I think.
 
-        let maxScroll = Math.floor(StoreSingleton.walletData.length / (this.getIsMobile() ? 4 : 5)) * (this.getIsMobile() ? 4 : 5)
-        if(maxScroll === StoreSingleton.walletData.length)
-            maxScroll = StoreSingleton.walletData.length - (this.getIsMobile() ? 4 : 5)
+        let maxScroll = Math.floor(this.props.walletData.length / (this.getIsMobile() ? 4 : 5)) * (this.getIsMobile() ? 4 : 5)
+        if(maxScroll === this.props.walletData.length)
+            maxScroll = this.props.walletData.length - (this.getIsMobile() ? 4 : 5)
         return maxScroll
     }
 
@@ -56,7 +56,7 @@ export default makeObserver("selectedCoin", class WalletCarousel extends React.C
     }
 
     makeWalletTiles() {
-        let tiles = StoreSingleton.walletData.slice(this.state.scrollPos, this.state.scrollPos+5).map((w, i) => {
+        let tiles = this.props.walletData.slice(this.state.scrollPos, this.state.scrollPos+5).map((w, i) => {
             return <WalletTile data={w} key={i+this.state.scrollPos} selected={w.coin === this.props.selectedCoin.coin} />
         })
 
