@@ -9,6 +9,10 @@
     width: calc(20% - 12px);
     box-sizing: border-box;
 
+    &_selected {
+        box-shadow: rgba(95, 163, 210, 0.4) 0px 0px 0px 1px;
+    }
+
     @include on-tablet-and-under {
         width: calc(50% - 7.5px);
         margin-bottom: 12px;

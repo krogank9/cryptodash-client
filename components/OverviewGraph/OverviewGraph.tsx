@@ -1,17 +1,20 @@
 import css from './OverviewGraph.module.scss'
 import Graph, { GraphWithResize } from '../Graph/Graph'
 
-import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton, { makeObserver } from '../../store/CryptodashStoreSingleton.js'
 
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
 
+import Router from 'next/router'
+
 import Utils from '../../Utils'
 
-interface OverviewGraphProps { className?: string }
+interface IProps { className?: string, walletData: any, selectedCoin: any }
 
-class OverviewGraph extends React.Component<OverviewGraphProps> {
+export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph extends React.Component<IProps> {
     containerRef: React.RefObject<HTMLDivElement>;
+
     state: {
         graphOptions: any,
         candlestick: boolean,
@@ -28,45 +31,6 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         }
     }
 
-    transformGraphSpace(from, to) {
-        // Make x coords of "from" graph match the "to" graph, interpolate between points.
-        return to.map((point, i) => {
-            const time = point[0]
-
-            // Find interpolated value on the "from" graph.
-            let xAboveIndex = from.findIndex((p) => p[0] >= time)
-            // if "to" spans more recent times than "from", use most recently available data to interpolate from
-            if (time > from[from.length - 1][0])
-                return [time, from[from.length - 1][1]]//xAboveIndex = from.length - 1
-            let xBelowIndex = xAboveIndex - 1
-
-            // When either index is -1, it means the graph hasn't started yet. One of the coins may be older than the other.
-            // Treat the value before starting as 0
-            let xAboveVal = xAboveIndex < 0 ? 0 : from[xAboveIndex][1]
-            let xBelowVal = xBelowIndex < 0 ? 0 : from[xBelowIndex][1]
-            let xAboveTime = xAboveIndex < 0 ? 0 : from[xAboveIndex][0]
-            let xBelowTime = xBelowIndex < 0 ? 0 : from[xBelowIndex][0]
-
-            if (i === to.length - 1)
-                0;//return [time, point[1]]
-
-            // Lerp from values from "from" graph's times to "to" graph's times
-            let betweenSpan = xAboveTime - xBelowTime
-            if (betweenSpan === 0) {
-                console.log(`found zero. xAboveIndex: ${xAboveIndex}. time: ${time}`)
-                return [time, xAboveVal]
-            }
-            let pctBetween = (time - xBelowTime) / betweenSpan
-
-            let result = Utils.clamp(Utils.lerp(xBelowVal, xAboveVal, pctBetween), xBelowVal, xAboveVal)
-            if (isNaN(result) || result === 0) {
-                console.log(`NaN on ${i}, betweenSpan: ${betweenSpan}, pctBetween: ${pctBetween}`)
-            }
-
-            return [time, result]
-        })
-    }
-
     clampGraphResolution(graph, maxVals) {
         let mod = Math.floor(graph.length / maxVals)
         if (mod === 0)
@@ -77,8 +41,8 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
 
     addData(data) {
         let cumulativeGraph = data[0].map(e => [e[0], 0])
-        console.log("cumulativeGraph (Overview) data")
-        console.log(data)
+        //console.log("cumulativeGraph (Overview) data")
+        //console.log(data)
         data.forEach(coinGraph => {
             coinGraph.forEach((graphPoint, i) => {
                 cumulativeGraph[i][1] += graphPoint[1]
@@ -91,24 +55,17 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
         return data.map(d => [d[0], d[1] * amount])
     }
 
-    setGraphOptions = (state = { candlestick: false, timeFrame: "1d" }) => {
-        if (state.timeFrame === undefined)
-            state.timeFrame = this.state.timeFrame || "1d"
-        if (state.candlestick === undefined)
-            state.candlestick = this.state.candlestick || false
+    getGraphOptions = () => {
+        let walletData = toJS(this.props.walletData).slice(0)//.slice(0,2)
 
-        let walletData = toJS(StoreSingleton.walletData)//.slice(0,2)
         console.log("walletData")
         console.log(walletData)
-        console.log(`portfolio={${walletData.map(w => w.coin).join(", ")}}`)
+
+        let graphTimeFrame = "graph_" + this.state.timeFrame
+
         let balances = walletData.reduce((acc, cur) => { acc[cur.coin] = cur.amount; return acc }, {})
         let balances_arr = walletData.map(w => balances[w.coin])
-        let balanceWeightedData = walletData.map(w => this.clampGraphResolution(w["graph_" + state.timeFrame], 500))
-
-        // Don't need to apply weights if looking at candlestick graph of individual coin
-        if (!state.candlestick) {
-            balanceWeightedData = balanceWeightedData.map((g, i) => this.weighData(g, balances_arr[i]))
-        }
+        let balanceWeightedData = walletData.map(w => this.clampGraphResolution(w[graphTimeFrame], 500)).map((g, i) => this.weighData(g, balances_arr[i]))
 
         let largestTimespanData = balanceWeightedData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
@@ -121,46 +78,57 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
             if (g === largestTimespanData)
                 return g
             else
-                return this.transformGraphSpace(g, largestTimespanData)
+                return Utils.transformGraphSpace(g, largestTimespanData)
         })
 
         let portfolio = this.addData(sameSpaceData)
+        let dataObjs = [{ name: "Total Portfolio", data: portfolio }]
 
-        console.log("----------------------------------------------------------------------------------------------------------------")
-
-        let ln = largestTimespanData === balanceWeightedData[0] ? "btc" : "eth"
-        console.log(`largest timespan: ${ln}`)
-        console.log(largestTimespanData)
-
-        console.log("portfolio:")
-        console.log(portfolio)
-
-        let new_graphOptions = {
-            width: this.containerRef.current.offsetWidth, height: 555,
-            candlestick: state.candlestick,
-            dataObjs: [
-                { name: "Total Portfolio", data: portfolio, solidFill: false },
-                { name: "BTC", data: sameSpaceData[walletData.findIndex(w => w.coin === "btc")], solidFill: false },
-            ],
+        try {
+            // If it's a candlestick graph, can just use raw wallet data. No need to make same as portfolio or weight by wallet balance
+            if (this.state.candlestick) {
+                dataObjs.push({
+                    name: this.props.selectedCoin.coin.toUpperCase(),
+                    data: walletData.find(w => w.coin === this.props.selectedCoin.coin)[graphTimeFrame]
+                })
+            }
+            else {
+                dataObjs.push({
+                    name: this.props.selectedCoin.coin.toUpperCase(),
+                    data: sameSpaceData[walletData.findIndex(w => w.coin === this.props.selectedCoin.coin)]
+                })
+            }
+        }
+        catch (err) {
         }
 
-        this.setState({ ...state, graphOptions: new_graphOptions })
-    }
-
-    componentDidMount() {
-        this.setGraphOptions()
+        let graphOptions = {
+            width: this.containerRef.current.offsetWidth, height: 555,
+            candlestick: this.state.candlestick,
+            dataObjs: dataObjs
+        }
+        return graphOptions
     }
 
     setCandlestick = (b) => {
-        this.setGraphOptions({ ...this.state, candlestick: b })
+        this.setState({ ...this.state, candlestick: b })
     }
 
     graphTypeSelect = (evt) => {
-        this.setCandlestick(evt.target.value === "candlestick")
+        console.log("graph type set")
+        console.log(evt.target.value)
+        if (evt.target.value === "predictive") {
+            Router.push({
+                pathname: `/analyze/${this.props.selectedCoin.coin || "btc"}`,
+            })
+        }
+        else {
+            this.setCandlestick(evt.target.value === "candlestick")
+        }
     }
 
     setTimeframe = (t) => {
-        this.setGraphOptions({ ...this.state, timeFrame: t })
+        this.setState({ ...this.state, timeFrame: t })
         ///this.setGraphOptions(this.state.graphOptions.candlestick)
     }
 
@@ -171,9 +139,9 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     makeControls() {
         const desktopPlotButton = (
             <div className={css.overviewGraph__controlsDesktopPlot}>
-                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(false)}>Line</a>
-                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.graphOptions.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(true)}>Candlestick</a>
-                <a className={css.overviewGraph__controlsDesktopPlotButton}>Predictive</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(false)}>Line</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(true)}>Candlestick</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton} href={`/analyze/${this.props.selectedCoin.coin || "btc"}`}>Predictive</a>
             </div>
         )
         const mobilePlotButton = (
@@ -218,15 +186,16 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
     }
 
     render() {
+        let graphOptions = {}
+        //graphOptions = this.getGraphOptions()
+        try { graphOptions = this.getGraphOptions() } catch { }
         return (
             <div className={css.overviewGraph + " " + (this.props.className || "")} ref={this.containerRef}>
                 {this.makeControls()}
                 <div id="chart" className={css.overviewGraph__graphContainer}>
-                    <GraphWithResize options={this.state.graphOptions} />
+                    <GraphWithResize options={graphOptions} />
                 </div>
             </div>
         )
     }
-}
-
-export default OverviewGraph
+})

@@ -30,6 +30,11 @@ const Utils = {
         return to.map((point, i) => {
             const time = point[0]
 
+            const nextTime = i < to.length - 1 ? to[i + 1][0] : 0
+            if (time < from[0][0] && nextTime < from[0][0]) {
+                return [time, 0]
+            }
+
             // Find interpolated value on the "from" graph.
             let xAboveIndex = from.findIndex((p) => p[0] >= time)
             // if "to" spans more recent times than "from", use most recently available data to interpolate from
@@ -62,6 +67,19 @@ const Utils = {
 
             return [time, result]
         })
+    },
+    filterDictKeys(dict, filterFunc) {
+        const filteredKeys = Object.keys(dict).filter(filterFunc)
+        let filteredDict = {}
+        filteredKeys.forEach(k => filteredDict[k] = dict[k])
+        return filteredDict
+    },
+    mapDict(dict, cb) {
+        let newDict = {}
+        Object.keys(dict).forEach(key => {
+            newDict[key] = cb(key, dict[key])
+        })
+        return newDict
     }
 }
 

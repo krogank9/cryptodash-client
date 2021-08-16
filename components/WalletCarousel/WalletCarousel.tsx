@@ -3,11 +3,11 @@ import WalletTile from './WalletTile/WalletTile'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react'
 
-import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton.js'
 
-interface WalletCarouselProps { data?: any }
+interface WalletCarouselProps { data?: any, selectedCoin: {coin: string} }
 
-export default class WalletCarousel extends React.Component<WalletCarouselProps> {
+export default makeObserver("selectedCoin", class WalletCarousel extends React.Component<WalletCarouselProps> {
     state = {
         scrollPos: 1
     }
@@ -57,7 +57,7 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
 
     makeWalletTiles() {
         let tiles = StoreSingleton.walletData.slice(this.state.scrollPos, this.state.scrollPos+5).map((w, i) => {
-            return <WalletTile data={w} key={i+this.state.scrollPos} />
+            return <WalletTile data={w} key={i+this.state.scrollPos} selected={w.coin === this.props.selectedCoin.coin} />
         })
 
         // Push empty divs for remaining spaces at end of scroll
@@ -91,4 +91,4 @@ export default class WalletCarousel extends React.Component<WalletCarouselProps>
             </div>
         )
     }
-}
+})

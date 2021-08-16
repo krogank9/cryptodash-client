@@ -2,16 +2,17 @@ import css from './PricesTable.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 
-import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton, { makeObserver } from '../../store/CryptodashStoreSingleton.js'
 
 import Utils from '../../Utils'
+import CryptodashStoreSingleton from '../../store/CryptodashStoreSingleton.js';
 
 function nFormatter(num) {
 
-    if(num < 1000) {
-      return "$"+Number(num).toFixed(2)
+    if (num < 1000) {
+        return "$" + Number(num).toFixed(2)
     }
-  
+
     const lookup = [
         { value: 1e18, symbol: "E" },
         { value: 1e15, symbol: "P" },
@@ -25,13 +26,14 @@ function nFormatter(num) {
         return num >= item.value;
     });
     return item ? "$" + (num / item.value).toFixed(2) + item.symbol : "0";
-  }
-
-interface PricesTableProps {
-    className?: string
 }
 
-class PricesTable extends React.Component<PricesTableProps> {
+interface PricesTableProps {
+    className?: string,
+    walletData1D: any
+}
+
+export default makeObserver("walletData1D", class PricesTable extends React.Component<PricesTableProps> {
 
     makeList(data) {
         data = data.map(w => ({
@@ -40,19 +42,19 @@ class PricesTable extends React.Component<PricesTableProps> {
             price_change_percentage_24h: this.getChangePct(w.graph_1d)
         }))
         data.sort((a, b) => b.current_price - a.current_price)
-        data = data.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1)+"%"])
+        data = data.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
 
         return data.map((d, i) => {
-            if(d[2].charAt(0) !== "-" && d[2].charAt(0) !== "+") {
-                d[2] = "+"+d[2]
+            if (d[2].charAt(0) !== "-" && d[2].charAt(0) !== "+") {
+                d[2] = "+" + d[2]
             }
 
             let coinBase64 = StoreSingleton.coinImagesB64[d[0].toLowerCase()] || StoreSingleton.coinImagesB64["generic"]
-            
+
             return (
                 <li className={css.pricesTable__listItem} key={i}>
                     <div className={css.pricesTable__listItemName}>
-                        <img src={"data:image/png;base64,"+coinBase64} />
+                        <img src={"data:image/png;base64," + coinBase64} />
                         <div>{d[0]}</div>
                     </div>
                     <div className={css.pricesTable__listItemInfo}>
@@ -72,10 +74,10 @@ class PricesTable extends React.Component<PricesTableProps> {
 
     // Refactor into utilties file... reuse.
     formatCurrency(amount) {
-        if(amount < 10000) 
-            return "$" + Number(amount).toLocaleString("en-US", {maximumFractionDigits: 2, minimumFractionDigits: 2})
+        if (amount < 10000)
+            return "$" + Number(amount).toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })
         else
-            return "$" + Number(amount).toLocaleString("en-US", {maximumFractionDigits: 0, minimumFractionDigits: 0})
+            return "$" + Number(amount).toLocaleString("en-US", { maximumFractionDigits: 0, minimumFractionDigits: 0 })
     }
 
     getChangePct(data) {
@@ -86,11 +88,11 @@ class PricesTable extends React.Component<PricesTableProps> {
         return changePct
     }
 
-    addData(data, amounts) {        
+    addData(data, amounts) {
         let cumulativeGraph = data[0].map(e => [e[0], 0])
         data.forEach((coinGraph, coinGraphIndex) => {
             coinGraph.forEach((graphPoint, i) => {
-                if(!cumulativeGraph[i])
+                if (!cumulativeGraph[i])
                     console.log(`could not find i ${i}. cumulativeGraphLen = ${cumulativeGraph.length}, coinGraphLen=${coinGraph.length}`)
                 cumulativeGraph[i][1] += graphPoint[1] * amounts[coinGraphIndex]
             })
@@ -98,9 +100,9 @@ class PricesTable extends React.Component<PricesTableProps> {
         return cumulativeGraph
     }
 
-    render() {
-        let oneDayData = StoreSingleton.walletData.map(w => w.graph_1d)
-        console.log(oneDayData)
+    render() {        
+        let oneDayData = this.props.walletData1D.map(w => w.graph_1d)
+        //console.log(oneDayData)
         let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
         //console.log(largestTimespanData)
@@ -150,6 +152,4 @@ class PricesTable extends React.Component<PricesTableProps> {
             </div>
         )
     }
-}
-
-export default PricesTable
+})

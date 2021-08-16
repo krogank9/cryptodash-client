@@ -1,17 +1,22 @@
-import { makeObservable, autorun, observable, computed, action } from "mobx"
-//import { Observer } from 'mobx-react'
+import { makeObservable, autorun, observable, computed, action, makeAutoObservable, comparer } from "mobx"
+import { observer } from 'mobx-react'
 import config from '../config'
 import CoinIdMap from "../static_data/coin_id_map.json"
 
+import Utils from '../Utils'
+
 import { toJS } from 'mobx';
+import React from "react";
 
 class CryptodashStore {
 
     // When wallet data is added, I think I want to lazy load in the rest of the graphs besides graph_1d
     // This will also allow for just adding a coin like {coin: "btc", amount: 1}
 
-    selectedCoin = ""
-    get selectedCoin() { return toJS(this.selectedCoin) || (this.walletData[0] || {}).coin || "" }
+    selectedCoin = { coin: "" }
+    setSelectedCoin(coin) {
+        this.selectedCoin.coin = coin
+    }
 
     walletData = [
         //{
@@ -24,21 +29,32 @@ class CryptodashStore {
         //    graph_all: [[t,v], ...]
         //}, ...
     ]
-    get walletData() {
-        return toJS(this.walletData)
+
+    filterWalletGraphs(filterFor) {
+        return this.walletData.map(w => {
+            let newWallet = { ...w }
+            const granularities = ["graph_1d", "graph_1w", "graph_1m", "graph_y", "graph_all"]
+            granularities.filter(g => !g.endsWith(filterFor)).forEach(g => {
+                delete newWallet[g]
+            })
+            return newWallet
+        })
     }
+
+    get walletData1D() { return this.filterWalletGraphs("1d") }
+    get walletData1W() { return this.filterWalletGraphs("1w") }
+    get walletData1M() { return this.filterWalletGraphs("1m") }
+    get walletData1Y() { return this.filterWalletGraphs("1y") }
+    get walletDataAll() { return this.filterWalletGraphs("all") }
 
     marketData = [
         //{
         //    ...from API
         //}
     ]
-    get marketData() {
-        return toJS(this.marketData)
-    }
 
     // I think no need for coin images to be observable, static except for lazy loading
-    coinImagesB64 = {/* coinSymbol: b64 */}
+    coinImagesB64 = {/* coinSymbol: b64 */ }
 
     saveToLocalStorage() {
         //localStorage.setItem('walletData', this.walletData);
@@ -54,23 +70,35 @@ class CryptodashStore {
         makeObservable(this, {
             walletData: observable,
             marketData: observable,
-            setWalletData: action,
+            selectedCoin: observable,
             addWalletData: action,
+            setWalletData: action,
             addGraphToWallet: action,
             setMarketData: action,
-        });
-        //autorun(() => console.log(this.report));
+            setSelectedCoin: action,
+            // Only need shallow compare for these. New data won't load into initial arrays:
+            walletData1D: computed({equals: comparer.shallow}),
+            walletData1W: computed({equals: comparer.shallow}),
+            walletData1M: computed({equals: comparer.shallow}),
+            walletData1Y: computed({equals: comparer.shallow}),
+            walletDataAll: computed({equals: comparer.shallow}),
+        })
     }
 
     addWalletData(data) {
+        data = [].concat(data)
+
+        if (!this.selectedCoin.coin)
+            this.setSelectedCoin(data[0].coin)
+
         // fetch graphs from server api endpoint not present in supplied data,
         // then update data upon response
         let timeFrames = ["1d", "1w", "1m", "1y", "all"];
 
-        [].concat(data).forEach((wallet, i) => {
-            this.walletData.push(wallet)
-            
-            timeFrames.filter(t => !wallet.hasOwnProperty("graph_"+t)).forEach(timeFrame => {
+        [].push.apply(this.walletData, data);
+
+        data.forEach((wallet, i) => {
+            timeFrames.filter(t => !wallet.hasOwnProperty("graph_" + t)).forEach(timeFrame => {
                 //console.log(`fetching.... ${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}`)
                 fetch(`${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}`)
                     .then(response => response.json())
@@ -89,7 +117,7 @@ class CryptodashStore {
 
     addGraphToWallet(coin, timeFrame, graph) {
         const wallet = this.walletData.find(w => w.coin === coin)
-        wallet["graph_"+timeFrame] = graph
+        wallet["graph_" + timeFrame] = graph
         //console.log(`added ${timeFrame} graph to wallet ${coin}`)
         //console.log(toJS(wallet))
     }
@@ -100,16 +128,63 @@ class CryptodashStore {
     }
 
     setMarketData(data) {
-        this.marketData.length = 0
-        this.marketData = this.marketData.concat(data)
+        this.marketData.length = 0;
+        [].push.apply(this.marketData, data);
     }
 
     setCoinImagesB64(data) {
-        this.coinImagesB64 = {...this.coinImagesB64, ...data}
+        this.coinImagesB64 = { ...this.coinImagesB64, ...data }
+    }
+}
+const CryptodashStoreSingleton = new CryptodashStore()
+
+// Automatically create wrapper that only passes what's necessary to the observer so as not to update unnecessarily
+// Be able to update what's being passed from wrapped class through a callback for stuff like switching to relevant graph
+// Also need to be able to do fancy stuff like map an observed prop and pass that...
+class ObservedPropsFilter extends React.Component {
+
+    validateObservedProps(observedProps) {
+        Object.values(observedProps).forEach(v => {
+            if (!(toJS(v) instanceof Object))
+                throw new Error("Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref.")
+        })
+    }
+
+    constructor(props) {
+        super(props)
+
+        this.validateObservedProps(this.props.observedProps)
+
+        this.state = {
+            observedProps: this.props.observedProps
+        }
+    }
+
+    changeObservedProps = (newObservedProps) => {
+        this.validateObservedProps(newObservedProps)
+
+        this.setState({
+            observedProps: newObservedProps
+        })
+    }
+
+    render() {
+        const ChildObserverClass = this.props.childObserverClass
+        return <ChildObserverClass {...this.state.observedProps} {...this.props.passProps} changeObservedProps={this.changeObservedProps}></ChildObserverClass>
+    }
+}
+
+export function makeObserver(observedProps, fromClass) {
+    observedProps = [].concat(observedProps)
+
+    const ObserverWrappedClass = observer(fromClass)
+    return (props) => {
+        const observedPropsDict = {}
+        observedProps.forEach(p => observedPropsDict[p] = CryptodashStoreSingleton[p]);
+        return <ObservedPropsFilter observedProps={observedPropsDict} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
     }
 }
 
 // Naive way of exporting a singleton that is fine for most cases. Depends on module caching:
 // https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
-const CryptodashStoreSingleton = new CryptodashStore()
 export default CryptodashStoreSingleton

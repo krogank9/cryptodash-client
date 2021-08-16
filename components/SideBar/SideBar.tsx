@@ -20,9 +20,6 @@ export default withRouter(class SideBar extends React.Component<IProps, IState> 
   }
 
   render() {
-    let alreadyMatchedPage = false
-    console.log("this.props.router")
-    console.log(this.props.router)
     return (
       <div className={css.sideBar + " " + (this.props.toggled ? css.sideBar_toggled : "")}>
 
