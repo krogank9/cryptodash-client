@@ -30,10 +30,11 @@ function nFormatter(num) {
 
 interface PricesTableProps {
     className?: string,
-    walletData_1d: any
+    walletData_1d: any,
+    selectedCoin: any
 }
 
-export default makeObserver("walletData_1d", class PricesTable extends React.Component<PricesTableProps> {
+export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable extends React.Component<PricesTableProps> {
 
     makeList(data) {
         data = data.map(w => ({
@@ -42,20 +43,26 @@ export default makeObserver("walletData_1d", class PricesTable extends React.Com
             price_change_percentage_24h: this.getChangePct(w.graph_1d)
         }))
         data.sort((a, b) => b.current_price - a.current_price)
-        data = data.map((coinInfo) => [coinInfo.symbol.toUpperCase(), nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
+        data = data.map((coinInfo) => [coinInfo.symbol, nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
 
         return data.map((d, i) => {
             if (d[2].charAt(0) !== "-" && d[2].charAt(0) !== "+") {
                 d[2] = "+" + d[2]
             }
 
-            let coinBase64 = StoreSingleton.coinImagesB64[d[0].toLowerCase()] || StoreSingleton.coinImagesB64["generic"]
+            let coinBase64 = StoreSingleton.coinImagesB64[d[0].toLowerCase()] || StoreSingleton.coinImagesB64["generic"] || ""
+
+            let selectedStyle = ""
+            if(this.props.selectedCoin.coin === d[0]) {
+                console.log("Coin is selected. Setting style")
+                selectedStyle = " " + css.pricesTable__listItem_selected
+            }
 
             return (
-                <li className={css.pricesTable__listItem} key={i}>
+                <li className={css.pricesTable__listItem + selectedStyle} key={i} onClick={() => StoreSingleton.setSelectedCoin(d[0])}>
                     <div className={css.pricesTable__listItemName}>
                         <img src={"data:image/png;base64," + coinBase64} />
-                        <div>{d[0]}</div>
+                        <div>{d[0].toUpperCase()}</div>
                     </div>
                     <div className={css.pricesTable__listItemInfo}>
                         <div className={css.pricesTable__listItemInfoBalance}>
@@ -101,6 +108,7 @@ export default makeObserver("walletData_1d", class PricesTable extends React.Com
     }
 
     render() {        
+
         let oneDayData = this.props.walletData_1d.map(w => w.graph_1d)
         //console.log(oneDayData)
         let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
@@ -117,7 +125,7 @@ export default makeObserver("walletData_1d", class PricesTable extends React.Com
                 return Utils.transformGraphSpace(g, largestTimespanData)
         })
 
-        let totalGraph = this.addData(sameSpaceData, StoreSingleton.walletData.map(w => w.amount))
+        let totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
         let curTotal = totalGraph.slice(0).pop()[1]
         let changePct = this.getChangePct(totalGraph)
 
@@ -129,7 +137,7 @@ export default makeObserver("walletData_1d", class PricesTable extends React.Com
                 </div>
                 <div className={css.pricesTable__listContainer}>
                     <ul className={css.pricesTable__list}>
-                        {this.makeList(StoreSingleton.walletData)}
+                        {this.makeList(this.props.walletData_1d)}
                     </ul>
                 </div>
                 <div className={css.pricesTable__footer}>

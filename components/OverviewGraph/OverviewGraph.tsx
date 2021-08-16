@@ -189,6 +189,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
         let graphOptions = {}
         //graphOptions = this.getGraphOptions()
         console.log("this.props.walletData")
+        console.log(toJS(this.props.walletData))
         try {
             graphOptions = this.getGraphOptions()
         } catch {}

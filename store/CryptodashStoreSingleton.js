@@ -8,6 +8,8 @@ import Utils from '../Utils'
 import { toJS } from 'mobx';
 import React from "react";
 
+const fakeComputed = observable
+
 class CryptodashStore {
 
     // When wallet data is added, I think I want to lazy load in the rest of the graphs besides graph_1d
@@ -30,22 +32,30 @@ class CryptodashStore {
         //}, ...
     ]
 
-    filterWalletGraphs(filterFor) {
-        return this.walletData.map(w => {
-            let newWallet = { ...w }
-            const granularities = ["graph_1d", "graph_1w", "graph_1m", "graph_y", "graph_all"]
-            granularities.filter(g => !g.endsWith(filterFor)).forEach(g => {
-                delete newWallet[g]
-            })
-            return newWallet
+    // Could not get MobX's computed to work. Not sure if it's a bug but not wasting time wrestling with it anymore.
+    // Very simple to just write my own computed observable for each walletData granularity and sync them all.
+    // Updates more predictably anyway, don't have to rely on MobX's compare functions,
+    //  which I don't think any of them worked exactly how I wanted them to anyway.
+    walletData_1d = []
+    walletData_1w = []
+    walletData_1m = []
+    walletData_1y = []
+    walletData_all = []
+
+    filterWalletGraphs(walletData, filterFor) {
+        return walletData.map(w => {
+            const unusedGranularities = ["graph_1d", "graph_1w", "graph_1m", "graph_1y", "graph_all"].filter(g => !g.endsWith(filterFor))
+            return Utils.filterDictKeys(w, k => !unusedGranularities.includes(k))
         })
     }
 
-    get walletData_1d() { return this.filterWalletGraphs("1d") }
-    get walletData_1w() { return this.filterWalletGraphs("1w") }
-    get walletData_1m() { return this.filterWalletGraphs("1m") }
-    get walletData_1y() { return this.filterWalletGraphs("1y") }
-    get walletData_all() { return this.filterWalletGraphs("all") }
+    syncWalletDataComputeds() {
+        [].splice.apply(this.walletData_1d, [0, this.walletData_1d.length].concat(this.filterWalletGraphs(this.walletData, "1d")));
+        [].splice.apply(this.walletData_1w, [0, this.walletData_1w.length].concat(this.filterWalletGraphs(this.walletData, "1w")));
+        [].splice.apply(this.walletData_1m, [0, this.walletData_1m.length].concat(this.filterWalletGraphs(this.walletData, "1m")));
+        [].splice.apply(this.walletData_1y, [0, this.walletData_1y.length].concat(this.filterWalletGraphs(this.walletData, "1y")));
+        [].splice.apply(this.walletData_all, [0, this.walletData_all.length].concat(this.filterWalletGraphs(this.walletData, "all")));
+    }
 
     marketData = [
         //{
@@ -76,16 +86,19 @@ class CryptodashStore {
             addGraphToWallet: action,
             setMarketData: action,
             setSelectedCoin: action,
-            // Only need shallow compare for these. New data won't load into initial arrays:
-            walletData_1d: computed({ equals: comparer.structural }),
-            walletData_1w: computed({ equals: comparer.structural }),
-            walletData_1m: computed({ equals: comparer.structural }),
-            walletData_1y: computed({ equals: comparer.structural }),
-            walletData_all: computed({ equals: comparer.structural }),
+            removeSelectedWallet: action,
+            // Custom computed's
+            walletData_1d: observable,
+            walletData_1w: observable,
+            walletData_1m: observable,
+            walletData_1y: observable,
+            walletData_all: observable,
         })
     }
 
-    addWalletData(data) {
+    addWalletData(data, clearData = false) {
+        if (clearData)
+            this.walletData.length = 0
         data = [].concat(data)
 
         if (!this.selectedCoin.coin)
@@ -96,6 +109,7 @@ class CryptodashStore {
         let timeFrames = ["1d", "1w", "1m", "1y", "all"];
 
         [].push.apply(this.walletData, data);
+        this.syncWalletDataComputeds()
 
         data.forEach((wallet, i) => {
             timeFrames.filter(t => !wallet.hasOwnProperty("graph_" + t)).forEach(timeFrame => {
@@ -115,16 +129,39 @@ class CryptodashStore {
         // as a test we can try not supplying initial 1d graphs for default data... then will probably need observable.
     }
 
+    removeSelectedWallet = () => {
+        console.log(`Removing wallet for ${this.selectedCoin.coin}...`)
+
+        console.log("this")
+        console.log(this)
+
+        let idx = this.walletData.findIndex(w => w.coin === this.selectedCoin.coin)
+        if (idx !== -1) {
+            this.walletData.splice(idx, 1)
+            this.syncWalletDataComputeds()
+        }
+
+        console.log("this.walletData")
+        console.log(toJS(this.walletData))
+
+        idx = Math.min(idx, this.walletData.length - 1)
+        if (idx >= 0 && idx < this.walletData.length) {
+            this.selectedCoin.coin = this.walletData[idx].coin
+        }
+        else {
+            this.selectedCoin.coin = ""
+        }
+    }
+
     addGraphToWallet(coin, timeFrame, graph) {
-        const wallet = this.walletData.find(w => w.coin === coin)
-        wallet["graph_" + timeFrame] = graph
-        //console.log(`added ${timeFrame} graph to wallet ${coin}`)
-        //console.log(toJS(wallet))
+        const idx = this.walletData.findIndex(w => w.coin === coin)
+        this.walletData[idx]["graph_" + timeFrame] = graph
+        // Update appropriate computed too. Avoid using sync here. This is what we're trying to prevent component re-render on.
+        this["walletData_" + timeFrame][idx]["graph_" + timeFrame] = graph
     }
 
     setWalletData(data) {
-        this.walletData.length = 0
-        this.addWalletData(data)
+        this.addWalletData(data, true)
     }
 
     setMarketData(data) {
@@ -147,7 +184,7 @@ class ObservedPropsFilter extends React.Component {
         super(props)
 
         this.state = {
-            observedProps: this.mapObservedProps(this.props.observedProps)
+            overrideObservedProps: []
         }
     }
 
@@ -165,9 +202,9 @@ class ObservedPropsFilter extends React.Component {
             }
         });
 
-        Object.values(observedPropsDict).forEach(v => {
+        Utils.mapDict(observedPropsDict, (k, v) => {
             if (!(toJS(v) instanceof Object))
-                throw new Error("Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref.")
+                throw new Error(`Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref. On ${k}`)
         })
 
         return observedPropsDict
@@ -175,13 +212,16 @@ class ObservedPropsFilter extends React.Component {
 
     changeObservedProps = (newObservedProps) => {
         this.setState({
-            observedProps: this.mapObservedProps(newObservedProps)
+            overrideObservedProps: newObservedProps
         })
     }
 
     render() {
         const ChildObserverClass = this.props.childObserverClass
-        return <ChildObserverClass {...this.state.observedProps} {...this.props.passProps} changeObservedProps={this.changeObservedProps}></ChildObserverClass>
+        const observedProps = this.mapObservedProps(this.props.observedProps)
+        const overrideObservedProps = this.mapObservedProps(this.state.overrideObservedProps)
+        const allObservedProps = { ...observedProps, ...overrideObservedProps }
+        return <ChildObserverClass {...allObservedProps} {...this.props.passProps} changeObservedProps={this.changeObservedProps}></ChildObserverClass>
     }
 }
 
@@ -191,6 +231,15 @@ export function makeObserver(observedProps, fromClass) {
     const ObserverWrappedClass = observer(fromClass)
     return (props) => {
         return <ObservedPropsFilter observedProps={observedProps} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
+    }
+}
+
+export function makeObserverWC(fromClass) {
+    const ObserverWrappedClass = observer(fromClass)
+    console.log("making WC observer")
+    console.log(CryptodashStoreSingleton.walletData_1d)
+    return (props) => {
+        return <ObserverWrappedClass selectedCoin={CryptodashStoreSingleton.selectedCoin} walletData_1d={CryptodashStoreSingleton.walletData_1d} {...props}></ObserverWrappedClass>
     }
 }
 

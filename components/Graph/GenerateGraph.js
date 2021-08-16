@@ -241,6 +241,7 @@ function _makeChart(options) {
     let children = defs.concat(grid, legend, plots, predictionLine)
     // Keep react from complaining even though it isn't really a list
     children = children.map((el, key) => React.cloneElement(el, { key }));
+    //React.createElement.apply(null, ['div', {}, ...children])
 
     console.log("_makeChart")
 

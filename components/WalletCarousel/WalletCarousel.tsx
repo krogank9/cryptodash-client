@@ -7,7 +7,7 @@ import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton
 
 interface WalletCarouselProps { data?: any, selectedCoin: {coin: string}, walletData_1d: any }
 
-export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarousel extends React.Component<WalletCarouselProps> {
+export default makeObserver(["selectedCoin", {"walletData_1d": "walletData_1d"}], class WalletCarousel extends React.Component<WalletCarouselProps> {
     state = {
         scrollPos: 1
     }
@@ -49,28 +49,32 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
     scroll = (dir) => {
         let newScrollPos = this.state.scrollPos + this.getStride() * dir
         newScrollPos = Math.min(Math.max(newScrollPos, 0), this.getMaxScrollPos())
-
-        this.setState({
-            scrollPos: newScrollPos
-        })
+        
+        if(this.state.scrollPos !== newScrollPos) {
+            this.setState({
+                scrollPos: newScrollPos
+            })
+        }
     }
 
     makeWalletTiles() {
-        let tiles = this.props.walletData_1d.slice(this.state.scrollPos, this.state.scrollPos+5).map((w, i) => {
-            return <WalletTile data={w} key={i+this.state.scrollPos} selected={w.coin === this.props.selectedCoin.coin} />
+        let tiles = this.props.walletData_1d.slice(this.state.scrollPos, this.state.scrollPos+5).map(w => {
+            return <WalletTile data={w} key={w.coin} selected={w.coin === this.props.selectedCoin.coin} />
         })
 
         // Push empty divs for remaining spaces at end of scroll
         let filledReal = tiles.length
         let emptyNeeded = 5 - tiles.length
         for(let i = 0; i < emptyNeeded; i++) {
-            tiles.push(<div key={filledReal + this.state.scrollPos + i + 1}></div>)
+            tiles.push(<div key={"empty_tile_"+Math.random()}></div>)
         }
 
         return tiles
     }
 
     render() {
+        console.log("Rendering WalletCarousel")
+        console.log(this.props.walletData_1d.map(w => w.coin))
         return (
             <div className={css.walletCarousel}>
                 <div className={css.walletCarousel__header}>
@@ -79,7 +83,7 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
                     {/*<a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>*/}
     
                     <div className={css.walletCarousel__controls}>
-                        <IonIcon className={css.walletCarousel__actionButton} name="close-outline" />
+                        <IonIcon className={css.walletCarousel__actionButton+" "+(this.props.selectedCoin.coin ? "" : css.walletCarousel__actionButton_inactive)} name="close-outline" onClick={() => StoreSingleton.removeSelectedWallet()} />
                         <IonIcon className={css.walletCarousel__actionButton} name="add-outline" />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos > 0 ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-back-outline" onClick={() => this.scroll(-1)} />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos < this.getMaxScrollPos() ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-forward-outline" onClick={() => this.scroll(1)} />
