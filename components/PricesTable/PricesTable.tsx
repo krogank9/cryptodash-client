@@ -30,10 +30,10 @@ function nFormatter(num) {
 
 interface PricesTableProps {
     className?: string,
-    walletData1D: any
+    walletData_1d: any
 }
 
-export default makeObserver("walletData1D", class PricesTable extends React.Component<PricesTableProps> {
+export default makeObserver("walletData_1d", class PricesTable extends React.Component<PricesTableProps> {
 
     makeList(data) {
         data = data.map(w => ({
@@ -101,7 +101,7 @@ export default makeObserver("walletData1D", class PricesTable extends React.Comp
     }
 
     render() {        
-        let oneDayData = this.props.walletData1D.map(w => w.graph_1d)
+        let oneDayData = this.props.walletData_1d.map(w => w.graph_1d)
         //console.log(oneDayData)
         let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 

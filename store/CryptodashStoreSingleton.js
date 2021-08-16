@@ -41,11 +41,11 @@ class CryptodashStore {
         })
     }
 
-    get walletData1D() { return this.filterWalletGraphs("1d") }
-    get walletData1W() { return this.filterWalletGraphs("1w") }
-    get walletData1M() { return this.filterWalletGraphs("1m") }
-    get walletData1Y() { return this.filterWalletGraphs("1y") }
-    get walletDataAll() { return this.filterWalletGraphs("all") }
+    get walletData_1d() { return this.filterWalletGraphs("1d") }
+    get walletData_1w() { return this.filterWalletGraphs("1w") }
+    get walletData_1m() { return this.filterWalletGraphs("1m") }
+    get walletData_1y() { return this.filterWalletGraphs("1y") }
+    get walletData_all() { return this.filterWalletGraphs("all") }
 
     marketData = [
         //{
@@ -77,11 +77,11 @@ class CryptodashStore {
             setMarketData: action,
             setSelectedCoin: action,
             // Only need shallow compare for these. New data won't load into initial arrays:
-            walletData1D: computed({equals: comparer.shallow}),
-            walletData1W: computed({equals: comparer.shallow}),
-            walletData1M: computed({equals: comparer.shallow}),
-            walletData1Y: computed({equals: comparer.shallow}),
-            walletDataAll: computed({equals: comparer.shallow}),
+            walletData_1d: computed({ equals: comparer.structural }),
+            walletData_1w: computed({ equals: comparer.structural }),
+            walletData_1m: computed({ equals: comparer.structural }),
+            walletData_1y: computed({ equals: comparer.structural }),
+            walletData_all: computed({ equals: comparer.structural }),
         })
     }
 
@@ -143,28 +143,39 @@ const CryptodashStoreSingleton = new CryptodashStore()
 // Also need to be able to do fancy stuff like map an observed prop and pass that...
 class ObservedPropsFilter extends React.Component {
 
-    validateObservedProps(observedProps) {
-        Object.values(observedProps).forEach(v => {
-            if (!(toJS(v) instanceof Object))
-                throw new Error("Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref.")
-        })
-    }
-
     constructor(props) {
         super(props)
 
-        this.validateObservedProps(this.props.observedProps)
-
         this.state = {
-            observedProps: this.props.observedProps
+            observedProps: this.mapObservedProps(this.props.observedProps)
         }
     }
 
-    changeObservedProps = (newObservedProps) => {
-        this.validateObservedProps(newObservedProps)
+    mapObservedProps = (observedProps) => {
+        const observedPropsDict = {}
+        observedProps.forEach(p => {
+            if (p instanceof Object) {
+                // For syntax {"passPropAlias": "realVariableName"}
+                Utils.mapDict(p, (key, val) => {
+                    observedPropsDict[key] = CryptodashStoreSingleton[val]
+                })
+            }
+            else {
+                observedPropsDict[p] = CryptodashStoreSingleton[p]
+            }
+        });
 
+        Object.values(observedPropsDict).forEach(v => {
+            if (!(toJS(v) instanceof Object))
+                throw new Error("Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref.")
+        })
+
+        return observedPropsDict
+    }
+
+    changeObservedProps = (newObservedProps) => {
         this.setState({
-            observedProps: newObservedProps
+            observedProps: this.mapObservedProps(newObservedProps)
         })
     }
 
@@ -179,9 +190,7 @@ export function makeObserver(observedProps, fromClass) {
 
     const ObserverWrappedClass = observer(fromClass)
     return (props) => {
-        const observedPropsDict = {}
-        observedProps.forEach(p => observedPropsDict[p] = CryptodashStoreSingleton[p]);
-        return <ObservedPropsFilter observedProps={observedPropsDict} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
+        return <ObservedPropsFilter observedProps={observedProps} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
     }
 }
 

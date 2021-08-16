@@ -10,11 +10,9 @@ import Router from 'next/router'
 
 import Utils from '../../Utils'
 
-interface IProps { className?: string, walletData: any, selectedCoin: any }
+interface IProps { className?: string, walletData: any, selectedCoin: any, changeObservedProps: (props: any) => void }
 
-export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph extends React.Component<IProps> {
-    containerRef: React.RefObject<HTMLDivElement>;
-
+export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], class OverviewGraph extends React.Component<IProps> {
     state: {
         graphOptions: any,
         candlestick: boolean,
@@ -23,7 +21,6 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
 
     constructor(props) {
         super(props)
-        this.containerRef = React.createRef()
         this.state = {
             graphOptions: {},
             candlestick: false,
@@ -103,7 +100,8 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
         }
 
         let graphOptions = {
-            width: this.containerRef.current.offsetWidth, height: 555,
+            //width: this.containerRef.current.offsetWidth,
+            height: 555,
             candlestick: this.state.candlestick,
             dataObjs: dataObjs
         }
@@ -128,6 +126,7 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
     }
 
     setTimeframe = (t) => {
+        this.props.changeObservedProps([{"walletData": `walletData_${t}`}, "selectedCoin"])
         this.setState({ ...this.state, timeFrame: t })
         ///this.setGraphOptions(this.state.graphOptions.candlestick)
     }
@@ -189,9 +188,12 @@ export default makeObserver(["walletData", "selectedCoin"], class OverviewGraph 
         console.log("Render OverviewGraph")
         let graphOptions = {}
         //graphOptions = this.getGraphOptions()
-        try { graphOptions = this.getGraphOptions() } catch { }
+        console.log("this.props.walletData")
+        try {
+            graphOptions = this.getGraphOptions()
+        } catch {}
         return (
-            <div className={css.overviewGraph + " " + (this.props.className || "")} ref={this.containerRef}>
+            <div className={css.overviewGraph + " " + (this.props.className || "")}>
                 {this.makeControls()}
                 <div id="chart" className={css.overviewGraph__graphContainer}>
                     <GraphWithResize options={graphOptions} />

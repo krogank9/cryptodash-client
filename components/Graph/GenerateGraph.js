@@ -150,7 +150,8 @@ export var makeChart = function(options = {}) {
 function _makeChart(options) {
     options = JSON.parse(JSON.stringify(options))
 
-    console.log("_makeChart")
+    if(!options.width)
+        throw new Error("No width supplied")
 
     if (options.candlestick && options.dataObjs.length > 1)
         options.dataObjs = options.dataObjs.slice(-1)
@@ -240,6 +241,8 @@ function _makeChart(options) {
     let children = defs.concat(grid, legend, plots, predictionLine)
     // Keep react from complaining even though it isn't really a list
     children = children.map((el, key) => React.cloneElement(el, { key }));
+
+    console.log("_makeChart")
 
     return (
         <svg style={{ width: "100%", height: options.height }}>
