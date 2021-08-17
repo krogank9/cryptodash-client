@@ -8,6 +8,8 @@ import CoinNames from '../../../static_data/coin_name_map.json'
 import StoreSingleton, { makeObserver } from '../../../store/CryptodashStoreSingleton.js'
 import CryptodashStoreSingleton from '../../../store/CryptodashStoreSingleton.js';
 
+import Utils from '../../../Utils'
+
 interface WalletTileProps { data?: any, selected: boolean }
 
 export default class WalletTile extends React.Component<WalletTileProps> {
@@ -35,14 +37,6 @@ export default class WalletTile extends React.Component<WalletTileProps> {
             return "$" + Number(amount).toLocaleString("en-US", { maximumFractionDigits: 0, minimumFractionDigits: 0 })
     }
 
-    getChangePct(data) {
-        let start = data[0][1]
-        let end = data[data.length - 1][1]
-        let change = end / start
-        let changePct = Number((change - 1) * 100)
-        return changePct
-    }
-
     selectCoin = () => {
         console.log(`Selecting coin ${this.props.data.coin}`)
         StoreSingleton.setSelectedCoin(this.props.data.coin)
@@ -61,7 +55,7 @@ export default class WalletTile extends React.Component<WalletTileProps> {
     }
 
     render() {
-        let changePct = this.getChangePct(this.props.data["graph_1d"])
+        let changePct = Utils.getChangePct(this.props.data["graph_1d"])
         let graphOptions = !this.state.didMount ? {} : {
             width: this.containerRef.current.offsetWidth, height: 65,
             showGrid: false,

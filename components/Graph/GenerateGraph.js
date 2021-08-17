@@ -279,7 +279,8 @@ function makeLegend(options) {
     const { xMin, xMax, yMin, yMax, xInterval, yInterval, width, height, strokeWidth, _lastX, _lastY, _xToGraph, _yToGraph, xLabelCallback, yLabelCallback, _leftPadding, _topPadding } = options
 
     options.dataObjs.forEach(({ name, color }, i) => {
-        const [x, y] = [_leftPadding + 40, _topPadding + 40]
+        const fromLeft = options.lastRealTime && options._mobile ? 20 : 40
+        const [x, y] = [_leftPadding + fromLeft, _topPadding + 40]
         const spacing = 30
         const text_offset = 2
 

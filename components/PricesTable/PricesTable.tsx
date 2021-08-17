@@ -40,7 +40,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
         data = data.map(w => ({
             symbol: w.coin,
             current_price: w.graph_1d.slice(0).pop()[1],
-            price_change_percentage_24h: this.getChangePct(w.graph_1d)
+            price_change_percentage_24h: Utils.getChangePct(w.graph_1d)
         }))
         data.sort((a, b) => b.current_price - a.current_price)
         data = data.map((coinInfo) => [coinInfo.symbol, nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
@@ -87,14 +87,6 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
             return "$" + Number(amount).toLocaleString("en-US", { maximumFractionDigits: 0, minimumFractionDigits: 0 })
     }
 
-    getChangePct(data) {
-        let start = data[0][1]
-        let end = data[data.length - 1][1]
-        let change = end / start
-        let changePct = Number((change - 1) * 100)
-        return changePct
-    }
-
     addData(data, amounts) {
         let cumulativeGraph = data[0].map(e => [e[0], 0])
         data.forEach((coinGraph, coinGraphIndex) => {
@@ -127,7 +119,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
 
         let totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
         let curTotal = totalGraph.slice(0).pop()[1]
-        let changePct = this.getChangePct(totalGraph)
+        let changePct = Utils.getChangePct(totalGraph)
 
         return (
             <div className={css.pricesTable + " " + (this.props.className || "")}>

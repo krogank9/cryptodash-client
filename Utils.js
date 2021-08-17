@@ -7,10 +7,14 @@ const Utils = {
         return Math.max(Math.min(v, max), min)
     },
 
-    nFormatter(num, mobile=false) {
-        if(num < 1) {
+    nFormatter(num, mobile = false) {
+        if (Math.abs(num) < 1) {
             return "$" + num.toFixed(mobile ? 2 : 4);
         }
+
+        const isNegative = num < 0
+        num = Math.abs(num)
+
         const lookup = [
             { value: 1e18, symbol: "E" },
             { value: 1e15, symbol: "P" },
@@ -23,7 +27,12 @@ const Utils = {
         var item = lookup.find(function (item) {
             return num >= item.value;
         });
-        return item ? "$" + (num / item.value).toFixed(mobile ? 0 : 2) + item.symbol : "0";
+
+        if(!item)
+            item = lookup.slice(0).pop()
+
+        const negativeSign = isNegative ? "-" : ""
+        return negativeSign + "$" + (num / item.value).toFixed(mobile ? 0 : 2) + item.symbol;
     },
     transformGraphSpace(from, to) {
         // Make x coords of "from" graph match the "to" graph, interpolate between points.
@@ -80,6 +89,12 @@ const Utils = {
             newDict[key] = cb(key, dict[key])
         })
         return newDict
+    },
+    getChangePct(data) {
+        let y1 = data[0][1]
+        let y2 = data.slice(0).pop()[1]
+        let change = (y2 - y1) / y1
+        return change * 100
     }
 }
 

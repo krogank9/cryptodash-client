@@ -4,11 +4,11 @@
 		-Prediction graph more info below description: predicted raise/dip, cur price, predicted price
 	-Overview page
 		-add wallet popup
-	-Filler pages, mostly just css to write here
-	-Real Login
 	-Searchbar thing at least basic functionality
 		-Commands
 		-Suggestions
+	-Real Login
+	-Filler pages, mostly just css to write here
 
 -Anything that touches server/fetch code should handle malformed inputs gracefully.
 -Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
