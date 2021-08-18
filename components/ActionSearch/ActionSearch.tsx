@@ -18,14 +18,15 @@ const renderSuggestion = suggestion => {setTimeout(function() {/*debugger*/}, 10
     </div>
 )}
 
-const renderInputComponent = inputProps => (
+const renderInputComponent = inputProps => {console.log(inputProps); return (
     <div>
         <input type="text" {...Utils.filterDictKeys(inputProps, k => k !== "suggestionsOpen")} />
         <a style={{borderBottomRightRadius: inputProps.suggestionsOpen ? "0" : ""}} >
             <IonIcon name="return-down-forward" />
         </a>
     </div>
-)
+)}
+
 
 export default class Example extends React.Component {
     state: {
@@ -62,6 +63,11 @@ export default class Example extends React.Component {
         });
     };
 
+    onSuggestionSelected = (event, { suggestion }) => {
+        suggestion.execute()
+        this.setState({value: ''})
+    }
+
     render() {
         const { value, suggestions } = this.state;
 
@@ -82,7 +88,9 @@ export default class Example extends React.Component {
                 getSuggestionValue={getSuggestionValue}
                 renderInputComponent={renderInputComponent}
                 renderSuggestion={renderSuggestion}
+                onSuggestionSelected={this.onSuggestionSelected}
                 inputProps={inputProps}
+                highlightFirstSuggestion={true}
                 theme={AutosuggestTheme}
             />
         );

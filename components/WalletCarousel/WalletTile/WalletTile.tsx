@@ -8,6 +8,8 @@ import CoinNames from '../../../static_data/coin_name_map.json'
 import StoreSingleton, { makeObserver } from '../../../store/CryptodashStoreSingleton.js'
 import CryptodashStoreSingleton from '../../../store/CryptodashStoreSingleton.js';
 
+import { observer } from 'mobx-react'
+
 import Utils from '../../../Utils'
 
 interface WalletTileProps { data?: any, selected: boolean }
@@ -40,18 +42,6 @@ export default class WalletTile extends React.Component<WalletTileProps> {
     selectCoin = () => {
         console.log(`Selecting coin ${this.props.data.coin}`)
         StoreSingleton.setSelectedCoin(this.props.data.coin)
-    }
-
-    lastSelected = null
-    shouldComponentUpdate(nextProps, nextState) {
-        // Should only need to re-render from parent props change if selected changed
-        if(nextProps.selected !== this.lastSelected) {
-            this.lastSelected = nextProps.selected
-            return true
-        }
-        else {
-            return false
-        }
     }
 
     render() {

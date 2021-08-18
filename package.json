@@ -10,6 +10,7 @@
   "dependencies": {
     "coingecko-api": "^1.0.10",
     "follow-redirects": "^1.14.1",
+    "js-big-decimal": "^1.3.4",
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
     "next": "^10.0.0",

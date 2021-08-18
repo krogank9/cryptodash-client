@@ -1,3 +1,5 @@
+import BigDecimal from 'js-big-decimal';
+
 const Utils = {
     lerp(a, b, t) {
         return a + (b - a) * t
@@ -95,6 +97,9 @@ const Utils = {
         let y2 = data.slice(0).pop()[1]
         let change = (y2 - y1) / y1
         return change * 100
+    },
+    addNumsPrecise(a,b) {
+        return BigDecimal.add(a, b)
     }
 }
 

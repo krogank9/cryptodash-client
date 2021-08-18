@@ -158,7 +158,6 @@ const actions = [
     {
         name: "Add coin",
         // Add coin balance to wallet
-        execute: ({coins, number}) => 0,//StoreSingleton.addBalanceSmart(coins[0], number),
         getSuggestions: ({coins, number, textHintsMatched}) => {
             return coins.map(c => {
                 let opPrefix = "Add"
@@ -167,7 +166,8 @@ const actions = [
                     opPrefix = "Subtract"
                 }
                 return {
-                    text: `${opPrefix} ${Math.abs(number)} ${c.toUpperCase()}`
+                    text: `${opPrefix} ${Math.abs(number)} ${c.toUpperCase()}`,
+                    execute: () => StoreSingleton.addBalanceSmart(c, number),
                 }
             })
         },
@@ -177,20 +177,20 @@ const actions = [
     {
         // Open Overview page
         name: "Overview",
-        execute: () => Router.push(`/`),
         getSuggestions: () => [{
-            text: "Overview"
+            text: "Overview",
+            execute: () => Router.push(`/`),
         }],
         definiteHints: ["Overview"],
     },
     {
         // Open Analyze page
         name: "Analyze",
-        execute: ({coins}) => Router.push(`/analyze/${coins[0]}`),
         getSuggestions: ({coins, number}) => {
             return coins.map(c => {
                 return {
-                    text: `Analyze ${c.toUpperCase()}`
+                    text: `Analyze ${c.toUpperCase()}`,
+                    execute: () => Router.push(`/analyze/${coins[0]}`)
                 }
             })
         },
@@ -200,11 +200,11 @@ const actions = [
     {
         name: "Remove coin",
         // Remove coin from a wallet
-        execute: ({coins}) => 0,//StoreSingleton.removeCoinWallet(coins[0]),
         getSuggestions: ({coins}) => {
             return coins.filter(c => StoreSingleton.walletData.find(w => w.coin === c)).map(c => {
                 return {
-                    text: `Remove all ${c.toUpperCase()}`
+                    text: `Remove all ${c.toUpperCase()}`,
+                    execute: () => StoreSingleton.removeWalletForCoin(coins[0]),
                 }
             })
         },

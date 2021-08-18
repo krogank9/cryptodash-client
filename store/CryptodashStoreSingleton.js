@@ -87,6 +87,8 @@ class CryptodashStore {
             setMarketData: action,
             setSelectedCoin: action,
             removeSelectedWallet: action,
+            removeWalletForCoin: action,
+            addBalanceSmart: action,
             // Custom computed's
             walletData_1d: observable,
             walletData_1w: observable,
@@ -129,28 +131,47 @@ class CryptodashStore {
         // as a test we can try not supplying initial 1d graphs for default data... then will probably need observable.
     }
 
-    removeSelectedWallet = () => {
-        console.log(`Removing wallet for ${this.selectedCoin.coin}...`)
+    addBalanceSmart = (coin, amount) => {
+        try {
+            const coinWallet = this.walletData.find(w => w.coin === coin)
+            coinWallet.amount = Utils.addNumsPrecise(coinWallet.amount, amount)
 
-        console.log("this")
-        console.log(this)
+            if(this.walletData.find(w => w.coin === coin).amount <= 0)
+                this.removeWalletForCoin(coin)
+            else
+                this.syncWalletDataComputeds() // Above syncs for us
+        }
+        catch (err) {
+            console.log(err)
+            if(amount >= 0)
+                this.addWalletData({coin: coin, amount: amount})
+        }
+    }
 
-        let idx = this.walletData.findIndex(w => w.coin === this.selectedCoin.coin)
+    removeWalletForCoin = (coin) => {
+        console.log(`Removing wallet for ${coin}...`)
+
+        let idx = this.walletData.findIndex(w => w.coin === coin)
+        let selectedIdx = this.walletData.findIndex(w => w.coin === this.selectedCoin.coin)
         if (idx !== -1) {
             this.walletData.splice(idx, 1)
             this.syncWalletDataComputeds()
-        }
 
-        console.log("this.walletData")
-        console.log(toJS(this.walletData))
+            if(selectedIdx >= idx) {
+                selectedIdx = Math.min(selectedIdx, this.walletData.length - 1)
 
-        idx = Math.min(idx, this.walletData.length - 1)
-        if (idx >= 0 && idx < this.walletData.length) {
-            this.selectedCoin.coin = this.walletData[idx].coin
+                if (this.walletData.length >= 1 && selectedIdx >= 0) {
+                    this.selectedCoin.coin = this.walletData[idx].coin
+                }
+                else {
+                    this.selectedCoin.coin = ""
+                }
+            }
         }
-        else {
-            this.selectedCoin.coin = ""
-        }
+    }
+
+    removeSelectedWallet = () => {
+        this.removeWalletForCoin(this.selectedCoin.coin)
     }
 
     addGraphToWallet(coin, timeFrame, graph) {
@@ -228,18 +249,23 @@ class ObservedPropsFilter extends React.Component {
 export function makeObserver(observedProps, fromClass) {
     observedProps = [].concat(observedProps)
 
+    let propsDict = {}
+    observedProps.forEach(p => {
+        if (p instanceof Object) {
+            // For syntax {"passPropAlias": "realVariableName"}
+            Utils.mapDict(p, (key, val) => {
+                propsDict[key] = CryptodashStoreSingleton[val]
+            })
+        }
+        else {
+            propsDict[p] = CryptodashStoreSingleton[p]
+        }
+    })
+
     const ObserverWrappedClass = observer(fromClass)
+    //return (props) => <ObserverWrappedClass {...propsDict}></ObserverWrappedClass>
     return (props) => {
         return <ObservedPropsFilter observedProps={observedProps} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
-    }
-}
-
-export function makeObserverWC(fromClass) {
-    const ObserverWrappedClass = observer(fromClass)
-    console.log("making WC observer")
-    console.log(CryptodashStoreSingleton.walletData_1d)
-    return (props) => {
-        return <ObserverWrappedClass selectedCoin={CryptodashStoreSingleton.selectedCoin} walletData_1d={CryptodashStoreSingleton.walletData_1d} {...props}></ObserverWrappedClass>
     }
 }
 
