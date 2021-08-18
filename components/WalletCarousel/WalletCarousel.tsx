@@ -7,7 +7,7 @@ import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton
 
 interface WalletCarouselProps { data?: any, selectedCoin: {coin: string}, walletData_1d: any }
 
-export default makeObserver(["selectedCoin", {"walletData_1d": "walletData_1d"}], class WalletCarousel extends React.Component<WalletCarouselProps> {
+export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarousel extends React.Component<WalletCarouselProps> {
     state = {
         scrollPos: 1
     }
