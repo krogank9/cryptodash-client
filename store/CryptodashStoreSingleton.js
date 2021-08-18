@@ -20,6 +20,12 @@ class CryptodashStore {
         this.selectedCoin.coin = coin
     }
 
+    marketData = [
+        //{
+        //    ...from API
+        //}
+    ]
+
     walletData = [
         //{
         //    coin: c,
@@ -57,14 +63,16 @@ class CryptodashStore {
         [].splice.apply(this.walletData_all, [0, this.walletData_all.length].concat(this.filterWalletGraphs(this.walletData, "all")));
     }
 
-    marketData = [
-        //{
-        //    ...from API
-        //}
-    ]
-
-    // I think no need for coin images to be observable, static except for lazy loading
     coinImagesB64 = {/* coinSymbol: b64 */ }
+    lazyLoadCoinImages() {
+        const NUM_COIN_IMAGES = 457
+        if(Object.keys(this.coinImagesB64).length < NUM_COIN_IMAGES) {        
+            import("../public/coins_32_color_b64_icon_list.json")
+                .then(coins => {
+                    this.coinImagesB64 = {...this.coinImagesB64, ...coins.default}
+                })
+        }
+    }
 
     saveToLocalStorage() {
         //localStorage.setItem('walletData', this.walletData);
@@ -96,6 +104,8 @@ class CryptodashStore {
             walletData_1y: observable,
             walletData_all: observable,
         })
+
+        this.lazyLoadCoinImages()
     }
 
     addWalletData(data, clearData = false) {

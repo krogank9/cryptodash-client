@@ -12,26 +12,30 @@ import Utils from '../../Utils'
 const getSuggestionValue = suggestion => suggestion.text;
 
 // Use your imagination to render suggestions.
-const renderSuggestion = suggestion => {setTimeout(function() {/*debugger*/}, 1000); return (
-    <div>
-        {suggestion.text}
-    </div>
-)}
+const renderSuggestion = suggestion => {
+    setTimeout(function () {/*debugger*/ }, 1000); return (
+        <div>
+            {suggestion.text}
+        </div>
+    )
+}
 
-const renderInputComponent = inputProps => {console.log(inputProps); return (
-    <div>
-        <input type="text" {...Utils.filterDictKeys(inputProps, k => k !== "suggestionsOpen")} />
-        <a style={{borderBottomRightRadius: inputProps.suggestionsOpen ? "0" : ""}} >
-            <IonIcon name="return-down-forward" />
-        </a>
-    </div>
-)}
+const renderInputComponent = inputProps => {
+    console.log(inputProps); return (
+        <div>
+            <input type="text" {...Utils.filterDictKeys(inputProps, k => !["suggestionsOpen", "enterCurAction"].includes(k))} />
+            <a style={{ borderBottomRightRadius: inputProps.suggestionsOpen ? "0" : "" }} onClick={inputProps.enterCurAction}>
+                <IonIcon name="return-down-forward" />
+            </a>
+        </div>
+    )
+}
 
 
 export default class Example extends React.Component {
     state: {
         value: string,
-        suggestions: Array<string>
+        suggestions: Array<any>
     }
     constructor(props) {
         super(props)
@@ -65,7 +69,31 @@ export default class Example extends React.Component {
 
     onSuggestionSelected = (event, { suggestion }) => {
         suggestion.execute()
-        this.setState({value: ''})
+        this.setState({ value: '' })
+    }
+
+    enterCurAction = () => {
+        if(this.state.suggestions.length > 0 && this.curHighlightedSelection) {
+            this.curHighlightedSelection.execute()
+            this.setState({value: ''})
+            return
+        }
+
+        let mkSuggestions = getSuggestions(this.state.value)
+        if(mkSuggestions.length === 0)
+            return
+        
+        if(mkSuggestions[0].text.toLowerCase() === this.state.value.trim().toLowerCase()) {
+            mkSuggestions[0].execute()
+            this.setState({value: ''})
+        }
+    }
+
+    curHighlightedSelection = null
+    onSuggestionHighlighted = ({ suggestion }) => {
+        console.log("highlighted")
+        console.log(suggestion)
+        this.curHighlightedSelection = suggestion
     }
 
     render() {
@@ -76,7 +104,8 @@ export default class Example extends React.Component {
             placeholder: 'Type an action... "Add 5 BTC"',
             value,
             onChange: this.onChange,
-            suggestionsOpen: this.state.suggestions.length > 0
+            suggestionsOpen: this.state.suggestions.length > 0,
+            enterCurAction: this.enterCurAction
         };
 
         // Finally, render it!
@@ -89,6 +118,7 @@ export default class Example extends React.Component {
                 renderInputComponent={renderInputComponent}
                 renderSuggestion={renderSuggestion}
                 onSuggestionSelected={this.onSuggestionSelected}
+                onSuggestionHighlighted={this.onSuggestionHighlighted}
                 inputProps={inputProps}
                 highlightFirstSuggestion={true}
                 theme={AutosuggestTheme}

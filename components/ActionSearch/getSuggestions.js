@@ -107,12 +107,10 @@ const dynamicHints = {
 
         coinSuggestions = filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.walletData.find(w => w.coin === cs.symbol))
 
-        // Also need to sort by match closeness + if is in wallets
-
         return {
             isHinted: isHinted,
             foundExactMatch: coinSuggestions.length >= 1 && coinSuggestions[0].isExactMatch,
-            coins: coinSuggestions.map(cs => cs.symbol)
+            coins: [...new Set(coinSuggestions.map(cs => cs.symbol))] // May be dupes because of checking both coin names & symbols, remove those
         }
     },
 }
