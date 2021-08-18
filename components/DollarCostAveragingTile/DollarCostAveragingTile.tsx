@@ -81,20 +81,20 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
                 <div className={css.dcaCalculator}>
                     <div>
                         If you invested &nbsp;
-                        <select value={this.state.dcaAmt} onChange={evt => this.setState({ ...this.state, dcaAmt: Number(evt.target.value) })}>
+                        <select value={this.state.dcaAmt} onChange={evt => this.setState({ dcaAmt: Number(evt.target.value) })}>
                             <option value={5}>$5</option>
                             <option value={10}>$10</option>
                             <option value={20}>$20</option>
                             <option value={100}>$100</option>
                         </select>
                         &nbsp; into {this.props.coinName} every &nbsp;
-                        <select value={this.state.dcaFreq} onChange={evt => this.setState({ ...this.state, dcaFreq: Number(evt.target.value) })}>
+                        <select value={this.state.dcaFreq} onChange={evt => this.setState({ dcaFreq: Number(evt.target.value) })}>
                             <option value={ONE_DAY}>day</option>
                             <option value={ONE_DAY * 3}>3 days</option>
                             <option value={ONE_WEEK}>week</option>
                         </select>
                         &nbsp; for the last &nbsp;
-                        <select value={this.state.dcaDuration} onChange={evt => this.setState({ ...this.state, dcaDuration: Number(evt.target.value) })}>
+                        <select value={this.state.dcaDuration} onChange={evt => this.setState({ dcaDuration: Number(evt.target.value) })}>
                             <option value={ONE_MONTH}>month</option>
                             <option value={ONE_YEAR}>year</option>
                             <option value={ONE_YEAR * 5}>5 years</option>

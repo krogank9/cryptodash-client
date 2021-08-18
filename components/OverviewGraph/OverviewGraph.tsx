@@ -109,7 +109,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
     }
 
     setCandlestick = (b) => {
-        this.setState({ ...this.state, candlestick: b })
+        this.setState({ candlestick: b })
     }
 
     graphTypeSelect = (evt) => {
@@ -127,7 +127,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
 
     setTimeframe = (t) => {
         this.props.changeObservedProps([{"walletData": `walletData_${t}`}, "selectedCoin"])
-        this.setState({ ...this.state, timeFrame: t })
+        this.setState({ timeFrame: t })
         ///this.setGraphOptions(this.state.graphOptions.candlestick)
     }
 
