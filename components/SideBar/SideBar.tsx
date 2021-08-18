@@ -4,14 +4,17 @@ import React, { Component } from 'react';
 import Link from 'next/link'
 import { withRouter, NextRouter } from 'next/router'
 
+import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton'
+
 interface IProps {
   toggled: boolean,
-  router: NextRouter
+  router: NextRouter,
+  selectedCoin: {coin: string}
 }
 interface IState {
 }
 
-export default withRouter(class SideBar extends React.Component<IProps, IState> {
+export default withRouter(makeObserver("selectedCoin", class SideBar extends React.Component<IProps, IState> {
   matchPage(regex) {
     let s = ""
     try { s = this.props.router.asPath || "" } catch(e){}
@@ -33,7 +36,7 @@ export default withRouter(class SideBar extends React.Component<IProps, IState> 
             <span>Overview</span>
           </a>
         </Link>
-        <Link href="/analyze">
+        <Link href={`/analyze/${this.props.selectedCoin.coin}`}>
           <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
             <IonIcon name="stats-chart" />
             <span>Analyze</span>
@@ -68,4 +71,4 @@ export default withRouter(class SideBar extends React.Component<IProps, IState> 
       </div>
     )
   }
-})
+}))

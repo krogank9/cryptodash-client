@@ -106,6 +106,7 @@ const dynamicHints = {
         }
 
         coinSuggestions = filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.walletData.find(w => w.coin === cs.symbol))
+        coinSuggestions = filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.selectedCoin.coin === cs.symbol)
 
         return {
             isHinted: isHinted,
