@@ -78,7 +78,7 @@ const Utils = {
         })
     },
     filterDictKeys(dict, filterFunc) {
-        const filteredKeys = Object.keys(dict).filter(filterFunc)
+        const filteredKeys = Object.keys(dict).filter(key => filterFunc(key, dict[key]))
         let filteredDict = {}
         filteredKeys.forEach(k => filteredDict[k] = dict[k])
         return filteredDict

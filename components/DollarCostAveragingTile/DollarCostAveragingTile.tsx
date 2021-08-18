@@ -95,6 +95,7 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
                         </select>
                         &nbsp; for the last &nbsp;
                         <select value={this.state.dcaDuration} onChange={evt => this.setState({ ...this.state, dcaDuration: Number(evt.target.value) })}>
+                            <option value={ONE_MONTH}>month</option>
                             <option value={ONE_YEAR}>year</option>
                             <option value={ONE_YEAR * 5}>5 years</option>
                             <option value={ONE_YEAR * 999}>all time</option>

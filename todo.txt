@@ -1,16 +1,16 @@
 -Finish all actual features
-	-Analyze page
-		-DCA calculator functional
-		-Prediction graph more info below description: predicted raise/dip, cur price, predicted price
-	-Overview page
-		-add wallet popup
 	-Searchbar thing at least basic functionality
 		-Commands
 		-Suggestions
+	-Overview page
+		-add wallet popup
 	-Real Login
 	-Filler pages, mostly just css to write here
 
+-Remove any ...this.state
 -Anything that touches server/fetch code should handle malformed inputs gracefully.
 -Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
 -Check CSS for different DPIs
+-Improve CSS
 -Organize code/CSS
+-Animations

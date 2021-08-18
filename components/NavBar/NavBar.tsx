@@ -4,6 +4,8 @@ import IonIcon from '../IonIcon/IonIcon'
 
 import React, { Component } from 'react';
 
+import ActionSearch from '../ActionSearch/ActionSearch'
+
 interface IProps {
     toggleHamburgerCallback: () => void
 }
@@ -25,12 +27,17 @@ class NavBar extends React.Component<IProps> {
                 <span className={css.navBar__hamburgerButton} onClick={ this._toggleHamburgerCallback }>
                     <IonIcon className={css.navBar__hamburgerButtonIcon} name="menu" />
                 </span>
+
+                <ActionSearch />
+
+                {/*
                 <div className={css.navBar__searchBox}>
                     <input type="text" className={css.navBar__searchBoxInput} placeholder='Type an action... "Add 5 BTC"' />
                     <a className={css.navBar__searchBoxButton}>
                         <IonIcon name="return-down-forward" />
                     </a>
                 </div>
+                */}
 
                 <div style={{ flexGrow: 1 }} />
 
