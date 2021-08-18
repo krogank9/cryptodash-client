@@ -7,6 +7,8 @@
 	-Real Login
 	-Filler pages, mostly just css to write here
 
+-Predictions crash with short coin times?
+
 -Remove any ...this.state
 -Anything that touches server/fetch code should handle malformed inputs gracefully.
 -Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
