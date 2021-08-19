@@ -15,13 +15,16 @@ const getSuggestionValue = suggestion => suggestion.text;
 const renderSuggestion = suggestion => {
     setTimeout(function () {/*debugger*/ }, 1000); return (
         <div>
-            {suggestion.text}
+            {suggestion.icon}
+            <span>
+                {suggestion.text}
+            </span>
         </div>
     )
 }
 
 const renderInputComponent = inputProps => {
-    console.log(inputProps); return (
+    return (
         <div>
             <input type="text" {...Utils.filterDictKeys(inputProps, k => !["suggestionsOpen", "enterCurAction"].includes(k))} />
             <a style={{ borderBottomRightRadius: inputProps.suggestionsOpen ? "0" : "" }} onClick={inputProps.enterCurAction}>
@@ -91,8 +94,6 @@ export default class Example extends React.Component {
 
     curHighlightedSelection = null
     onSuggestionHighlighted = ({ suggestion }) => {
-        console.log("highlighted")
-        console.log(suggestion)
         this.curHighlightedSelection = suggestion
     }
 

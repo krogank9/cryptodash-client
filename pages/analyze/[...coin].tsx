@@ -33,7 +33,7 @@ export async function getServerSideProps(context) {
 
   const coin = context.query.coin
 
-  let coinB64 = CoinIconList32B64[coin] || ""
+  let coinB64 = CoinIconList32B64[coin] || CoinIconList32B64["generic"]
 
   var marketInfo = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8')).find(m => m["symbol"] == coin)
   console.log("marketInfo")

@@ -3,6 +3,8 @@ import { observer } from 'mobx-react'
 import config from '../config'
 import CoinIdMap from "../static_data/coin_id_map.json"
 
+import GenericCoinB64 from '../public/generic_coin.json'
+
 import Utils from '../Utils'
 
 import { toJS } from 'mobx';
@@ -202,6 +204,10 @@ class CryptodashStore {
 
     setCoinImagesB64(data) {
         this.coinImagesB64 = { ...this.coinImagesB64, ...data }
+    }
+
+    getCoinImageB64(coin) {
+        return this.coinImagesB64[coin] || GenericCoinB64.data
     }
 }
 const CryptodashStoreSingleton = new CryptodashStore()

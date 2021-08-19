@@ -50,7 +50,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
                 d[2] = "+" + d[2]
             }
 
-            let coinBase64 = StoreSingleton.coinImagesB64[d[0].toLowerCase()] || StoreSingleton.coinImagesB64["generic"] || ""
+            let coinBase64 = StoreSingleton.getCoinImageB64(d[0].toLowerCase())
 
             let selectedStyle = ""
             if(this.props.selectedCoin.coin === d[0]) {

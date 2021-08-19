@@ -61,7 +61,7 @@ export default class WalletTile extends React.Component<WalletTileProps> {
                 <div className={css.walletTile__info}>
                     <div className={css.walletTile__crypto}>
                         <div className={css.walletTile__cryptoIcon}>
-                            <img src={"data:image/png;base64," + StoreSingleton.coinImagesB64[this.props.data.coin]} />
+                            <img src={"data:image/png;base64," + StoreSingleton.getCoinImageB64(this.props.data.coin)} />
                         </div>
                         <div className={css.walletTile__cryptoText}>
                             <div className={css.walletTile__cryptoTextAmount}>{this.props.data.amount} {this.props.data.coin}</div>

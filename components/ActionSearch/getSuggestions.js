@@ -1,19 +1,23 @@
 import CoinNameMap from '../../static_data/coin_id_map.json'
 import Utils from '../../Utils'
+import IonIcon from '../IonIcon/IonIcon';
 
 // Coins with numbers in their name mess up the search results.
 // When you type "add 1" it thinks you are trying to add the coin "1337" instead of suggesting for example BTC or ETH.
 // In a real application we would have to handle these odd edge cases (<1% obscure coins) gracefully by making our algorithm considerably more robust.
 // But due to time and patience constraints we decide to pretend we live in a perfect world where no coin name contains a number:
-const CoinNameMapNoNumbers = Utils.filterDictKeys(CoinNameMap, (k,v) => !(/\d/.test(k)) && !(/\d/.test(v)))
 import DefaultCoins from '../../static_data/default_coins.json'
-const CoinSymbols = Object.keys(CoinNameMapNoNumbers)
-const CoinNames = CoinSymbols.map(s => CoinNameMapNoNumbers[s])
+const CoinSymbols = Object.keys(CoinNameMap)
+const CoinNames = CoinSymbols.map(s => CoinNameMap[s])
 
 import Router from 'next/router'
 import StoreSingleton from '../../store/CryptodashStoreSingleton'
 
 const MAX_SUGGESTIONS = 5
+
+function filterFirst(arr, cb) {
+    return arr.filter((e, i, arr) => cb(e, i, arr) || arr.indexOf(e) !== i)
+}
 
 function filterMoveToBeginning(arr, cb) {
     let addToBeginning = []
@@ -28,7 +32,7 @@ function filterMoveToBeginning(arr, cb) {
     return addToBeginning.concat(arr)
 }
 
-function getMatchLenWord(str, word) {
+function getPartialMatch(str, word) {
     str = str.toLowerCase()
     let matchLen = 0
     for(let i = 0; i < str.length; i++) {
@@ -51,7 +55,7 @@ function getMatchLenWord(str, word) {
         if(matchLen === word.length)
             break
     }
-    return matchLen
+    return word.substring(0, matchLen)
 }
 
 const dynamicHints = {
@@ -59,7 +63,7 @@ const dynamicHints = {
         let args = {
             isHinted: false,
             foundExactMatch: false,
-            number: 1
+            numbers: []
         }
 
         str.split(" ").filter(w => w.length > 0).forEach(word => {
@@ -68,10 +72,12 @@ const dynamicHints = {
                     ...args,
                     isHinted: true,
                     foundExactMatch: true,
-                    number: Number(word)
+                    numbers: args.numbers.concat(Number(word))
                 }
             }
         })
+
+        //args.numbers.push(1)
 
         return args
     },
@@ -79,21 +85,21 @@ const dynamicHints = {
         let coinSuggestions = []
 
         CoinSymbols.forEach((symbol, i) => {
-            const matchLen = getMatchLenWord(str, symbol)
-            if(matchLen === symbol.length) {
+            const match = getPartialMatch(str, symbol)
+            if(match === symbol) {
                 coinSuggestions.push({symbol: symbol, isExactMatch: true})
             }
-            else if(matchLen > 0) {
+            else if(match.length > 0 && isNaN(match)) {
                 coinSuggestions.push({symbol: symbol, isExactMatch: false})
             }
         })
 
         CoinNames.forEach((name, i) => {
-            const matchLen = getMatchLenWord(str, name.toLowerCase())
-            if(matchLen === name.length) {
+            const match = getPartialMatch(str, name.toLowerCase())
+            if(match === name) {
                 coinSuggestions.push({symbol: CoinSymbols[i], isExactMatch: true})
             }
-            else if(matchLen > 0) {
+            else if(match.length > 0 && isNaN(match)) {
                 coinSuggestions.push({symbol: CoinSymbols[i], isExactMatch: false})
             }
         })
@@ -139,7 +145,7 @@ function parseHints(hints, definiteHints, str) {
         }
         // Normal textual hint
         else {
-            let matchLen = getMatchLenWord(str, hint)
+            let matchLen = getPartialMatch(str, hint).length
             
             args = {
                 ...args,
@@ -157,7 +163,8 @@ const actions = [
     {
         name: "Add coin",
         // Add coin balance to wallet
-        getSuggestions: ({coins, number, textHintsMatched}) => {
+        getSuggestions: ({coins, numbers, textHintsMatched}) => {
+            let number = filterFirst(numbers, n => !coins.includes(String(n)))[0] || 1
             return coins.map(c => {
                 let opPrefix = "Add"
                 if((textHintsMatched.includes("subtract") && !textHintsMatched.includes("add")) || number < 0) {
@@ -166,6 +173,7 @@ const actions = [
                 }
                 return {
                     text: `${opPrefix} ${Math.abs(number)} ${c.toUpperCase()}`,
+                    icon: <img src={"data:image/png;base64," + StoreSingleton.getCoinImageB64(c)} />,
                     execute: () => StoreSingleton.addBalanceSmart(c, number),
                 }
             })
@@ -178,6 +186,7 @@ const actions = [
         name: "Overview",
         getSuggestions: () => [{
             text: "Overview",
+            icon: <IonIcon name="pie-chart" />,
             execute: () => Router.push(`/`),
         }],
         definiteHints: ["Overview"],
@@ -185,10 +194,11 @@ const actions = [
     {
         // Open Analyze page
         name: "Analyze",
-        getSuggestions: ({coins, number}) => {
+        getSuggestions: ({coins}) => {
             return coins.map(c => {
                 return {
                     text: `Analyze ${c.toUpperCase()}`,
+                    icon: <IonIcon name="stats-chart" />,
                     execute: () => Router.push(`/analyze/${coins[0]}`)
                 }
             })
@@ -203,6 +213,7 @@ const actions = [
             return coins.filter(c => StoreSingleton.walletData.find(w => w.coin === c)).map(c => {
                 return {
                     text: `Remove all ${c.toUpperCase()}`,
+                    icon: <img src={"data:image/png;base64," + StoreSingleton.getCoinImageB64(c)} />,
                     execute: () => StoreSingleton.removeWalletForCoin(coins[0]),
                 }
             })
