@@ -32,7 +32,7 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
             predictedData: [],
             dcaDuration: ONE_YEAR,
             dcaFreq: ONE_DAY,
-            dcaAmt: 10,
+            dcaAmt: 5,
         }
     }
 
@@ -62,7 +62,7 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
             )
         }
         catch (err) {
-            console.log(err)
+            //console.log(err)
             return <p></p>
         }
     }
@@ -82,6 +82,7 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
                     <div>
                         If you invested &nbsp;
                         <select value={this.state.dcaAmt} onChange={evt => this.setState({ dcaAmt: Number(evt.target.value) })}>
+                            <option value={1}>$1</option>
                             <option value={5}>$5</option>
                             <option value={10}>$10</option>
                             <option value={20}>$20</option>
@@ -96,6 +97,8 @@ class DollarCostAveragingTile extends React.Component<DollarCostAveragingTilePro
                         &nbsp; for the last &nbsp;
                         <select value={this.state.dcaDuration} onChange={evt => this.setState({ dcaDuration: Number(evt.target.value) })}>
                             <option value={ONE_MONTH}>month</option>
+                            <option value={ONE_MONTH*3}>3 months</option>
+                            <option value={ONE_MONTH*6}>6 months</option>
                             <option value={ONE_YEAR}>year</option>
                             <option value={ONE_YEAR * 5}>5 years</option>
                             <option value={ONE_YEAR * 999}>all time</option>
