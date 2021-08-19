@@ -1,7 +1,4 @@
 -Finish all actual features
-	-Searchbar thing at least basic functionality
-		-Commands
-		-Suggestions
 	-Overview page
 		-add wallet popup
 	-Real Login
