@@ -3,13 +3,16 @@ import WalletTile from './WalletTile/WalletTile'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react'
 
+import AddWalletModal from '../AddWalletModal/AddWalletModal'
+
 import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton.js'
 
 interface WalletCarouselProps { data?: any, selectedCoin: {coin: string}, walletData_1d: any }
 
 export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarousel extends React.Component<WalletCarouselProps> {
-    state = {
-        scrollPos: 1
+    state: {
+        scrollPos: number,
+        addWalletModalOpen: boolean
     }
 
     carouselTrackRef: React.RefObject<HTMLDivElement>;
@@ -18,7 +21,8 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
         super(props)
 
         this.state = {
-            scrollPos: 0
+            scrollPos: 0,
+            addWalletModalOpen: false
         }
 
         this.carouselTrackRef = React.createRef()
@@ -79,12 +83,13 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
             <div className={css.walletCarousel}>
                 <div className={css.walletCarousel__header}>
                     <div className={css.walletCarousel__sectionTitle}>Your Portfolio</div>
-                    <a className={css.walletCarousel__textButton+" show-desktop-only"}>Add wallet</a>
+                    <a className={css.walletCarousel__textButton+" show-desktop-only"} onClick={() => this.setState({addWalletModalOpen: true})}>Add wallet</a>
+                    <AddWalletModal isOpen={this.state.addWalletModalOpen} onRequestClose={() => this.setState({addWalletModalOpen: false})} />
                     {/*<a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>*/}
     
                     <div className={css.walletCarousel__controls}>
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.props.selectedCoin.coin ? "" : css.walletCarousel__actionButton_inactive)} name="close-outline" onClick={() => StoreSingleton.removeSelectedWallet()} />
-                        <IonIcon className={css.walletCarousel__actionButton} name="add-outline" />
+                        <IonIcon className={css.walletCarousel__actionButton} name="add-outline" onClick={() => this.setState({addWalletModalOpen: true})} />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos > 0 ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-back-outline" onClick={() => this.scroll(-1)} />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos < this.getMaxScrollPos() ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-forward-outline" onClick={() => this.scroll(1)} />
                     </div>

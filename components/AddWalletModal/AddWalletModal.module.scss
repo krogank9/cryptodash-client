@@ -1,0 +1,78 @@
+.container {
+    background-color: $foreground-color;
+    borderradius: $border-radius-larger;
+    border-radius: $border-radius-larger;
+
+    &__header {
+        padding-left: 20px;
+        padding-right: 10px; // for close button
+        padding-top: 10px; // for close button
+        padding-bottom: 0px;
+        h2 {
+            margin: 0;
+            padding-top: 5px;
+        }
+
+        svg {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    &__body {
+        padding: 20px;
+    }
+}
+
+.rsInputNumber {
+    box-sizing: border-box;
+    * {
+        box-sizing: border-box;
+    }
+
+    display: flex;
+    border-radius: 6px;
+    position: relative;
+    transition: border-color .3s ease-in-out;
+    width: 100%;
+    cursor: text;
+
+    > span {//.rs-input-number-btn-group-vertical {
+        position: relative;
+        width: 20px;
+        -moz-box-flex: 0;
+        flex: 0 0 20px;
+        display: block;
+        border-bottom-right-radius: 6px;
+        border-top-right-radius: 6px;
+
+        > button {//.rs-btn {
+            display: block;
+            float: none;
+            width: 100%;
+            max-width: 100%;
+            height: 17px;
+            position: relative;
+            border: none;
+
+            > svg {//.rs-icon {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 17px;
+                font-size: 12px;
+                display: flex;
+                -moz-box-align: center;
+                align-items: center;
+                -moz-box-pack: center;
+                justify-content: center;
+            }
+        }
+    }
+}

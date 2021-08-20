@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { GridLoader } from 'react-spinners';
+
 function createElementSVG(e, props = {}, innerHTML) {
     return React.createElement(e, props, [innerHTML])
 }
@@ -137,13 +139,17 @@ showGrid // default true, show gridlines
 var chartCount = 0
 export var makeChart = function(options = {}) {
     try {
+        //throw new Error("test")
         return _makeChart(options)
     }
     catch(err) {
         //console.log(err)
         return (
-            <svg style={{ width: "100%", height: options.height || 0 }}>
-            </svg>
+            <div style={{display: "flex", alignItems: "center", justifyContent: "center", height: options.height, flexDirection: "column"}} className="fadeInAnimation">
+                <GridLoader size={24} color={"#7CCB9E"} />
+                <span style={{paddingTop: "20px"}}>{options.loadingLabel || "Loading graph..."}</span>
+            </div>
+            //<svg style={{ width: "100%", height: options.height || 0 }}></svg>
         )
     }
 }

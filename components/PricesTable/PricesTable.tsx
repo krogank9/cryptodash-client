@@ -36,13 +36,25 @@ interface PricesTableProps {
 
 export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable extends React.Component<PricesTableProps> {
 
+    state: {
+        sortDescending: boolean
+    }
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            sortDescending: true
+        }
+    }
+
     makeList(data) {
         data = data.map(w => ({
             symbol: w.coin,
             current_price: w.graph_1d.slice(0).pop()[1],
             price_change_percentage_24h: Utils.getChangePct(w.graph_1d)
         }))
-        data.sort((a, b) => b.current_price - a.current_price)
+        data.sort((a, b) => this.state.sortDescending ? (b.current_price - a.current_price) : (a.current_price - b.current_price))
         data = data.map((coinInfo) => [coinInfo.symbol, nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
 
         return data.map((d, i) => {
@@ -125,7 +137,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
             <div className={css.pricesTable + " " + (this.props.className || "")}>
                 <div className={css.pricesTable__header}>
                     Current Prices
-                    <IonIcon style={{ float: "right" }} name="swap-vertical-outline" />
+                    <IonIcon style={{ float: "right" }} name="swap-vertical-outline" onClick={() => this.setState({sortDescending: !this.state.sortDescending})} />
                 </div>
                 <div className={css.pricesTable__listContainer}>
                     <ul className={css.pricesTable__list}>

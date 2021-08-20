@@ -12,6 +12,10 @@
         // The 13px 17px padding plus 2px transparent border but in padding:
         padding: 15px 19px 13px 19px;
         border-bottom: 2px solid #454545;
+
+        svg { // IonIcon
+            cursor: pointer;
+        }
     }
 
     &__listContainer {

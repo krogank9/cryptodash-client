@@ -34,6 +34,7 @@ class OverviewGraph extends React.Component<OverviewGraphProps> {
                 { name: CoinNameMap[this.props.coin], data: realData },
                 { name: "14 Day Prediction", data: (lastRealData ? [lastRealData] : []).concat(this.props.data[1]) },
             ],
+            loadingLabel: `Calculating 14 day prediction for ${CoinNameMap[this.props.coin]}...`
         }
 
         return (

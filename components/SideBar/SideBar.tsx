@@ -36,7 +36,7 @@ export default withRouter(makeObserver("selectedCoin", class SideBar extends Rea
             <span>Overview</span>
           </a>
         </Link>
-        <Link href={`/analyze/${this.props.selectedCoin.coin}`}>
+        <Link href={`/analyze/${this.matchPage(/\/analyze\/.*/g) ? this.props.router.asPath.split("/").pop() : this.props.selectedCoin.coin}`}>
           <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
             <IonIcon name="stats-chart" />
             <span>Analyze</span>

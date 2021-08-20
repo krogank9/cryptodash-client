@@ -25,25 +25,42 @@ import { withRouter, NextRouter } from 'next/router'
 import CoinIconList32B64 from "../../public/coins_32_color_b64_icon_list.json"
 var fs = require('fs')
 
+import GraphsCache from '../../../cryptodash-server/src/graphs/graphs-cache'
+
+function tryGetPredictionCache(coin) {
+  let saveCWD = process.cwd()
+  process.chdir("../cryptodash-server")
+
+  let preloadedPrediction = GraphsCache.getPredictionCacheJSON(CoinIdMap[coin])
+  console.log(`preloadedPrediction for ${coin} ${CoinIdMap[coin]}`)
+  console.log(preloadedPrediction)
+
+  // Micro optimization to already start preloading prediction before client makes 2nd request
+  if(preloadedPrediction[0].length === 0) {
+    try {
+      fetch(`http://localhost:8000/api/predictions/${CoinIdMap[coin]}`)
+    } catch {}
+  }
+
+  process.chdir(saveCWD)
+  return preloadedPrediction
+}
+
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
-
-  console.log(context.query)
-  console.log(context.params)
 
   const coin = context.query.coin
 
   let coinB64 = CoinIconList32B64[coin] || CoinIconList32B64["generic"]
 
   var marketInfo = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8')).find(m => m["symbol"] == coin)
-  console.log("marketInfo")
-  console.log(marketInfo)
 
   return {
     props: {
       coinB64: coinB64,
       marketInfo: marketInfo,
-      coin: coin
+      coin: coin,
+      preloadedPrediction: tryGetPredictionCache(coin)
     }
   }
 }
@@ -52,20 +69,21 @@ interface AnalyzeProps {
   router: NextRouter,
   coin: string,
   coinB64: string,
-  marketInfo: any
+  marketInfo: any,
+  preloadedPrediction: Array<any>
 }
 
 export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
   state: {
-    graphData: any,
-    predictedData: any,
+    graphData: Array<any>,
+    predictedData: Array<any>,
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      graphData: [],
-      predictedData: []
+      graphData: props.preloadedPrediction[0],
+      predictedData: props.preloadedPrediction[1]
     }
   }
 
@@ -82,9 +100,6 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
     fetch(`${config.API_ENDPOINT}/predictions/${CoinIdMap[this.props.coin]}`)
       .then(response => response.json())
       .then(data => {
-        console.log(`got data`)
-        console.log(data)
-
         let graphData = data[0]
         let predictedData = data[1]
         that.setState({ ...that.state, graphData: graphData, predictedData: predictedData })
@@ -92,8 +107,6 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
   }
 
   makePredictionInfo() {
-    console.log("makePredictionInfo")
-    console.log(this.state.graphData)
     try {
       const latestRealData = this.state.graphData.slice(0).pop()
       const latestPredictedData = this.state.predictedData.slice(0).pop()
@@ -109,7 +122,7 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
           <br />
           End price: {Utils.nFormatter(latestPredictedData[1])}
           <br />
-          Total {profit >= 0 ? "profit" : "loss"}: {Utils.nFormatter(profit)} {(changePct >= 0 ? "+":"") + changePct.toFixed(1)}%
+          Total {profit >= 0 ? "profit" : "loss"}: {Utils.nFormatter(profit)} {(changePct >= 0 ? "+" : "") + changePct.toFixed(1)}%
           <br />
           Projected 14 day high: {Utils.nFormatter(Math.max(...this.state.predictedData.map(d => d[1])))}
           <br />
@@ -123,7 +136,6 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
   }
 
   render() {
-    console.log(this.props)
     let coinName = CoinNameMap[this.props.coin] || ""
     let coinDescription = CoinDescriptions[this.props.coin] || ""
     let coinLink = `https://en.bitcoinwiki.org/wiki/${coinName.split(' ').join('_')}`

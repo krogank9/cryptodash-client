@@ -10,12 +10,13 @@ const Utils = {
     },
 
     nFormatter(num, mobile = false) {
-        if (Math.abs(num) < 1) {
-            return "$" + num.toFixed(mobile ? 2 : 4);
-        }
-
         const isNegative = num < 0
+        const negativeSign = isNegative ? "-" : ""
         num = Math.abs(num)
+
+        if (num < 1) {
+            return negativeSign + "$" + num.toFixed(mobile ? 2 : 4);
+        }
 
         const lookup = [
             { value: 1e18, symbol: "E" },
@@ -33,7 +34,6 @@ const Utils = {
         if(!item)
             item = lookup.slice(0).pop()
 
-        const negativeSign = isNegative ? "-" : ""
         return negativeSign + "$" + (num / item.value).toFixed(mobile ? 0 : 2) + item.symbol;
     },
     transformGraphSpace(from, to) {

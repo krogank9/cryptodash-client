@@ -1,15 +1,26 @@
--Finish all actual features
-	-Overview page
-		-add wallet popup
-	-Real Login
-	-Filler pages, mostly just css to write here
+Essential base features:
+------------------------
 
--Predictions crash with short coin times?
+-Overview page
+	-add wallet popup
 
--Remove any ...this.state
 -Anything that touches server/fetch code should handle malformed inputs gracefully.
--Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
+
+-Predictions crash with short coin times xch?
+
+-make sure predictions loading works on mobile. fetch might behave differently
+
+----------
+Remaining after features:
+
+-Real Login
+-Filler pages, mostly just css to write here
 -Check CSS for different DPIs
+
+-------
+Polish:
+
+-Fix lag on graphs. Seems to be due to lot of SVGs. Can render to canvas/png since mostly static
 -Improve CSS
 -Organize code/CSS
 -Animations
