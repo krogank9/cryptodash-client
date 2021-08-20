@@ -6,10 +6,6 @@ Essential base features:
 
 -Anything that touches server/fetch code should handle malformed inputs gracefully.
 
--Predictions crash with short coin times xch?
-
--make sure predictions loading works on mobile. fetch might behave differently
-
 ----------
 Remaining after features:
 

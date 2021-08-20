@@ -95,15 +95,38 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
     return [month, day].concat(showYear ? year : []).join("/")
   }
 
-  componentDidMount() {
-    let that = this
-    fetch(`${config.API_ENDPOINT}/predictions/${CoinIdMap[this.props.coin]}`)
+  // For increasing request timeout. Different on different browsers. Prediction graph could take a long time to load.
+  multiFetch(url, maxWaitTime = 30000, alreadyWaited = 0) {
+    let startTime = Date.now()
+    return fetch(url).catch((error) => {
+      let waited = Date.now() - startTime
+      // Extremely short wait means wasn't waiting for graph and some other err returned. Just return error if so
+      if (alreadyWaited < maxWaitTime && waited > 1000)
+        return this.multiFetch(url, maxWaitTime, alreadyWaited + waited)
+      else
+        return error
+    })
+  }
+
+  getPredictionDataFromServer() {
+    if (this.state.graphData.length > 0) {
+      return
+    }
+
+    this.multiFetch(`${config.API_ENDPOINT}/predictions/${CoinIdMap[this.props.coin]}`, 30000)
       .then(response => response.json())
       .then(data => {
         let graphData = data[0]
         let predictedData = data[1]
-        that.setState({ ...that.state, graphData: graphData, predictedData: predictedData })
+        this.setState({ graphData: graphData, predictedData: predictedData })
+      }).catch(err => {
+        console.log("Could not fetch prediction")
+        //console.log(err)
       })
+  }
+
+  componentDidMount() {
+    this.getPredictionDataFromServer()
   }
 
   makePredictionInfo() {
