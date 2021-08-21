@@ -10,7 +10,7 @@ import Utils from '../Utils'
 import { toJS } from 'mobx';
 import React from "react";
 
-const fakeComputed = observable
+const timeFrames = ["1d", "1w", "1m", "1y", "all"]
 
 class CryptodashStore {
 
@@ -57,12 +57,12 @@ class CryptodashStore {
         })
     }
 
-    syncWalletDataComputeds() {
-        [].splice.apply(this.walletData_1d, [0, this.walletData_1d.length].concat(this.filterWalletGraphs(this.walletData, "1d")));
-        [].splice.apply(this.walletData_1w, [0, this.walletData_1w.length].concat(this.filterWalletGraphs(this.walletData, "1w")));
-        [].splice.apply(this.walletData_1m, [0, this.walletData_1m.length].concat(this.filterWalletGraphs(this.walletData, "1m")));
-        [].splice.apply(this.walletData_1y, [0, this.walletData_1y.length].concat(this.filterWalletGraphs(this.walletData, "1y")));
-        [].splice.apply(this.walletData_all, [0, this.walletData_all.length].concat(this.filterWalletGraphs(this.walletData, "all")));
+    syncWalletDataComputeds(forTimeFrame) {
+        for(let t of timeFrames) {
+            if(forTimeFrame && t !== forTimeFrame)
+                continue
+            [].splice.apply(this["walletData_"+t], [0, this["walletData_"+t].length].concat(this.filterWalletGraphs(this.walletData, t).filter(w => w["graph_"+t])));
+        }
     }
 
     coinImagesB64 = {/* coinSymbol: b64 */ }
@@ -110,6 +110,38 @@ class CryptodashStore {
         this.lazyLoadCoinImages()
     }
 
+    // When adding coins via querying the API, the API calls can be spaced out by minutes or seconds.
+    // The 1 day data is displayed in 5 minute intervals so this new data may be out of sync with the old.
+    // This causes a gap at the beginning of the graph where the recently added data does not go back far
+    //  enough due to newer Date.now() and therefore Date.now() - 1d will not go back as far.
+    // It's necessary to pass a query parameter to make sure all graph's Date.now()'s stay the same.
+    getDateNowFromCurData() {
+        let now = Date.now()
+        this.walletData.forEach(w => {
+            try {
+                now = Math.min(now, w.graph_1d.slice().pop()[0] || Date.now())
+                return true
+            } catch {/*1d data not available or empty*/}
+        })
+        return now
+    }
+
+    addWalletAfterAllGraphs(coin, amount) {
+        let wallet = {coin: coin, amount: amount}
+
+        let getGraphPromises = timeFrames.map(timeFrame => {
+            return fetch(`${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}?now=${this.getDateNowFromCurData()}`)
+                .then(response => response.json())
+                .then(graph => {
+                    wallet["graph_"+timeFrame] = graph
+                })
+        })
+
+        return Promise.all(getGraphPromises).then(() => {
+            this.addWalletData(wallet)
+        })
+    }
+
     addWalletData(data, clearData = false) {
         if (clearData)
             this.walletData.length = 0
@@ -122,13 +154,14 @@ class CryptodashStore {
         // then update data upon response
         let timeFrames = ["1d", "1w", "1m", "1y", "all"];
 
-        [].push.apply(this.walletData, data);
+        [].unshift.apply(this.walletData, data);
         this.syncWalletDataComputeds()
 
+        // Should make an option to only add to wallet after all graphs are done
         data.forEach((wallet, i) => {
             timeFrames.filter(t => !wallet.hasOwnProperty("graph_" + t)).forEach(timeFrame => {
                 //console.log(`fetching.... ${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}`)
-                fetch(`${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}`)
+                fetch(`${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}?now=${this.getDateNowFromCurData()}`)
                     .then(response => response.json())
                     .then(graph => {
                         //console.log(graph)
@@ -144,8 +177,9 @@ class CryptodashStore {
     }
 
     addBalanceSmart = (coin, amount) => {
-        try {
-            const coinWallet = this.walletData.find(w => w.coin === coin)
+        const coinWallet = this.walletData.find(w => w.coin === coin)
+        
+        if(coinWallet) {
             coinWallet.amount = Utils.addNumsPrecise(coinWallet.amount, amount)
 
             if(this.walletData.find(w => w.coin === coin).amount <= 0)
@@ -153,10 +187,10 @@ class CryptodashStore {
             else
                 this.syncWalletDataComputeds() // Above syncs for us
         }
-        catch (err) {
-            console.log(err)
-            if(amount >= 0)
-                this.addWalletData({coin: coin, amount: amount})
+        else {
+            if(amount >= 0) {
+                this.addWalletAfterAllGraphs(coin, amount).then(() => this.setSelectedCoin(coin))
+            }
         }
     }
 
@@ -190,7 +224,8 @@ class CryptodashStore {
         const idx = this.walletData.findIndex(w => w.coin === coin)
         this.walletData[idx]["graph_" + timeFrame] = graph
         // Update appropriate computed too. Avoid using sync here. This is what we're trying to prevent component re-render on.
-        this["walletData_" + timeFrame][idx]["graph_" + timeFrame] = graph
+        // this["walletData_" + timeFrame][idx]["graph_" + timeFrame] = graph
+        this.syncWalletDataComputeds(timeFrame)
     }
 
     setWalletData(data) {

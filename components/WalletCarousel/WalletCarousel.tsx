@@ -77,8 +77,6 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
     }
 
     render() {
-        console.log("Rendering WalletCarousel")
-        console.log(this.props.walletData_1d.map(w => w.coin))
         return (
             <div className={css.walletCarousel}>
                 <div className={css.walletCarousel__header}>

@@ -53,7 +53,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
     }
 
     getGraphOptions = () => {
-        let walletData = toJS(this.props.walletData).slice(0)//.slice(0,2)
+        let walletData = toJS(this.props.walletData)//.slice(0,2)
 
         //console.log("walletData")
         //console.log(walletData)
