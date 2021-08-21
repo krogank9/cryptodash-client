@@ -49,32 +49,6 @@ $tile-margin: 15px;
     user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
-/*
-@mixin on-mobile-only {
-    @media only screen and (max-width: 767px) {
-        @content;
-    }
-}
-
-@mixin on-tablet-and-under {
-    @media only screen and (max-width: 1279px) {
-        @content;
-    }
-}
-
-@mixin on-tablet-and-up {
-    @media only screen and (min-width: 768px) {
-        @content;
-    }
-}
-
-@mixin on-desktop-and-up {
-    @media only screen and (min-width: 1280px) {
-        @content;
-    }
-}
-*/
-
 @mixin on-mobile-only {
     @media only screen and (max-width: 767px) {
         @content;

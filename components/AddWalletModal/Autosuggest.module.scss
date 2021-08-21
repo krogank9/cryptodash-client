@@ -2,8 +2,17 @@
     position: relative;
     margin-left: 20px;
 
+    @include on-mobile-only {
+        margin-left: 0;
+        width: 100%;
+    }
+
     > div {
         @include vcenter;
+
+        @include on-mobile-only {
+            width: 100%;
+        }
 
         a {
             z-index: 3;
@@ -30,6 +39,10 @@
 .input {
     height: 52px;
     box-sizing: border-box;
+
+    @include on-mobile-only {
+        width: 100%;
+    }
 
     background-color: #0c1117;
     padding: 15px 25px;
@@ -99,7 +112,8 @@
         @include vcenter;
     }
 
-    img, svg {
+    img,
+    svg {
         margin-right: 14px;
         width: 22px;
         height: 22px;
@@ -107,5 +121,5 @@
 }
 
 .suggestionHighlighted {
-    background-color: #2A4357;
+    background-color: #2a4357;
 }

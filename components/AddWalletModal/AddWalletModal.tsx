@@ -67,7 +67,7 @@ const renderInputComponent = inputProps => {
     return (
         <div>
             <input
-                type="text" {...Utils.filterDictKeys(inputProps, k => !["enterCurAction"].includes(k))}
+                type="text" {...Utils.filterDictKeys(inputProps, k => !["curCoin"].includes(k))}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
                 style={{
                     background: inputProps.curCoin ? `url(data:image/png;base64,${StoreSingleton.getCoinImageB64(inputProps.curCoin)}) no-repeat scroll 10px 10px, linear-gradient( #0C1117 100%, #0C1117 100%)` : "#0C1117",
@@ -150,9 +150,6 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
         this.setState({ value: newValue })
     }
 
-    enterCurAction = () => {
-    }
-
     curHighlightedSelection = null
     onSuggestionHighlighted = ({ suggestion }) => {
         this.curHighlightedSelection = suggestion
@@ -190,7 +187,6 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
             try {
                 document.body.classList.remove("fixedBodyScroll")
             } catch {/* Server side rendering */ }
-            return <></>
         }
 
 
@@ -202,13 +198,12 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
             placeholder: 'Type a coin...',
             value,
             onChange: this.onChange,
-            enterCurAction: this.enterCurAction,
             curCoin: this.getCurCoin()
         };
 
         return (
             <div>
-                <ReactModal isOpen={this.props.isOpen} onRequestClose={this.closeAndReset} style={customStyles}>
+                <ReactModal isOpen={this.props.isOpen} onRequestClose={this.closeAndReset} style={customStyles} ariaHideApp={false}>
                     <ToastContainer align={"right"} />
                     <div className={css.container}>
                         <div className={css.container__header}>
@@ -217,7 +212,7 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
                         </div>
                         <div className={css.container__body}>
                             <div className={css.container__bodyInputs}>
-                                <InputNumber defaultValue={1.00} className={css.rsInputNumber} min={0} onChange={amt => this.curAmount = Number(amt) || 1} />
+                                <InputNumber defaultValue={1.00} className={css.rsInputNumber + " " + css.container__bodyInputsNumber} min={0} onChange={amt => this.curAmount = Number(amt) || 1} />
                                 <Autosuggest
                                     className={css.container__bodyInputsAutosuggest}
                                     suggestions={suggestions}
