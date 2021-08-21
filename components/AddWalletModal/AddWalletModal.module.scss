@@ -1,16 +1,18 @@
 .container {
     background-color: $foreground-color;
-    borderradius: $border-radius-larger;
     border-radius: $border-radius-larger;
+
+    overflow: visible;
 
     &__header {
         padding-left: 20px;
         padding-right: 10px; // for close button
         padding-top: 10px; // for close button
-        padding-bottom: 0px;
+        padding-bottom: 15px;
         h2 {
             margin: 0;
             padding-top: 5px;
+            padding-left: 10px;
         }
 
         svg {
@@ -26,53 +28,83 @@
 
     &__body {
         padding: 20px;
+        overflow: visible;
+
+        &Inputs {
+            display: flex;
+            flex-direction: row;
+            overflow: visible;
+
+            &Number {
+            }
+            &Autosuggest {
+                z-index: 9999;
+                overflow: visible;
+                width: 170px;
+                margin-left: 10px;
+            }
+        }
+
+        &SubmitButtons {
+            text-align: center;
+
+            margin-top: 35px;
+            margin-bottom: 15px;
+
+            a:first-child {
+                margin-right: 5px;
+            }
+            a {
+                background-color: #2A4357;
+                padding: 7px 28px;
+                border-radius: 5px;
+            }
+            a:hover {
+                background-color: #4D789B;
+            }
+        }
     }
 }
 
 .rsInputNumber {
+    height: 52px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
     * {
         box-sizing: border-box;
     }
 
-    display: flex;
-    border-radius: 6px;
-    position: relative;
-    transition: border-color .3s ease-in-out;
-    width: 100%;
-    cursor: text;
+    input {
+        height: 100%;
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+        border: none;
+        padding: 10px;
+        background-color: $background-color;
+        color: white;
+    }
 
-    > span {//.rs-input-number-btn-group-vertical {
+    > span {
         position: relative;
+        height: 52px;
         width: 20px;
-        -moz-box-flex: 0;
-        flex: 0 0 20px;
-        display: block;
-        border-bottom-right-radius: 6px;
-        border-top-right-radius: 6px;
+        display: inline-block;
 
-        > button {//.rs-btn {
-            display: block;
-            float: none;
-            width: 100%;
-            max-width: 100%;
-            height: 17px;
-            position: relative;
+        button {
+            background-color: #ddd;
+            color: $background-color;
+            height: 50%;
+            position: absolute;
             border: none;
-
-            > svg {//.rs-icon {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 17px;
-                font-size: 12px;
-                display: flex;
-                -moz-box-align: center;
-                align-items: center;
-                -moz-box-pack: center;
-                justify-content: center;
-            }
+        }
+        button:first-child {
+            border-top-right-radius: 10px;
+            top: 0;
+        }
+        button:last-child {
+            border-bottom-right-radius: 10px;
+            bottom: 0;
         }
     }
 }

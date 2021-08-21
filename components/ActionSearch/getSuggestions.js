@@ -19,19 +19,6 @@ function filterFirst(arr, cb) {
     return arr.filter((e, i, arr) => cb(e, i, arr) || arr.indexOf(e) !== i)
 }
 
-function filterMoveToBeginning(arr, cb) {
-    let addToBeginning = []
-    arr = arr.filter(el => {
-        if(cb(el)) {
-            addToBeginning.push(el)
-            return false
-        }
-        else
-            return true
-    })
-    return addToBeginning.concat(arr)
-}
-
 function getPartialMatch(str, word) {
     str = str.toLowerCase()
     let matchLen = 0
@@ -111,8 +98,8 @@ const dynamicHints = {
             coinSuggestions = coinSuggestions.concat(DefaultCoins.filter(c => !coinSuggestions.some(cs => cs.symbol === c)).map(c => ({symbol: c, isExactMatch: false}))).slice(0, MAX_SUGGESTIONS)
         }
 
-        coinSuggestions = filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.walletData.find(w => w.coin === cs.symbol))
-        coinSuggestions = filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.selectedCoin.coin === cs.symbol)
+        coinSuggestions = Utils.filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.walletData.find(w => w.coin === cs.symbol))
+        coinSuggestions = Utils.filterMoveToBeginning(coinSuggestions, (cs) => StoreSingleton.selectedCoin.coin === cs.symbol)
 
         return {
             isHinted: isHinted,
@@ -241,7 +228,7 @@ export default function getSuggestions(text) {
         suggestions = suggestions.concat(action.getSuggestions(actionArgs[i]).slice(0, suggestionsPer))
     })
 
-    suggestions = filterMoveToBeginning(suggestions, (s) => s.text.toLowerCase().startsWith(text))
+    suggestions = Utils.filterMoveToBeginning(suggestions, s => s.text.toLowerCase().startsWith(text.split(" ")[0].toLowerCase()))
 
     return suggestions.slice(0, MAX_SUGGESTIONS)
 }

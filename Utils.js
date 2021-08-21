@@ -100,6 +100,18 @@ const Utils = {
     },
     addNumsPrecise(a,b) {
         return BigDecimal.add(a, b)
+    },
+    filterMoveToBeginning(arr, cb) {
+        let addToBeginning = []
+        arr = arr.filter(el => {
+            if(cb(el)) {
+                addToBeginning.push(el)
+                return false
+            }
+            else
+                return true
+        })
+        return addToBeginning.concat(arr)
     }
 }
 

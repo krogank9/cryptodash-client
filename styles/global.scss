@@ -135,7 +135,13 @@ a {
 
 //-------------------------------------
 
-
+#toast-message {
+    background-color: #D32F2F;
+    color: white;
+    .title {
+        color: white;
+    }
+}
 
 /*----------------------------------*/
 
