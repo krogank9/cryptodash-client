@@ -111,27 +111,36 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
         return cumulativeGraph
     }
 
-    render() {        
+    render() {
+        let curTotal
+        let totalGraph
+        let changePct
 
-        let oneDayData = this.props.walletData_1d.map(w => w.graph_1d)
-        //console.log(oneDayData)
-        let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
+        try {
+            let oneDayData = this.props.walletData_1d.map(w => w.graph_1d)
+            //console.log(oneDayData)
+            let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
-        //console.log(largestTimespanData)
-        // Transform all data to the largest spanning graphs space.
-        // Have to do this so indices & times will match up for when we add the graph.
-        // Mostly for "all time" graphs where each coin's graph may have a different starting day, month, year.
-        // Also good to normalize all for safety before we add them incase CoinGecko's API returns something unexpected.
-        let sameSpaceData = oneDayData.map((g, i) => {
-            if (g === largestTimespanData)
-                return g
-            else
-                return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i].graph_1w)
-        })
+            //console.log(largestTimespanData)
+            // Transform all data to the largest spanning graphs space.
+            // Have to do this so indices & times will match up for when we add the graph.
+            // Mostly for "all time" graphs where each coin's graph may have a different starting day, month, year.
+            // Also good to normalize all for safety before we add them incase CoinGecko's API returns something unexpected.
+            let sameSpaceData = oneDayData.map((g, i) => {
+                if (g === largestTimespanData)
+                    return g
+                else
+                    return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i].graph_1w)
+            })
 
-        let totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
-        let curTotal = totalGraph.slice(0).pop()[1]
-        let changePct = Utils.getChangePct(totalGraph)
+            totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
+            curTotal = totalGraph.slice(0).pop()[1]
+            changePct = Utils.getChangePct(totalGraph)
+        } catch {
+            totalGraph = []
+            curTotal = 0
+            changePct = 0
+        }
 
         return (
             <div className={css.pricesTable + " " + (this.props.className || "")}>

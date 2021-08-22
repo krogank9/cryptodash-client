@@ -69,6 +69,7 @@ const renderInputComponent = inputProps => {
             <input
                 type="text" {...Utils.filterDictKeys(inputProps, k => !["curCoin"].includes(k))}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
+                autoFocus={true}
                 style={{
                     background: inputProps.curCoin ? `url(data:image/png;base64,${StoreSingleton.getCoinImageB64(inputProps.curCoin)}) no-repeat scroll 10px 10px, linear-gradient( #0C1117 100%, #0C1117 100%)` : "#0C1117",
                     paddingLeft: inputProps.curCoin ? "52px" : "25px",
@@ -211,7 +212,7 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
                             <IonIcon className={css.container__headerIcon} name="close-outline" onClick={this.closeAndReset} />
                         </div>
                         <div className={css.container__body}>
-                            <div className={css.container__bodyInputs}>
+                            <form className={css.container__bodyInputs} onSubmit={() => this.tryAddWallet()}>
                                 <InputNumber defaultValue={1.00} className={css.rsInputNumber + " " + css.container__bodyInputsNumber} min={0} onChange={amt => this.curAmount = Number(amt) || 1} />
                                 <Autosuggest
                                     className={css.container__bodyInputsAutosuggest}
@@ -227,7 +228,8 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
                                     highlightFirstSuggestion={true}
                                     theme={AutosuggestTheme}
                                 />
-                            </div>
+                                <input type="submit" style={{display: "none"}} />
+                            </form>
                             <div className={css.container__bodySubmitButtons}>
                                 <a onClick={() => this.props.onRequestClose()}>Cancel</a>
                                 <a onClick={() => this.tryAddWallet()}>Add wallet</a>
