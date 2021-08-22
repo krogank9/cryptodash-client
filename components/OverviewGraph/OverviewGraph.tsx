@@ -59,26 +59,31 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
         //console.log(walletData)
 
         let graphTimeFrame = "graph_" + this.state.timeFrame
+        let timeFrameAbove = Utils.upgradeTimeFrame(graphTimeFrame)
 
         let balances = walletData.reduce((acc, cur) => { acc[cur.coin] = cur.amount; return acc }, {})
         let balances_arr = walletData.map(w => balances[w.coin])
-        let balanceWeightedData = walletData.map(w => this.clampGraphResolution(w[graphTimeFrame], 500)).map((g, i) => this.weighData(g, balances_arr[i]))
+        let resolutionClampedData = walletData.map(w => this.clampGraphResolution(w[graphTimeFrame], 500))
 
-        let largestTimespanData = balanceWeightedData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
+        let largestTimespanData = resolutionClampedData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
         //console.log(largestTimespanData)
         // Transform all data to the largest spanning graphs space.
         // Have to do this so indices & times will match up for when we add the graph.
         // Mostly for "all time" graphs where each coin's graph may have a different starting day, month, year.
         // Also good to normalize all for safety before we add them incase CoinGecko's API returns something unexpected.
-        let sameSpaceData = balanceWeightedData.map(g => {
+        let sameSpaceData = resolutionClampedData.map((g, i) => {
             if (g === largestTimespanData)
                 return g
-            else
-                return Utils.transformGraphSpace(g, largestTimespanData)
+            else {
+                console.log(StoreSingleton.walletData[i].coin)
+                return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i][timeFrameAbove])
+            }
         })
 
-        let portfolio = this.addData(sameSpaceData)
+        let balanceWeightedData = sameSpaceData.map((g, i) => this.weighData(g, balances_arr[i]))
+
+        let portfolio = this.addData(balanceWeightedData)
         let dataObjs = [{ name: "Total Portfolio", data: portfolio }]
 
         try {
@@ -92,7 +97,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
             else {
                 dataObjs.push({
                     name: this.props.selectedCoin.coin.toUpperCase(),
-                    data: sameSpaceData[walletData.findIndex(w => w.coin === this.props.selectedCoin.coin)]
+                    data: balanceWeightedData[walletData.findIndex(w => w.coin === this.props.selectedCoin.coin)]
                 })
             }
         }
@@ -188,8 +193,6 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
         console.log("Render OverviewGraph")
         let graphOptions = {}
         //graphOptions = this.getGraphOptions()
-        console.log("this.props.walletData")
-        console.log(toJS(this.props.walletData))
         try {
             graphOptions = this.getGraphOptions()
         } catch {}

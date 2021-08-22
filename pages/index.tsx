@@ -18,23 +18,13 @@ import CoinIconList32B64 from "../public/coins_32_color_b64_icon_list.json"
 import DefaultCoins from "../static_data/default_coins.json"
 import DefaultCoinAmounts from "../static_data/default_coin_amounts.json"
 
+import ServerUtils from '../ServerUtils'
+import CoinIdMap from '../static_data/coin_id_map.json'
+import Utils from '../Utils';
+
 var fs = require('fs')
 var xml2js = require('xml2js')
 var parser = new xml2js.Parser()
-
-function getCoinData() {
-  let coinData = {}
-  fs.readdirSync("static_data").forEach((file) => {
-    if (!file.endsWith("_1d.json"))
-      return
-
-    let coin = file.replace("_1d.json", "")
-    file = "./static_data/" + file
-
-    coinData[coin] = JSON.parse(fs.readFileSync(file, 'utf8'))
-  })
-  return coinData
-}
 
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
@@ -50,14 +40,16 @@ export async function getServerSideProps(context) {
     return filtered;
   }, {});
 
-  let coinData = getCoinData()
+  //let coinData = getCoinData()
 
   let walletData = DefaultCoins.map((c) => {
-    return {
+    console.log(c)
+    return Utils.filterDictKeys({
       coin: c,
       amount: DefaultCoinAmounts[c],
-      graph_1d: coinData[c]
-    }
+      graph_1d: ServerUtils.getCoinGraph(CoinIdMap[c], "1d"),
+      graph_1w: ServerUtils.getCoinGraph(CoinIdMap[c], "1w")
+    }, (k,v) => v !== null)
   })
 
   return {

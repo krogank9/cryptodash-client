@@ -122,11 +122,11 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
         // Have to do this so indices & times will match up for when we add the graph.
         // Mostly for "all time" graphs where each coin's graph may have a different starting day, month, year.
         // Also good to normalize all for safety before we add them incase CoinGecko's API returns something unexpected.
-        let sameSpaceData = oneDayData.map(g => {
+        let sameSpaceData = oneDayData.map((g, i) => {
             if (g === largestTimespanData)
                 return g
             else
-                return Utils.transformGraphSpace(g, largestTimespanData)
+                return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i].graph_1w)
         })
 
         let totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
