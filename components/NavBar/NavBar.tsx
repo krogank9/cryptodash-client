@@ -12,8 +12,7 @@ import { toJS } from 'mobx';
 import { observer } from 'mobx-react'
 
 interface IProps {
-    toggleHamburgerCallback: () => void,
-    loggedInUser: any
+    toggleHamburgerCallback: () => void
 }
 
 export default observer(class NavBar extends React.Component<IProps> {
