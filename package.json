@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "postinstall": "npx patch-package"
+    "start": "next start"
   },
   "dependencies": {
     "coingecko-api": "^1.0.10",

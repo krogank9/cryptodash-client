@@ -398,6 +398,7 @@ class Home extends Component {
                         <input
                             type="text"
                             style={font}
+                            placeholder=" "
                             autoComplete="email"
                             onChange={this.handleSignupEmail}
                         ></input>

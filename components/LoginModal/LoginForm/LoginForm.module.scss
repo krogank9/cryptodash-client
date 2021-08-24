@@ -67,7 +67,9 @@ SOFTWARE.
 
   /* active state  */
   input:focus ~ label,
-  input:valid ~ label {
+  input:valid:not(:placeholder-shown) ~ label,
+  input:placeholder-shown:not(:valid) ~ label {
+    // float text above
     top: -20px;
     font-size: 14px;
     color: #757575;
