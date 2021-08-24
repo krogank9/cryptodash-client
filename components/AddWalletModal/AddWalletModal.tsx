@@ -181,12 +181,12 @@ export default class AddWalletModal extends React.Component<IProps, IState> {
     render() {
         if (this.props.isOpen) {
             try {
-                document.body.classList.add("fixedBodyScroll")
+                document.body.classList.add("fixedBodyScroll_addWallet")
             } catch {/* Server side rendering */ }
         }
         else {
             try {
-                document.body.classList.remove("fixedBodyScroll")
+                document.body.classList.remove("fixedBodyScroll_addWallet")
             } catch {/* Server side rendering */ }
         }
 

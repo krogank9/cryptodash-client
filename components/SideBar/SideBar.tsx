@@ -4,17 +4,18 @@ import React, { Component } from 'react';
 import Link from 'next/link'
 import { withRouter, NextRouter } from 'next/router'
 
-import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton'
+import StoreSingleton from '../../store/CryptodashStoreSingleton'
+
+import { observer } from 'mobx-react'
 
 interface IProps {
   toggled: boolean,
   router: NextRouter,
-  selectedCoin: {coin: string}
 }
 interface IState {
 }
 
-export default withRouter(makeObserver("selectedCoin", class SideBar extends React.Component<IProps, IState> {
+export default withRouter(observer(class SideBar extends React.Component<IProps, IState> {
   matchPage(regex) {
     let s = ""
     try { s = this.props.router.asPath || "" } catch(e){}
@@ -36,7 +37,7 @@ export default withRouter(makeObserver("selectedCoin", class SideBar extends Rea
             <span>Overview</span>
           </a>
         </Link>
-        <Link href={`/analyze/${this.matchPage(/\/analyze\/.*/g) ? this.props.router.asPath.split("/").pop() : this.props.selectedCoin.coin}`}>
+        <Link href={`/analyze/${this.matchPage(/\/analyze\/.*/g) ? this.props.router.asPath.split("/").pop() : StoreSingleton.selectedCoin.coin}`}>
           <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
             <IonIcon name="stats-chart" />
             <span>Analyze</span>
@@ -64,7 +65,7 @@ export default withRouter(makeObserver("selectedCoin", class SideBar extends Rea
           <span>About</span>
         </a>
 
-        <a className={css.sideBar__item + " " + css.sideBar__loginLogoutItem}>
+        <a className={css.sideBar__item + " " + css.sideBar__loginLogoutItem} onClick={() => StoreSingleton.toggleLoginModal(true)}>
           <IonIcon name="enter" />
           <span>Log In / Create Account</span>
         </a>

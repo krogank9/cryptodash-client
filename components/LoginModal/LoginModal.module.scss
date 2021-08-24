@@ -1,0 +1,61 @@
+.container {
+    background-color: $foreground-color;
+    border-radius: $border-radius-larger;
+
+    overflow: visible;
+
+    &__header {
+        padding-left: 20px;
+        padding-right: 10px; // for close button
+        padding-top: 10px; // for close button
+        padding-bottom: 20px;
+        h2 {
+            margin: 0;
+            padding-top: 35px;
+            text-align: center;
+        }
+
+        svg {
+            float: right;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+    }
+
+    &__body {
+        position: relative;
+        padding: 20px;
+        padding-top: 0;
+        overflow: visible;
+        text-align: center;
+
+        button:enabled {
+            cursor: pointer;
+        }
+        b {
+            cursor: pointer;
+        }
+
+        &SubmitButtons {
+            text-align: center;
+
+            margin-top: 35px;
+            margin-bottom: 15px;
+
+            a:first-child {
+                margin-right: 5px;
+            }
+            a {
+                background-color: #2A4357;
+                padding: 7px 28px;
+                border-radius: 5px;
+            }
+            a:hover {
+                background-color: #4D789B;
+            }
+
+
+        }
+    }
+}

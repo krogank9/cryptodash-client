@@ -1,13 +1,12 @@
 Remaining stuff:
 -------------------------
 -Real Login
+	-form
+	-save/load data to/from server on getServerSideProps
+
 -Filler pages, mostly just css to write here
 -Check CSS for different DPIs
 -bitcoin wiki descriptions
-
--still a bug on adding coins, graph gets messed up sometimes b/c time ranges off i think
-	-in fact, it happens once in a while even just on first fetch.
-	-perhaps i could solve this in transformGraphSpaceTo
 
 -------
 Polish:

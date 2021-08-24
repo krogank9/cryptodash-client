@@ -1,18 +1,19 @@
 import css from './OverviewGraph.module.scss'
 import Graph, { GraphWithResize } from '../Graph/Graph'
 
-import StoreSingleton, { makeObserver } from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
 
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
+import { observer } from 'mobx-react'
 
 import Router from 'next/router'
 
 import Utils from '../../Utils'
 
-interface IProps { className?: string, walletData: any, selectedCoin: any, changeObservedProps: (props: any) => void }
+interface IProps { className?: string }
 
-export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], class OverviewGraph extends React.Component<IProps> {
+export default observer(class OverviewGraph extends React.Component<IProps> {
     state: {
         graphOptions: any,
         candlestick: boolean,
@@ -53,7 +54,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
     }
 
     getGraphOptions = () => {
-        let walletData = toJS(this.props.walletData)//.slice(0,2)
+        let walletData = toJS(this.getWalletData())//.slice(0,2)
 
         //console.log("walletData")
         //console.log(walletData)
@@ -90,14 +91,14 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
             // If it's a candlestick graph, can just use raw wallet data. No need to make same as portfolio or weight by wallet balance
             if (this.state.candlestick) {
                 dataObjs.push({
-                    name: this.props.selectedCoin.coin.toUpperCase(),
-                    data: walletData.find(w => w.coin === this.props.selectedCoin.coin)[graphTimeFrame]
+                    name: StoreSingleton.selectedCoin.coin.toUpperCase(),
+                    data: walletData.find(w => w.coin === StoreSingleton.selectedCoin.coin)[graphTimeFrame]
                 })
             }
             else {
                 dataObjs.push({
-                    name: this.props.selectedCoin.coin.toUpperCase(),
-                    data: balanceWeightedData[walletData.findIndex(w => w.coin === this.props.selectedCoin.coin)]
+                    name: StoreSingleton.selectedCoin.coin.toUpperCase(),
+                    data: balanceWeightedData[walletData.findIndex(w => w.coin === StoreSingleton.selectedCoin.coin)]
                 })
             }
         }
@@ -122,7 +123,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
         console.log(evt.target.value)
         if (evt.target.value === "predictive") {
             Router.push({
-                pathname: `/analyze/${this.props.selectedCoin.coin || "btc"}`,
+                pathname: `/analyze/${StoreSingleton.selectedCoin.coin || "btc"}`,
             })
         }
         else {
@@ -130,8 +131,12 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
         }
     }
 
+    getWalletData() {
+        return StoreSingleton["walletData_"+this.state.timeFrame]
+    }
+
     setTimeframe = (t) => {
-        this.props.changeObservedProps([{"walletData": `walletData_${t}`}, "selectedCoin"])
+        //this.props.changeObservedProps([{"walletData": `walletData_${t}`}, "selectedCoin"])
         this.setState({ timeFrame: t })
         ///this.setGraphOptions(this.state.graphOptions.candlestick)
     }
@@ -145,7 +150,7 @@ export default makeObserver([{"walletData": "walletData_1d"}, "selectedCoin"], c
             <div className={css.overviewGraph__controlsDesktopPlot}>
                 <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (!this.state.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(false)}>Line</a>
                 <a className={css.overviewGraph__controlsDesktopPlotButton + " " + (this.state.candlestick ? css.overviewGraph__controlsDesktopPlotButton_active : "")} onClick={() => this.setCandlestick(true)}>Candlestick</a>
-                <a className={css.overviewGraph__controlsDesktopPlotButton} href={`/analyze/${this.props.selectedCoin.coin || "btc"}`}>Predictive</a>
+                <a className={css.overviewGraph__controlsDesktopPlotButton} href={`/analyze/${StoreSingleton.selectedCoin.coin || "btc"}`}>Predictive</a>
             </div>
         )
         const mobilePlotButton = (

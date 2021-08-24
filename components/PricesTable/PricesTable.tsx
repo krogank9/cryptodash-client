@@ -2,39 +2,18 @@ import css from './PricesTable.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 
-import StoreSingleton, { makeObserver } from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
 
 import Utils from '../../Utils'
 import CryptodashStoreSingleton from '../../store/CryptodashStoreSingleton.js';
 
-function nFormatter(num) {
-
-    if (num < 1000) {
-        return "$" + Number(num).toFixed(2)
-    }
-
-    const lookup = [
-        { value: 1e18, symbol: "E" },
-        { value: 1e15, symbol: "P" },
-        { value: 1e12, symbol: "T" },
-        { value: 1e9, symbol: "G" },
-        { value: 1e6, symbol: "M" },
-        { value: 1e3, symbol: "K" },
-        { value: 1, symbol: "" },
-    ];
-    var item = lookup.find(function (item) {
-        return num >= item.value;
-    });
-    return item ? "$" + (num / item.value).toFixed(2) + item.symbol : "0";
-}
+import { observer } from 'mobx-react'
 
 interface PricesTableProps {
-    className?: string,
-    walletData_1d: any,
-    selectedCoin: any
+    className?: string
 }
 
-export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable extends React.Component<PricesTableProps> {
+export default observer(class PricesTable extends React.Component<PricesTableProps> {
 
     state: {
         sortDescending: boolean
@@ -55,7 +34,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
             price_change_percentage_24h: Utils.getChangePct(w.graph_1d)
         }))
         data.sort((a, b) => this.state.sortDescending ? (b.current_price - a.current_price) : (a.current_price - b.current_price))
-        data = data.map((coinInfo) => [coinInfo.symbol, nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
+        data = data.map((coinInfo) => [coinInfo.symbol, Utils.nFormatter(coinInfo.current_price), Number(coinInfo.price_change_percentage_24h).toFixed(1) + "%"])
 
         return data.map((d, i) => {
             if (d[2].charAt(0) !== "-" && d[2].charAt(0) !== "+") {
@@ -65,7 +44,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
             let coinBase64 = StoreSingleton.getCoinImageB64(d[0].toLowerCase())
 
             let selectedStyle = ""
-            if(this.props.selectedCoin.coin === d[0]) {
+            if(StoreSingleton.selectedCoin.coin === d[0]) {
                 console.log("Coin is selected. Setting style")
                 selectedStyle = " " + css.pricesTable__listItem_selected
             }
@@ -117,7 +96,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
         let changePct
 
         try {
-            let oneDayData = this.props.walletData_1d.map(w => w.graph_1d)
+            let oneDayData = StoreSingleton.walletData_1d.map(w => w.graph_1d)
             //console.log(oneDayData)
             let largestTimespanData = oneDayData.slice(0).sort((a, b) => (b[b.length - 1][0] - b[0][0]) - (a[a.length - 1][0] - a[0][0]))[0]
 
@@ -133,7 +112,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
                     return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i].graph_1w)
             })
 
-            totalGraph = this.addData(sameSpaceData, this.props.walletData_1d.map(w => w.amount))
+            totalGraph = this.addData(sameSpaceData, StoreSingleton.walletData_1d.map(w => w.amount))
             curTotal = totalGraph.slice(0).pop()[1]
             changePct = Utils.getChangePct(totalGraph)
         } catch {
@@ -150,7 +129,7 @@ export default makeObserver(["walletData_1d", "selectedCoin"], class PricesTable
                 </div>
                 <div className={css.pricesTable__listContainer}>
                     <ul className={css.pricesTable__list}>
-                        {this.makeList(this.props.walletData_1d)}
+                        {this.makeList(StoreSingleton.walletData_1d)}
                     </ul>
                 </div>
                 <div className={css.pricesTable__footer}>

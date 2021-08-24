@@ -1,23 +1,26 @@
-html, body {
+html,
+body {
     padding: 0;
     margin: 0;
 }
 
 body {
     color: white;
-    font-family: 'Nunito', sans-serif;
+    font-family: "Nunito", sans-serif;
     background-color: $background-color;
     font-size: 16px;
 }
 
-.fixedBodyScroll {
+.fixedBodyScroll_addWallet,
+.fixedBodyScroll_login {
     position: fixed;
-    overflow-y:scroll;
+    overflow-y: scroll;
 }
 
-
-input, select, option {
-    font-family: 'Nunito', sans-serif;
+input,
+select,
+option {
+    font-family: "Nunito", sans-serif;
 }
 
 ion-icon {
@@ -96,50 +99,83 @@ a {
 }
 
 //-----------------------------------
-// Fade in 
+// Fade in
 
 .fadeInAnimation {
     -webkit-animation: fadein 0.6s; /* Safari, Chrome and Opera > 12.1 */
-       -moz-animation: fadein 0.6s; /* Firefox < 16 */
-        -ms-animation: fadein 0.6s; /* Internet Explorer */
-         -o-animation: fadein 0.6s; /* Opera < 12.1 */
-            animation: fadein 0.6s;
+    -moz-animation: fadein 0.6s; /* Firefox < 16 */
+    -ms-animation: fadein 0.6s; /* Internet Explorer */
+    -o-animation: fadein 0.6s; /* Opera < 12.1 */
+    animation: fadein 0.6s;
 }
 
 @keyframes fadein {
-    0% { opacity: 0; }
-    10% { opacity: 0; }
-    100%   { opacity: 1; }
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Firefox < 16 */
 @-moz-keyframes fadein {
-    0% { opacity: 0; }
-    10% { opacity: 0; }
-    100%   { opacity: 1; }
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Safari, Chrome and Opera > 12.1 */
 @-webkit-keyframes fadein {
-    0% { opacity: 0; }
-    10% { opacity: 0; }
-    100%   { opacity: 1; }
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Internet Explorer */
 @-ms-keyframes fadein {
-    0% { opacity: 0; }
-    10% { opacity: 0; }
-    100%   { opacity: 1; }
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 //-------------------------------------
 
-#toast-message {
-    background-color: #D32F2F;
-    color: white;
-    .title {
+#toast-container {
+    z-index: 9999;
+    #toast-message {
+        background-color: #d32f2f;
         color: white;
+        .title {
+            color: white;
+        }
+    }
+}
+
+#success-toasts {
+    #toast-message {
+        background-color: #2fd34a;
     }
 }
 

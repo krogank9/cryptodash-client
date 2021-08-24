@@ -43,7 +43,8 @@ const Utils = {
         const newTimeFrame = { "1d": "1w", "1w": "1m", "1m": "1y", "1y": "all", "all": null }[timeFrame]
         return (prefixed ? "graph_" : "") + newTimeFrame
     },
-    transformGraphSpace(from, to, longerTimeFrameFrom = []) {
+    transformGraphSpace(from, to, longerTimeFrameFrom) {
+        longerTimeFrameFrom = longerTimeFrameFrom || []
         // Make x coords of "from" graph match the "to" graph, interpolate between points.
         return to.map((point, i) => {
             const time = point[0]
@@ -52,19 +53,16 @@ const Utils = {
             //  or sometimes when 2 graphs of the same timeFrame returned by API are slightly different lengths. This causes a visual glitch.
             //  Workaround is to pass 0 (handles "all" graphs which haven't started yet)
             //  or try to lerp from timeFrame 1 above if provided (handles visual glitches)
-            const nextTime = i < to.length - 1 ? to[i + 1][0] : 0
             if (time < from[0][0]) {
                 const lower = longerTimeFrameFrom.find(([pointTime, val]) => time >= pointTime)
                 let upper = longerTimeFrameFrom.find(([pointTime, val]) => time <= pointTime)
                 if(lower && upper) {
                     if(from[0][0] < upper[0])
                         upper = from[0]
-                    console.log("Lerping from longerTimeFrame")
                     const pctBetween = (time - lower[0]) / (upper[0] - lower[0])
                     return [time, Utils.lerp(lower[1], upper[1], pctBetween)]
                 }
                 else {
-                    console.log("NOT Lerping from longerTimeFrame")
                     return [time, 0]
                 }
             }
@@ -132,6 +130,20 @@ const Utils = {
                 return true
         })
         return addToBeginning.concat(arr)
+    },
+    clearDict(dict) {
+        for (var prop in dict) {
+            if (dict.hasOwnProperty(prop)) {
+                delete dict[prop];
+            }
+        }
+    },
+    copyDictTo(to, from) {
+        for (var prop in from) {
+            if (from.hasOwnProperty(prop)) {
+                to[prop] = from[prop];
+            }
+        }
     }
 }
 

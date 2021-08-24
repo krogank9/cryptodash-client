@@ -14,6 +14,22 @@ const timeFrames = ["1d", "1w", "1m", "1y", "all"]
 
 class CryptodashStore {
 
+    toggleLoginModal = (b) => { }
+    setToggleLoginModalCallback(f) {
+        this.toggleLoginModal = f
+    }
+
+    loggedInUser = {
+        //authToken: string,
+        //userName: string,
+        //userId: number,
+    }
+    setLoggedInUser({userName, userId, authToken, justRegistered}) {
+        console.log(`Settinged logged in user: ${userName}, ${userId}, ${authToken}`)
+        Utils.clearDict(this.loggedInUser)
+        Utils.copyDictTo(this.loggedInUser, { userName, userId, authToken })
+    }
+
     // When wallet data is added, I think I want to lazy load in the rest of the graphs besides graph_1d
     // This will also allow for just adding a coin like {coin: "btc", amount: 1}
 
@@ -58,20 +74,20 @@ class CryptodashStore {
     }
 
     syncWalletDataComputeds(forTimeFrame) {
-        for(let t of timeFrames) {
-            if(forTimeFrame && t !== forTimeFrame)
+        for (let t of timeFrames) {
+            if (forTimeFrame && t !== forTimeFrame)
                 continue
-            [].splice.apply(this["walletData_"+t], [0, this["walletData_"+t].length].concat(this.filterWalletGraphs(this.walletData, t).filter(w => w["graph_"+t])));
+            [].splice.apply(this["walletData_" + t], [0, this["walletData_" + t].length].concat(this.filterWalletGraphs(this.walletData, t).filter(w => w["graph_" + t])));
         }
     }
 
     coinImagesB64 = {/* coinSymbol: b64 */ }
     lazyLoadCoinImages() {
         const NUM_COIN_IMAGES = 457
-        if(Object.keys(this.coinImagesB64).length < NUM_COIN_IMAGES) {        
+        if (Object.keys(this.coinImagesB64).length < NUM_COIN_IMAGES) {
             import("../public/coins_32_color_b64_icon_list.json")
                 .then(coins => {
-                    this.coinImagesB64 = {...this.coinImagesB64, ...coins.default}
+                    this.coinImagesB64 = { ...this.coinImagesB64, ...coins.default }
                 })
         }
     }
@@ -91,6 +107,10 @@ class CryptodashStore {
             walletData: observable,
             marketData: observable,
             selectedCoin: observable,
+            toggleLoginModal: observable,
+            loggedInUser: observable,
+            setLoggedInUser: action,
+            setToggleLoginModalCallback: action,
             addWalletData: action,
             setWalletData: action,
             addGraphToWallet: action,
@@ -121,19 +141,19 @@ class CryptodashStore {
             try {
                 now = Math.min(now, w.graph_1d.slice().pop()[0] || Date.now())
                 return true
-            } catch {/*1d data not available or empty*/}
+            } catch {/*1d data not available or empty*/ }
         })
         return now
     }
 
     addWalletAfterAllGraphs(coin, amount) {
-        let wallet = {coin: coin, amount: amount}
+        let wallet = { coin: coin, amount: amount }
 
         let getGraphPromises = timeFrames.map(timeFrame => {
             return fetch(`${config.API_ENDPOINT}/graphs/${CoinIdMap[wallet.coin]}_${timeFrame}?now=${this.getDateNowFromCurData()}`)
                 .then(response => response.json())
                 .then(graph => {
-                    wallet["graph_"+timeFrame] = graph
+                    wallet["graph_" + timeFrame] = graph
                 })
         })
 
@@ -178,17 +198,17 @@ class CryptodashStore {
 
     addBalanceSmart = (coin, amount) => {
         const coinWallet = this.walletData.find(w => w.coin === coin)
-        
-        if(coinWallet) {
+
+        if (coinWallet) {
             coinWallet.amount = Utils.addNumsPrecise(coinWallet.amount, amount)
 
-            if(this.walletData.find(w => w.coin === coin).amount <= 0)
+            if (this.walletData.find(w => w.coin === coin).amount <= 0)
                 this.removeWalletForCoin(coin)
             else
                 this.syncWalletDataComputeds() // Above syncs for us
         }
         else {
-            if(amount >= 0) {
+            if (amount >= 0) {
                 this.addWalletAfterAllGraphs(coin, amount).then(() => this.setSelectedCoin(coin))
             }
         }
@@ -203,7 +223,7 @@ class CryptodashStore {
             this.walletData.splice(idx, 1)
             this.syncWalletDataComputeds()
 
-            if(selectedIdx >= idx) {
+            if (selectedIdx >= idx) {
                 selectedIdx = Math.min(selectedIdx, this.walletData.length - 1)
 
                 if (this.walletData.length >= 1 && selectedIdx >= 0) {
@@ -223,8 +243,6 @@ class CryptodashStore {
     addGraphToWallet(coin, timeFrame, graph) {
         const idx = this.walletData.findIndex(w => w.coin === coin)
         this.walletData[idx]["graph_" + timeFrame] = graph
-        // Update appropriate computed too. Avoid using sync here. This is what we're trying to prevent component re-render on.
-        // this["walletData_" + timeFrame][idx]["graph_" + timeFrame] = graph
         this.syncWalletDataComputeds(timeFrame)
     }
 
@@ -246,79 +264,6 @@ class CryptodashStore {
     }
 }
 const CryptodashStoreSingleton = new CryptodashStore()
-
-// Automatically create wrapper that only passes what's necessary to the observer so as not to update unnecessarily
-// Be able to update what's being passed from wrapped class through a callback for stuff like switching to relevant graph
-// Also need to be able to do fancy stuff like map an observed prop and pass that...
-class ObservedPropsFilter extends React.Component {
-
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            overrideObservedProps: []
-        }
-    }
-
-    mapObservedProps = (observedProps) => {
-        const observedPropsDict = {}
-        observedProps.forEach(p => {
-            if (p instanceof Object) {
-                // For syntax {"passPropAlias": "realVariableName"}
-                Utils.mapDict(p, (key, val) => {
-                    observedPropsDict[key] = CryptodashStoreSingleton[val]
-                })
-            }
-            else {
-                observedPropsDict[p] = CryptodashStoreSingleton[p]
-            }
-        });
-
-        Utils.mapDict(observedPropsDict, (k, v) => {
-            if (!(toJS(v) instanceof Object))
-                throw new Error(`Quirk of using this filtered auto observer method, all observed props must be objects with an unchanged ref. On ${k}`)
-        })
-
-        return observedPropsDict
-    }
-
-    changeObservedProps = (newObservedProps) => {
-        this.setState({
-            overrideObservedProps: newObservedProps
-        })
-    }
-
-    render() {
-        const ChildObserverClass = this.props.childObserverClass
-        const observedProps = this.mapObservedProps(this.props.observedProps)
-        const overrideObservedProps = this.mapObservedProps(this.state.overrideObservedProps)
-        const allObservedProps = { ...observedProps, ...overrideObservedProps }
-        return <ChildObserverClass {...allObservedProps} {...this.props.passProps} changeObservedProps={this.changeObservedProps}></ChildObserverClass>
-    }
-}
-
-export function makeObserver(observedProps, fromClass) {
-    observedProps = [].concat(observedProps)
-
-    let propsDict = {}
-    observedProps.forEach(p => {
-        if (p instanceof Object) {
-            // For syntax {"passPropAlias": "realVariableName"}
-            Utils.mapDict(p, (key, val) => {
-                propsDict[key] = CryptodashStoreSingleton[val]
-            })
-        }
-        else {
-            propsDict[p] = CryptodashStoreSingleton[p]
-        }
-    })
-
-    const ObserverWrappedClass = observer(fromClass)
-    //return (props) => <ObserverWrappedClass {...propsDict}></ObserverWrappedClass>
-    return (props) => {
-        return <ObservedPropsFilter observedProps={observedProps} passProps={props} childObserverClass={ObserverWrappedClass}></ObservedPropsFilter>
-    }
-}
 
 // Naive way of exporting a singleton that is fine for most cases. Depends on module caching:
 // https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/

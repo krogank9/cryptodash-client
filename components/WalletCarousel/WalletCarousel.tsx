@@ -5,11 +5,12 @@ import React, { Component } from 'react'
 
 import AddWalletModal from '../AddWalletModal/AddWalletModal'
 
-import StoreSingleton, {makeObserver} from '../../store/CryptodashStoreSingleton.js'
+import StoreSingleton from '../../store/CryptodashStoreSingleton.js'
+import { observer } from 'mobx-react'
 
-interface WalletCarouselProps { data?: any, selectedCoin: {coin: string}, walletData_1d: any }
+interface WalletCarouselProps { data?: any }
 
-export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarousel extends React.Component<WalletCarouselProps> {
+export default observer(class WalletCarousel extends React.Component<WalletCarouselProps> {
     state: {
         scrollPos: number,
         addWalletModalOpen: boolean
@@ -38,11 +39,11 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
     }
 
     getMaxScrollPos = () => {
-        //return this.props.walletData_1d.length - (this.getIsMobile() ? 4 : 5) // Other scroll style, I like below better I think.
+        //return StoreSingleton.walletData_1d.length - (this.getIsMobile() ? 4 : 5) // Other scroll style, I like below better I think.
 
-        let maxScroll = Math.floor(this.props.walletData_1d.length / (this.getIsMobile() ? 4 : 5)) * (this.getIsMobile() ? 4 : 5)
-        if(maxScroll === this.props.walletData_1d.length)
-            maxScroll = this.props.walletData_1d.length - (this.getIsMobile() ? 4 : 5)
+        let maxScroll = Math.floor(StoreSingleton.walletData_1d.length / (this.getIsMobile() ? 4 : 5)) * (this.getIsMobile() ? 4 : 5)
+        if(maxScroll === StoreSingleton.walletData_1d.length)
+            maxScroll = StoreSingleton.walletData_1d.length - (this.getIsMobile() ? 4 : 5)
         return maxScroll
     }
 
@@ -62,8 +63,8 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
     }
 
     makeWalletTiles() {
-        let tiles = this.props.walletData_1d.slice(this.state.scrollPos, this.state.scrollPos+5).map(w => {
-            return <WalletTile data={w} key={w.coin} selected={w.coin === this.props.selectedCoin.coin} />
+        let tiles = StoreSingleton.walletData_1d.slice(this.state.scrollPos, this.state.scrollPos+5).map(w => {
+            return <WalletTile data={w} key={w.coin} selected={w.coin === StoreSingleton.selectedCoin.coin} />
         })
 
         // Push empty divs for remaining spaces at end of scroll
@@ -86,7 +87,7 @@ export default makeObserver(["selectedCoin", "walletData_1d"], class WalletCarou
                     {/*<a className={css.walletCarousel__textButton+" show-desktop-only"}>Import from Coinbase</a>*/}
     
                     <div className={css.walletCarousel__controls}>
-                        <IonIcon className={css.walletCarousel__actionButton+" "+(this.props.selectedCoin.coin ? "" : css.walletCarousel__actionButton_inactive)} name="close-outline" onClick={() => StoreSingleton.removeSelectedWallet()} />
+                        <IonIcon className={css.walletCarousel__actionButton+" "+(StoreSingleton.selectedCoin.coin ? "" : css.walletCarousel__actionButton_inactive)} name="close-outline" onClick={() => StoreSingleton.removeSelectedWallet()} />
                         <IonIcon className={css.walletCarousel__actionButton} name="add-outline" onClick={() => this.setState({addWalletModalOpen: true})} />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos > 0 ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-back-outline" onClick={() => this.scroll(-1)} />
                         <IonIcon className={css.walletCarousel__actionButton+" "+(this.state.scrollPos < this.getMaxScrollPos() ? "" : css.walletCarousel__actionButton_inactive)} name="chevron-forward-outline" onClick={() => this.scroll(1)} />

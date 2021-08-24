@@ -5,7 +5,7 @@ import Graph, { GraphWithResize } from '../../Graph/Graph'
 
 import CoinNames from '../../../static_data/coin_name_map.json'
 
-import StoreSingleton, { makeObserver } from '../../../store/CryptodashStoreSingleton.js'
+import StoreSingleton from '../../../store/CryptodashStoreSingleton.js'
 import CryptodashStoreSingleton from '../../../store/CryptodashStoreSingleton.js';
 
 import { observer } from 'mobx-react'

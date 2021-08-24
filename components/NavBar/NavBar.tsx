@@ -6,11 +6,17 @@ import React, { Component } from 'react';
 
 import ActionSearch from '../ActionSearch/ActionSearch'
 
+import StoreSingleton from '../../store/CryptodashStoreSingleton'
+
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react'
+
 interface IProps {
-    toggleHamburgerCallback: () => void
+    toggleHamburgerCallback: () => void,
+    loggedInUser: any
 }
 
-class NavBar extends React.Component<IProps> {
+export default observer(class NavBar extends React.Component<IProps> {
     _toggleHamburgerCallback: () => void
 
     constructor(props) {
@@ -20,11 +26,13 @@ class NavBar extends React.Component<IProps> {
     }
 
     render() {
+        console.log("this.props.loggedInUser")
+        console.log(StoreSingleton.loggedInUser)
         return (
             <div className={css.navBar}>
                 <img className={css.navBar__logoIcon} alt="Cryptodash Logo" src="/cryptodash_logo_icon.png" width={67} height={80} />
                 <img className={css.navBar__logoText} alt="Cryptodash" src="/cryptodash_logo_text.png" width={210} height={80} />
-                <span className={css.navBar__hamburgerButton} onClick={ this._toggleHamburgerCallback }>
+                <span className={css.navBar__hamburgerButton} onClick={this._toggleHamburgerCallback}>
                     <IonIcon className={css.navBar__hamburgerButtonIcon} name="menu" />
                 </span>
 
@@ -54,11 +62,9 @@ class NavBar extends React.Component<IProps> {
                 </a>
                 <a className={css.navBar__profileButton}>
                     <div className={css.navBar__profileButtonIcon} />
-                    <span className={css.navBar__profileButtonText}>Guest</span>
+                    <span className={css.navBar__profileButtonText}>{StoreSingleton.loggedInUser.userName || "Guest"}</span>
                 </a>
             </div>
         )
     }
-}
-
-export default NavBar;
+})

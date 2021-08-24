@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
     "coingecko-api": "^1.0.10",
@@ -14,6 +15,7 @@
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
     "next": "^10.0.0",
+    "prop-types": "^15.7.2",
     "rc-input-number": "^7.3.0",
     "react": "17.0.1",
     "react-autosuggest": "^10.1.0",

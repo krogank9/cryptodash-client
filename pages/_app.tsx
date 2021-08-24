@@ -5,23 +5,35 @@ import React, { Component } from 'react';
 import NavBar from '../components/NavBar/NavBar'
 import SideBar from '../components/SideBar/SideBar'
 
+import StoreSingleton from '../store/CryptodashStoreSingleton'
+import LoginModal from '../components/LoginModal/LoginModal'
+
 interface IProps {
   Component: React.ElementType,
   pageProps: {[k:string]: any}
 }
-interface IState {
-  toggleHamburger: boolean,
-}
 
-class App extends React.Component<IProps, IState> {
+class App extends React.Component<IProps> {
   state = {
-    toggleHamburger: false
+    toggleHamburger: false,
+    loginModalOpen: false
+  }
+
+  constructor(props) {
+    super(props)
+    StoreSingleton.setToggleLoginModalCallback(this.toggleLoginModalCallback)
   }
 
   toggleHamburgerCallback = () => {
     this.setState({
-      toggleHamburger: !this.state.toggleHamburger
+      toggleHamburger: !this.state.toggleHamburger,
     })
+  }
+
+  toggleLoginModalCallback = (setVal) => {
+    if(typeof setVal !== "boolean")
+      setVal = !this.state.loginModalOpen
+    this.setState({loginModalOpen: setVal})
   }
 
   render() {
@@ -41,6 +53,7 @@ class App extends React.Component<IProps, IState> {
         </header>
   
         <main className={"content "+(this.state.toggleHamburger? "content_sideBarToggled":"")}>
+          <LoginModal isOpen={this.state.loginModalOpen} onRequestClose={() => this.toggleLoginModalCallback(false)} />
           <Component {...pageProps}/>
         </main>
       </div>
