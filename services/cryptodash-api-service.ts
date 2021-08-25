@@ -1,4 +1,6 @@
 import config from '../config'
+import TokenService from './token-service'
+import Utils from '../Utils'
 
 const CryptoDashApiService = {
   // Auth
@@ -36,6 +38,7 @@ const CryptoDashApiService = {
   getWallets(authToken) {
     return fetch(`${config.API_ENDPOINT}/wallets`, {
       headers: {
+        'Authorization': `Bearer ${authToken}`
       },
     })
       .then(res =>
@@ -51,7 +54,7 @@ const CryptoDashApiService = {
         'content-type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify(walletData.map(w => w.filter(prop => prop === "coin" || prop === "amount"))),
+      body: JSON.stringify(walletData.map(w => Utils.filterDictKeys(w, k => k === "coin" || k === "amount"))),
     })
       .then(res =>
         (!res.ok)

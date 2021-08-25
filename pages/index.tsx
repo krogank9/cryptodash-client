@@ -29,6 +29,8 @@ var parser = new xml2js.Parser()
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
 
+  Utils.setServersideCookie(context.req.headers.cookie)
+
   var rssJson = await parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
 
   var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
@@ -42,14 +44,24 @@ export async function getServerSideProps(context) {
 
   //let coinData = getCoinData()
 
-  let walletData = DefaultCoins.map((c) => {
+  const defaultWallets = DefaultCoins.map((c) => {
     console.log(c)
-    return Utils.filterDictKeys({
+    return {
       coin: c,
-      amount: DefaultCoinAmounts[c],
-      graph_1d: ServerUtils.getCoinGraph(CoinIdMap[c], "1d"),
-      graph_1w: ServerUtils.getCoinGraph(CoinIdMap[c], "1w")
-    }, (k,v) => v !== null)
+      amount: DefaultCoinAmounts[c]
+    }
+  })
+
+  let userWallets = null
+  try {
+    userWallets = await ServerUtils.getUserWallets(Utils.getCookie("authToken"))
+  } catch {}
+
+  let wallets = (userWallets || defaultWallets).map(w => {
+    const graph_1d = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1d")
+    const graph_1w = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1w")
+    const graphs = Utils.filterDictKeys({graph_1d, graph_1w}, (k,v) => v != null)
+    return {...w, ...graphs}
   })
 
   return {
@@ -57,7 +69,7 @@ export async function getServerSideProps(context) {
       trendingData: trendingData,
       coinImagesB64: coinsB64Filtered,
       rss: rssJson.rss.channel[0].item.slice(0, 5),
-      walletData: walletData,
+      walletData: wallets,
     }
   }
 }

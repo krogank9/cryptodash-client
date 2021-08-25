@@ -1,5 +1,9 @@
 import BigDecimal from 'js-big-decimal';
 
+const ONE_HOUR = 1000 * 60 * 60
+
+let serversideCookie = ""
+
 const Utils = {
     lerp(a, b, t) {
         return a + (b - a) * t
@@ -56,8 +60,8 @@ const Utils = {
             if (time < from[0][0]) {
                 const lower = longerTimeFrameFrom.find(([pointTime, val]) => time >= pointTime)
                 let upper = longerTimeFrameFrom.find(([pointTime, val]) => time <= pointTime)
-                if(lower && upper) {
-                    if(from[0][0] < upper[0])
+                if (lower && upper) {
+                    if (from[0][0] < upper[0])
                         upper = from[0]
                     const pctBetween = (time - lower[0]) / (upper[0] - lower[0])
                     return [time, Utils.lerp(lower[1], upper[1], pctBetween)]
@@ -144,6 +148,36 @@ const Utils = {
                 to[prop] = from[prop];
             }
         }
+    },
+    setCookie(name, value, expireTime = ONE_HOUR) {
+        var expires = "";
+        if (expireTime) {
+            var date = new Date();
+            date.setTime(date.getTime() + expireTime);
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    },
+    getCookie(name) {
+        let cookieSource = serversideCookie || ""
+        try {
+            cookieSource = document.cookie || ""
+        } catch {}
+
+        var nameEQ = name + "=";
+        var ca = cookieSource.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    },
+    eraseCookie(name) {
+        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    },
+    setServersideCookie(cookie) {
+        serversideCookie = cookie
     }
 }
 

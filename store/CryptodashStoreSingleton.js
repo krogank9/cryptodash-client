@@ -10,7 +10,13 @@ import Utils from '../Utils'
 import { toJS } from 'mobx';
 import React from "react";
 
+import CryptoDashApiService from "../services/cryptodash-api-service"
+
+import { create, persist } from 'mobx-persist'
+
 const timeFrames = ["1d", "1w", "1m", "1y", "all"]
+const ONE_MINUTE = 1000 * 60 * 60
+const HALF_HOUR = ONE_MINUTE * 30
 
 class CryptodashStore {
 
@@ -22,12 +28,26 @@ class CryptodashStore {
     loggedInUser = {
         //authToken: string,
         //userName: string,
-        //userId: number,
     }
-    setLoggedInUser({userName, userId, authToken, justRegistered}) {
+    setLoggedInUser({ userName, userId, authToken, justRegistered }) {
         console.log(`Settinged logged in user: ${userName}, ${userId}, ${authToken}`)
         Utils.clearDict(this.loggedInUser)
-        Utils.copyDictTo(this.loggedInUser, { userName, userId, authToken })
+        Utils.copyDictTo(this.loggedInUser, { userName, authToken })
+
+        if (justRegistered) {
+            CryptoDashApiService.setWallets(authToken, toJS(this.walletData))
+        }
+        else {
+            //CryptoDashApiService.setWallets(authToken, [{coin: "btc", amount: 3}])
+            CryptoDashApiService.getWallets(authToken)
+                .then(wallets => {
+                    console.log(wallets)
+                    this.setWalletData(wallets)
+                })
+        }
+
+        Utils.setCookie("userName", userName)
+        Utils.setCookie("authToken", authToken)
     }
 
     // When wallet data is added, I think I want to lazy load in the rest of the graphs besides graph_1d
@@ -95,11 +115,38 @@ class CryptodashStore {
     saveToLocalStorage() {
         //localStorage.setItem('walletData', this.walletData);
         //localStorage.setItem('marketData', this.marketData);
+        if (typeof window === 'undefined') { // window is undefined in Node
+            return
+        }
+
+        window.localStorage.setItem("loggedInUser", JSON.stringify(toJS(this.loggedInUser)))
+        window.localStorage.setItem("walletData", JSON.stringify(toJS(this.walletData)))
     }
 
     loadFromLocalStorage() {
+        if (typeof window === 'undefined') { // window is undefined in Node
+            return
+        }
+
         // Todo this involves cookies probably
         //localStorage.getItem('walletData');
+        Utils.copyDictTo(JSON.parse(window.localStorage.getItem("loggedInUser") || "{}"), this.loggedInUser);
+
+        // Load wallet data intelligently
+        const loadedWalletData = JSON.parse(window.localStorage.getItem("walletData") || "[]").map(wallet => {
+            // Filter any graphs which are not up to date within 30 minutes
+            for (let t of timeFrames) {
+                let graph = wallet[`graph_${t}`]
+                if (!graph || graph.pop()[0] < Date.now() - HALF_HOUR) {
+                    delete wallet[`graph_${t}`]
+                }
+            }
+        })
+
+        console.log("loadedWalletData")
+        console.log(loadedWalletData)
+
+        this.setWalletData(loadedWalletData)
     }
 
     constructor() {
@@ -128,6 +175,13 @@ class CryptodashStore {
         })
 
         this.lazyLoadCoinImages()
+
+        Utils.copyDictTo(this.loggedInUser, {userName: Utils.getCookie("userName") || "Guest", authToken: Utils.getCookie("authToken")})
+
+        //this.loadFromLocalStorage()
+        //autorun(() => {
+        //    this.saveToLocalStorage()
+        //})
     }
 
     // When adding coins via querying the API, the API calls can be spaced out by minutes or seconds.
@@ -167,7 +221,8 @@ class CryptodashStore {
             this.walletData.length = 0
         data = [].concat(data)
 
-        if (!this.selectedCoin.coin)
+        console.log(data)
+        if (!this.selectedCoin.coin && data.length)
             this.setSelectedCoin(data[0].coin)
 
         // fetch graphs from server api endpoint not present in supplied data,
@@ -263,6 +318,31 @@ class CryptodashStore {
         return this.coinImagesB64[coin] || GenericCoinB64.data
     }
 }
+
+
+const schema = {
+    loggedInUser: {
+        type: 'object',
+        schema: {
+            authToken: true,
+            userName: true,
+            userId: true,
+        }
+    },
+    walletData: {
+        type: 'list',
+        schema: {
+            coin: true,
+            amount: true,
+            graph_1d: true,
+            graph_1w: true,
+            graph_1m: true,
+            graph_1y: true,
+            graph_all: true,
+        }
+    }
+}
+
 const CryptodashStoreSingleton = new CryptodashStore()
 
 // Naive way of exporting a singleton that is fine for most cases. Depends on module caching:
