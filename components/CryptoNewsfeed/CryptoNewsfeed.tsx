@@ -1,6 +1,7 @@
 import css from './CryptoNewsfeed.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
+import StoreSingleton from '../../store/CryptodashStoreSingleton';
 
 interface CryptoNewsfeedProps {
     className?: string,
@@ -45,7 +46,7 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
                     </div>
                 </div>
                 <ul className={css.cryptoNewsfeed__storyList}>
-                    {this.makeList(this.props.data)}
+                    {this.makeList(StoreSingleton.rssData)}
                 </ul>
             </div>
         )

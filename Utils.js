@@ -150,6 +150,8 @@ const Utils = {
         }
     },
     setCookie(name, value, expireTime = ONE_HOUR) {
+        try { document } catch { return /* Serverside */ }
+
         var expires = "";
         if (expireTime) {
             var date = new Date();
@@ -161,8 +163,9 @@ const Utils = {
     getCookie(name) {
         let cookieSource = serversideCookie || ""
         try {
-            cookieSource = document.cookie || ""
-        } catch {}
+            if (document)
+                cookieSource = document.cookie || ""
+        } catch { }
 
         var nameEQ = name + "=";
         var ca = cookieSource.split(';');
@@ -174,10 +177,19 @@ const Utils = {
         return null;
     },
     eraseCookie(name) {
-        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        try { document } catch { return /* Serverside */ }
+        document.cookie = name+'=; Max-Age=-99999999;';
     },
     setServersideCookie(cookie) {
         serversideCookie = cookie
+    },
+    isServerSideRendering() {
+        try {
+            return !window
+        }
+        catch {
+            return true
+        }
     }
 }
 

@@ -2,9 +2,10 @@ import css from './SideBar.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 import Link from 'next/link'
-import { withRouter, NextRouter } from 'next/router'
+import Router, { withRouter, NextRouter } from 'next/router'
 
 import StoreSingleton from '../../store/CryptodashStoreSingleton'
+import Utils from '../../Utils'
 
 import { observer } from 'mobx-react'
 
@@ -18,12 +19,24 @@ interface IState {
 export default withRouter(observer(class SideBar extends React.Component<IProps, IState> {
   matchPage(regex) {
     let s = ""
-    try { s = this.props.router.asPath || "" } catch(e){}
+    try { s = this.props.router.asPath || "" } catch (e) { }
 
     return s.match(regex) ? " " + css.sideBar__item_active : ""
   }
 
   render() {
+    const loginButton = (
+      <a className={css.sideBar__item + " " + css.sideBar__loginLogoutItem} onClick={() => StoreSingleton.toggleLoginModal(true)}>
+        <IonIcon name="enter" />
+        <span>Log In / Create Account</span>
+      </a>)
+
+    const logoutButton = (
+      <a className={css.sideBar__item + " " + css.sideBar__loginLogoutItem} onClick={() => StoreSingleton.logoutUser()}>
+        <IonIcon name="enter" />
+        <span>Logout</span>
+      </a>)
+
     return (
       <div className={css.sideBar + " " + (this.props.toggled ? css.sideBar_toggled : "")}>
 
@@ -31,18 +44,14 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           Dashboard
         </h2>
 
-        <Link href="/">
-          <a className={css.sideBar__item + this.matchPage(/\/$/g)}>
+          <a className={css.sideBar__item + this.matchPage(/\/$/g)} onClick={() => Router.push("/")}>
             <IonIcon name="pie-chart" />
             <span>Overview</span>
           </a>
-        </Link>
-        <Link href={`/analyze/${this.matchPage(/\/analyze\/.*/g) ? this.props.router.asPath.split("/").pop() : StoreSingleton.selectedCoin.coin}`}>
-          <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
-            <IonIcon name="stats-chart" />
-            <span>Analyze</span>
-          </a>
-        </Link>
+        <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)} onClick={() => Router.push(`/analyze/${StoreSingleton.selectedCoin.coin || ""}`)}>
+          <IonIcon name="stats-chart" />
+          <span>Analyze</span>
+        </a>
         <a className={css.sideBar__item}>
           <IonIcon name="swap-horizontal" />
           <span>Exchange</span>
@@ -65,10 +74,7 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           <span>About</span>
         </a>
 
-        <a className={css.sideBar__item + " " + css.sideBar__loginLogoutItem} onClick={() => StoreSingleton.toggleLoginModal(true)}>
-          <IonIcon name="enter" />
-          <span>Log In / Create Account</span>
-        </a>
+        {StoreSingleton.loggedInUser.userName ? logoutButton : loginButton}
       </div>
     )
   }

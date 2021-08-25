@@ -77,7 +77,7 @@ export default observer(class OverviewGraph extends React.Component<IProps> {
             if (g === largestTimespanData)
                 return g
             else {
-                console.log(StoreSingleton.walletData[i].coin)
+                //console.log(StoreSingleton.walletData[i].coin)
                 return Utils.transformGraphSpace(g, largestTimespanData, StoreSingleton.walletData[i][timeFrameAbove])
             }
         })

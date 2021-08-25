@@ -21,76 +21,108 @@ import DefaultCoinAmounts from "../static_data/default_coin_amounts.json"
 import ServerUtils from '../ServerUtils'
 import CoinIdMap from '../static_data/coin_id_map.json'
 import Utils from '../Utils';
+import CryptodashStoreSingleton from '../store/CryptodashStoreSingleton.js';
+
+import { toJS } from 'mobx';
 
 var fs = require('fs')
 var xml2js = require('xml2js')
-var parser = new xml2js.Parser()
-
-export async function getServerSideProps(context) {
-  // todo if context.req.cookie.isLoaded == true return {}
-
-  Utils.setServersideCookie(context.req.headers.cookie)
-
-  var rssJson = await parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
-
-  var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
-  var stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc", "wbtc"]
-  var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1).sort((a, b) => b.market_cap_change_24h - a.market_cap_change_24h).slice(0, 20)
-
-  let coinsB64Filtered = Object.keys(CoinIconList32B64).reduce(function (filtered, key) {
-    if (DefaultCoins.indexOf(key) !== -1) filtered[key] = CoinIconList32B64[key];
-    return filtered;
-  }, {});
-
-  //let coinData = getCoinData()
-
-  const defaultWallets = DefaultCoins.map((c) => {
-    console.log(c)
-    return {
-      coin: c,
-      amount: DefaultCoinAmounts[c]
-    }
-  })
-
-  let userWallets = null
-  try {
-    userWallets = await ServerUtils.getUserWallets(Utils.getCookie("authToken"))
-  } catch {}
-
-  let wallets = (userWallets || defaultWallets).map(w => {
-    const graph_1d = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1d")
-    const graph_1w = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1w")
-    const graphs = Utils.filterDictKeys({graph_1d, graph_1w}, (k,v) => v != null)
-    return {...w, ...graphs}
-  })
-
-  return {
-    props: {
-      trendingData: trendingData,
-      coinImagesB64: coinsB64Filtered,
-      rss: rssJson.rss.channel[0].item.slice(0, 5),
-      walletData: wallets,
-    }
-  }
-}
 
 //-------------------------------------------------------------
 
 interface OverviewProps {
   coinImagesB64?: any,
-  marketData?: any,
   walletData?: any,
   trendingData?: any
   rss?: any
 }
 
 export default class Overview extends React.Component<OverviewProps> {
+
+  static async getInitialProps(context) {
+    if (!Utils.isServerSideRendering())
+      return {}
+
+    console.log("getServerSideProps() -----------------------------------------------------")
+    // todo if context.req.cookie.isLoaded == true return {}
+
+    Utils.setServersideCookie(context.req.headers.cookie)
+
+    console.log("USERNAME SERVER:")
+    console.log(Utils.getCookie("userName"))
+
+    var parser = new xml2js.Parser()
+    var rssJson = await parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
+
+    var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
+    var stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc", "wbtc"]
+    var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1).sort((a, b) => b.market_cap_change_24h - a.market_cap_change_24h).slice(0, 20)
+
+    const defaultWallets = DefaultCoins.map((c) => {
+      console.log(c)
+      return {
+        coin: c,
+        amount: DefaultCoinAmounts[c]
+      }
+    })
+
+    let userWallets = null
+    try {
+      userWallets = (await ServerUtils.getUserWallets(Utils.getCookie("authToken"))).map(({ coin, amount }) => ({ coin, amount }))
+    } catch { }
+    console.log("GOT USER WALLETS:")
+    console.log(userWallets)
+
+    let wallets = (userWallets || defaultWallets).map(w => {
+      const graph_1d = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1d")
+      const graph_1w = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1w")
+      const graphs = Utils.filterDictKeys({ graph_1d, graph_1w }, (k, v) => v != null)
+      return { ...w, ...graphs }
+    })
+
+    let coinsB64Filtered = Object.keys(CoinIconList32B64).reduce(function (filtered, key) {
+      if (wallets.find(w => w.coin === key)) filtered[key] = CoinIconList32B64[key];
+      return filtered;
+    }, {});
+
+    return {
+      trendingData: trendingData,
+      coinImagesB64: coinsB64Filtered,
+      rss: rssJson.rss.channel[0].item.slice(0, 5),
+      walletData: wallets,
+    }
+  }
+
   constructor(props) {
     super(props)
 
-    StoreSingleton.setWalletData(this.props.walletData)
-    StoreSingleton.setMarketData(this.props.marketData)
-    StoreSingleton.setCoinImagesB64(this.props.coinImagesB64)
+    if (!Utils.isServerSideRendering()) {
+      console.log("passed walletData")
+      try {
+        console.log(this.props.walletData.map(({ coin, amount, graph_1d }) => ({ coin, amount, graph_1d: !!graph_1d })))
+      }
+      catch {
+        console.log([])
+      }
+    }
+    else {
+      console.log("serverside walletData")
+      try {
+        console.log(this.props.walletData.map(({ coin, amount, graph_1d }) => ({ coin, amount, graph_1d: !!graph_1d })))
+      }
+      catch {
+        console.log([])
+      }
+    }
+
+    if (this.props.walletData)
+      StoreSingleton.setWalletData(this.props.walletData)
+    if (this.props.coinImagesB64)
+      StoreSingleton.setCoinImagesB64(this.props.coinImagesB64)
+    if(this.props.rss)
+      StoreSingleton.setRssData(this.props.rss)
+    if(this.props.trendingData)
+      StoreSingleton.setTrendingData(this.props.trendingData)
   }
 
   render() {
@@ -103,8 +135,8 @@ export default class Overview extends React.Component<OverviewProps> {
         </div>
 
         <div className={css.halfSplit}>
-          <TrendingCurrenciesTable data={this.props.trendingData} />
-          <CryptoNewsfeed data={this.props.rss} />
+          <TrendingCurrenciesTable />
+          <CryptoNewsfeed />
         </div>
       </>
     )

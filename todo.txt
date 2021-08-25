@@ -1,8 +1,11 @@
 Remaining stuff:
 -------------------------
--Real Login
-	-form
-	-save/load data to/from server on getServerSideProps
+-Ok so we 
+
+-Yes we have account in cookie, but need to move it all to the store to use on pages. No setCookie outside of the store
+
+
+-Account settings page (delete, profile picture,...)
 
 -Filler pages, mostly just css to write here
 -Check CSS for different DPIs

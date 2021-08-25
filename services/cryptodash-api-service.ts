@@ -54,7 +54,7 @@ const CryptoDashApiService = {
         'content-type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify(walletData.map(w => Utils.filterDictKeys(w, k => k === "coin" || k === "amount"))),
+      body: JSON.stringify(walletData.map(({coin, amount}) => ({coin, amount}))),
     })
       .then(res =>
         (!res.ok)

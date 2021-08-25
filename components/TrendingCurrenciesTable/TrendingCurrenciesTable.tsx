@@ -1,6 +1,7 @@
 import css from './TrendingCurrenciesTable.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
+import StoreSingleton from '../../store/CryptodashStoreSingleton';
 
 interface TrendingCurrenciesTableProps {
     className?: string,
@@ -76,7 +77,7 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                             </tr>
                         </thead>
                         <tbody>
-                            {this.makeList(this.props.data)}
+                            {this.makeList(StoreSingleton.trendingData)}
                         </tbody>
                     </table>
                 </div>
