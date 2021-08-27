@@ -32,14 +32,18 @@ function tryGetPredictionCache(coin) {
   process.chdir("../cryptodash-server")
 
   let preloadedPrediction = GraphsCache.getPredictionCacheJSON(CoinIdMap[coin])
-  console.log(`preloadedPrediction for ${coin} ${CoinIdMap[coin]}`)
-  console.log(preloadedPrediction)
+  let lastRealData = preloadedPrediction[0].slice().pop()
 
-  // Micro optimization to already start preloading prediction before client makes 2nd request
-  if(preloadedPrediction[0].length === 0) {
+  const ONE_HOUR = 1000 * 60 * 60
+  // Make sure up to date within 24 h
+  if (!lastRealData || Date.now() - lastRealData[0] > ONE_HOUR * 24) {
+
+    // Micro optimization to already start preloading prediction before client makes 2nd request if no data ready now
     try {
       fetch(`http://localhost:8000/api/predictions/${CoinIdMap[coin]}`)
-    } catch {}
+    } catch { }
+  
+    return [[], []]
   }
 
   process.chdir(saveCWD)
