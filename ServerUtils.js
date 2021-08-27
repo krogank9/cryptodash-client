@@ -56,8 +56,6 @@ const ServerUtils = {
         return parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
     },
     getMarketData() {
-        console.log("cwd")
-        console.log(process.cwd())
         return JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
     }
 }

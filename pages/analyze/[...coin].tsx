@@ -28,8 +28,6 @@ var fs = require('fs')
 import GraphsCache from '../../../cryptodash-server/src/graphs/graphs-cache'
 
 function tryGetPredictionCache(coin) {
-  let saveCWD = process.cwd()
-  process.chdir("../cryptodash-server")
 
   let preloadedPrediction = GraphsCache.getPredictionCacheJSON(CoinIdMap[coin])
   let lastRealData = preloadedPrediction[0].slice().pop()
@@ -46,12 +44,14 @@ function tryGetPredictionCache(coin) {
     return [[], []]
   }
 
-  process.chdir(saveCWD)
   return preloadedPrediction
 }
 
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
+
+  let saveCWD = process.cwd()
+  process.chdir("../cryptodash-server")
 
   const coin = context.query.coin
 
@@ -59,12 +59,16 @@ export async function getServerSideProps(context) {
 
   var marketInfo = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8')).find(m => m["symbol"] == coin)
 
+  const prediction = tryGetPredictionCache(coin)
+
+  process.chdir(saveCWD)
+
   return {
     props: {
       coinB64: coinB64,
       marketInfo: marketInfo,
       coin: coin,
-      preloadedPrediction: tryGetPredictionCache(coin)
+      preloadedPrediction: prediction
     }
   }
 }
