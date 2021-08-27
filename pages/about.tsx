@@ -62,7 +62,7 @@ export default class About extends React.Component {
 
           <br /><br />
 
-          <img src="/old_graph_example.png" />
+          <img src="/old_graph_example.png" style={{maxWidth: "1057px", width: "100%"}}/>
 
           <br /><br />
 
@@ -75,7 +75,7 @@ export default class About extends React.Component {
 
           <br /><br />
 
-          <img src="/htm_ipynb.png" style={{maxWidth: "700px"}} />
+          <img src="/htm_ipynb.png" style={{maxWidth: "700px", width: "100%"}} />
 
           <br /><br />
 
