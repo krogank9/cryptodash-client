@@ -53,10 +53,10 @@ const ServerUtils = {
     },
     getRssData() {
         var parser = new xml2js.Parser()
-        return parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
+        return parser.parseStringPromise(fs.readFileSync('./static_data/crypto_rss.xml', 'utf8'));
     },
     getMarketData() {
-        return JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
+        return JSON.parse(fs.readFileSync('./static_data/coins_markets_list.json', 'utf8'));
     }
 }
 
