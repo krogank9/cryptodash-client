@@ -81,6 +81,38 @@ const CryptoDashApiService = {
           : res.json()
       )
   },
+  updateProfilePic(authToken, profilePic) {
+    return fetch(`${config.API_ENDPOINT}/users/profile_picture`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({
+        profile_picture: profilePic
+      }),
+    })
+      .then(res =>
+        (!res.ok)
+          ? res.json().then(e => Promise.reject(e))
+          : res.json()
+      )
+  },
+  deleteAccount(authToken) {
+    return fetch(`${config.API_ENDPOINT}/users/delete`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({}),
+    })
+      .then(res =>
+        (!res.ok)
+          ? res.json().then(e => Promise.reject(e))
+          : res.json()
+      )
+  },
 }
 
 export default CryptoDashApiService

@@ -2,8 +2,8 @@ Remaining stuff:
 -------------------------
 -Ok so we 
 
--Yes we have account in cookie, but need to move it all to the store to use on pages. No setCookie outside of the store
 
+-getInitialProps not working on navigate to page from other loaded page
 
 -Account settings page (delete, profile picture,...)
 

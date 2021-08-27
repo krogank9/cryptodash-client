@@ -15,7 +15,7 @@ interface IProps {
     toggleHamburgerCallback: () => void
 }
 
-export default observer(class NavBar extends React.Component<IProps> {
+const NavBarObserved = observer(class NavBar extends React.Component<IProps> {
     _toggleHamburgerCallback: () => void
 
     constructor(props) {
@@ -27,6 +27,7 @@ export default observer(class NavBar extends React.Component<IProps> {
     render() {
         console.log("this.props.loggedInUser")
         console.log(StoreSingleton.loggedInUser)
+        const profilePicUrl = `url('/profile-${StoreSingleton.loggedInUser.profilePic || 1}.jpg')`
         return (
             <div className={css.navBar}>
                 <img className={css.navBar__logoIcon} alt="Cryptodash Logo" src="/cryptodash_logo_icon.png" width={67} height={80} />
@@ -60,10 +61,16 @@ export default observer(class NavBar extends React.Component<IProps> {
                     <IonIcon className={css.navBar__icon} name="mail" />
                 </a>
                 <a className={css.navBar__profileButton}>
-                    <div className={css.navBar__profileButtonIcon} />
+                    <div className={css.navBar__profileButtonIcon} style={{ backgroundImage: profilePicUrl }} />
                     <span className={css.navBar__profileButtonText}>{StoreSingleton.loggedInUser.userName || "Guest"}</span>
                 </a>
             </div>
         )
     }
 })
+
+// Disable serverside rendering. NavBar needs props from cookies
+import dynamic from "next/dynamic";
+export default dynamic(() => Promise.resolve(NavBarObserved), {
+    ssr: false,
+});

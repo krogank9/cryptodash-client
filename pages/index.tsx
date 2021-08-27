@@ -43,7 +43,7 @@ export default class Overview extends React.Component<OverviewProps> {
     if (!Utils.isServerSideRendering())
       return {}
 
-    console.log("getServerSideProps() -----------------------------------------------------")
+    console.log("getInitialProps() -----------------------------------------------------")
     // todo if context.req.cookie.isLoaded == true return {}
 
     Utils.setServersideCookie(context.req.headers.cookie)
@@ -95,25 +95,6 @@ export default class Overview extends React.Component<OverviewProps> {
 
   constructor(props) {
     super(props)
-
-    if (!Utils.isServerSideRendering()) {
-      console.log("passed walletData")
-      try {
-        console.log(this.props.walletData.map(({ coin, amount, graph_1d }) => ({ coin, amount, graph_1d: !!graph_1d })))
-      }
-      catch {
-        console.log([])
-      }
-    }
-    else {
-      console.log("serverside walletData")
-      try {
-        console.log(this.props.walletData.map(({ coin, amount, graph_1d }) => ({ coin, amount, graph_1d: !!graph_1d })))
-      }
-      catch {
-        console.log([])
-      }
-    }
 
     if (this.props.walletData)
       StoreSingleton.setWalletData(this.props.walletData)

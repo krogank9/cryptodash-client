@@ -23,6 +23,8 @@ import swap_vertical_outline from "../../public/ion-icons/swap-vertical-outline.
 import newspaper_outline from "../../public/ion-icons/newspaper-outline.svg"
 import cash from "../../public/ion-icons/cash.svg"
 import cash_outline from "../../public/ion-icons/cash-outline.svg"
+import arrow_forward_outline from "../../public/ion-icons/arrow-forward-outline.svg"
+import arrow_back_outline from "../../public/ion-icons/arrow-back-outline.svg"
 
 const icons = {
     "return-down-forward": return_down_forward,
@@ -46,6 +48,8 @@ const icons = {
     "newspaper-outline": newspaper_outline,
     "cash": cash,
     "cash-outline": cash_outline,
+    "arrow-forward-outline": arrow_forward_outline,
+    "arrow-back-outline": arrow_back_outline,
 }
 icons["return-down-forward"].noFill = true
 icons["swap-horizontal"].noFill = true
@@ -57,6 +61,8 @@ icons["arrow-down-outline"].noFill = true
 icons["swap-vertical-outline"].noFill = true
 icons["newspaper-outline"].noFill = true
 icons["cash-outline"].noFill = true
+icons["arrow-forward-outline"].noFill = true
+icons["arrow-back-outline"].noFill = true
 
 export default function IonIcon(props) {
     let Elem = icons[props.name]

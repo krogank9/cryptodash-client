@@ -16,12 +16,18 @@ interface IProps {
 interface IState {
 }
 
-export default withRouter(observer(class SideBar extends React.Component<IProps, IState> {
+const SideBarWithRouterObserved = withRouter(observer(class SideBar extends React.Component<IProps, IState> {
   matchPage(regex) {
     let s = ""
     try { s = this.props.router.asPath || "" } catch (e) { }
 
-    return s.match(regex) ? " " + css.sideBar__item_active : ""
+    let result
+    if(typeof regex === "string")
+      result = s === regex
+    else
+      result = s.match(regex)
+
+    return result ? " " + css.sideBar__item_active : ""
   }
 
   render() {
@@ -44,7 +50,7 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           Dashboard
         </h2>
 
-          <a className={css.sideBar__item + this.matchPage(/\/$/g)} onClick={() => Router.push("/")}>
+          <a className={css.sideBar__item + this.matchPage("/")} onClick={() => Router.push("/")}>
             <IonIcon name="pie-chart" />
             <span>Overview</span>
           </a>
@@ -65,7 +71,7 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           <IonIcon name="notifications" />
           <span>Notifications</span>
         </a>
-        <a className={css.sideBar__item}>
+        <a className={css.sideBar__item + this.matchPage("/settings")} onClick={() => Router.push("/settings")}>
           <IonIcon name="settings" />
           <span>Settings</span>
         </a>
@@ -79,3 +85,9 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
     )
   }
 }))
+
+// Disable serverside rendering. SideBar needs props from cookies
+import dynamic from "next/dynamic";
+export default dynamic(() => Promise.resolve(SideBarWithRouterObserved), {
+    ssr: false,
+});

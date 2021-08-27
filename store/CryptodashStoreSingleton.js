@@ -2,18 +2,16 @@ import { makeObservable, autorun, observable, computed, action, makeAutoObservab
 import { observer } from 'mobx-react'
 import config from '../config'
 import CoinIdMap from "../static_data/coin_id_map.json"
+import Utils from '../Utils'
 
 import GenericCoinB64 from '../public/generic_coin.json'
 import DefaultCoinsAmounts from '../static_data/default_coin_amounts.json'
-
-import Utils from '../Utils'
+const DefaultWallets = Object.values(Utils.mapDict(DefaultCoinsAmounts, (k, v) => ({ coin: k, amount: v })))
 
 import { toJS } from 'mobx';
 import React from "react";
 
 import CryptoDashApiService from "../services/cryptodash-api-service"
-
-import { create, persist } from 'mobx-persist'
 
 import Router from 'next/router'
 
@@ -31,23 +29,52 @@ class CryptodashStore {
     loggedInUser = {
         authToken: "",
         userName: "",
-        profilePicture: 1
+        profilePic: 1
     }
 
     // One sync at a time
     syncQueuePromise = Promise.resolve()
-    syncUserToServer() {
+    syncWalletsToServer() {
         console.log("syncing user to server--------------------------------------------------------")
         if (this.loggedInUser.authToken)
             this.syncQueuePromise = this.syncQueuePromise.then(() => CryptoDashApiService.setWallets(this.loggedInUser.authToken, toJS(this.walletData)))
     }
 
+
+    setProfilePicQueue = Promise.resolve()
+    selectProfilePic(n) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAA")
+        const NUM_PICS = 4
+
+        let newPic = (this.loggedInUser.profilePic || 1) + n
+        if (newPic < 1)
+            newPic = NUM_PICS
+        if (newPic > NUM_PICS)
+            newPic = 1
+
+        this.loggedInUser.profilePic = newPic
+
+        console.log(this.loggedInUser.profilePic)
+
+        //this.setProfilePicQueue = this.setProfilePicQueue.then(() => CryptoDashApiService.updateProfilePic(this.loggedInUser.authToken, newPic))
+    }
+
+    tryDeleteAccount() {
+        if (this.loggedInUser.authToken) {
+            CryptoDashApiService.deleteAccount(this.loggedInUser.authToken)
+                .then(() => {
+                    this.logoutUser()
+                })
+        }
+    }
+
     tryLoginFromCookie() {
         const userName = Utils.getCookie("userName")
         const authToken = Utils.getCookie("authToken")
+        const profilePic = Utils.getCookie("profilePic")
         if (userName && authToken) {
             console.log(`logging in from cookie ${userName} ${authToken}-------------------------------------------`)
-            this.setLoggedInUser({ userName, authToken })
+            this.setLoggedInUser({ userName, authToken, profilePic })
         }
     }
     tryRefreshLoginCookie() {
@@ -60,16 +87,16 @@ class CryptodashStore {
             })
         }
     }
-    setLoggedInUser({ userName, authToken, justRegistered }) {
+    setLoggedInUser({ userName, authToken, profilePic, justRegistered }) {
         console.log(`Settinged logged in user: ${userName}, ${authToken}`)
         Utils.clearDict(this.loggedInUser)
-        Utils.copyDictTo(this.loggedInUser, { userName, authToken })
+        Utils.copyDictTo(this.loggedInUser, { userName, authToken, profilePic })
 
         if (Utils.isServerSideRendering())
             return
 
         if (justRegistered) {
-            this.syncUserToServer()
+            this.syncWalletsToServer()
         }
         else {
             //CryptoDashApiService.setWallets(authToken, [{coin: "btc", amount: 3}])
@@ -89,7 +116,7 @@ class CryptodashStore {
         console.log("this.loggedInUser")
         console.log(toJS(this.loggedInUser))
 
-        if (!noRefresh && window.location.pathname === "/") {
+        if (!noRefresh) {
             Router.reload(window.location.pathname)
         }
     }
@@ -161,7 +188,9 @@ class CryptodashStore {
     }
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this, {
+            selectProfilePicture: action
+        })
         /*
         makeObservable(this, {
             walletData: observable,
@@ -193,9 +222,18 @@ class CryptodashStore {
         this.tryLoginFromCookie()
         this.tryRefreshLoginCookie()
 
+        // Called after getInitialProps set
+        // This is necessary because getInitialProps will only be called if starting on index page
+        setTimeout(() => {
+            if (this.walletData.length === 0 && !this.loggedInUser.authToken) {
+                this.setWalletData(DefaultWallets.slice())
+            }
+        }, 1)
+
         autorun(() => {
             Utils.setCookie("userName", this.loggedInUser.userName)
             Utils.setCookie("authToken", this.loggedInUser.authToken)
+            Utils.setCookie("profilePic", this.loggedInUser.profilePic)
         })
     }
 
@@ -305,7 +343,7 @@ class CryptodashStore {
             this.walletData.splice(idxToRemove, 1)
             this.syncWalletDataComputeds()
 
-            this.syncUserToServer()
+            this.syncWalletsToServer()
 
             if (selectedIdx >= idxToRemove)
                 selectedIdx = Math.max(0, selectedIdx - 1)
