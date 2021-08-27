@@ -13,7 +13,7 @@ export default class About extends React.Component {
         <h1 style={{ marginBottom: 0 }}>Cryptodash</h1>
         <h4 style={{ marginTop: 10 }}>Created by Logan Krumbhaar</h4>
         <p>
-          Hi, welcome to my app. This is a project I built in around two months in order to learn and improve my React and NextJS skills.
+          Hi, welcome to my app. This is a project I built in around two months in order to learn and improve my React, Node, and NextJS skills.
           The front-end uses React, and the back-end uses Node, ExpressJS, and PostgreSQL.
           I'm using <a target="_blank" href="https://www.coingecko.com/en/api">CoinGecko's</a> API to query cryptocurrency price data.
           Once I have the data, I plot it on a graph rendered with SVG.
