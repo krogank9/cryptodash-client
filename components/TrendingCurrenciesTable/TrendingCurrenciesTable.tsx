@@ -2,13 +2,14 @@ import css from './TrendingCurrenciesTable.module.scss'
 import IonIcon from '../IonIcon/IonIcon'
 import React, { Component } from 'react';
 import StoreSingleton from '../../store/CryptodashStoreSingleton';
+import { observer } from 'mobx-react'
 
 interface TrendingCurrenciesTableProps {
     className?: string,
     data?: any
 }
 
-class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTableProps> {
+export default observer(class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTableProps> {
 
     makeList(data) {
 
@@ -52,6 +53,9 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
     }
 
     render() {
+        const stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc", "wbtc"]
+        const trendingData = StoreSingleton.marketData.filter(m => stableCoins.indexOf(m.symbol) === -1).sort((a, b) => b.market_cap_change_24h - a.market_cap_change_24h).slice(0, 20)
+
         return (
             <div className={css.TrendingCurrenciesTableTile + " " + (this.props.className || "")}>
                 <div className={css.TrendingCurrenciesTitle}>
@@ -77,13 +81,11 @@ class TrendingCurrenciesTable extends React.Component<TrendingCurrenciesTablePro
                             </tr>
                         </thead>
                         <tbody>
-                            {this.makeList(StoreSingleton.trendingData)}
+                            {this.makeList(trendingData)}
                         </tbody>
                     </table>
                 </div>
             </div>
         )
     }
-}
-
-export default TrendingCurrenciesTable
+})

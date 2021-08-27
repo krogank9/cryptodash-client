@@ -31,6 +31,11 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
     }
 
     render() {
+        let rssData = []
+        try {
+            [].push.apply(rssData, StoreSingleton.rssData.rss.channel[0].item.slice(0, 5))
+        } catch {}
+
         return (
             <div className={css.cryptoNewsfeed}>
                 <div className={css.headerSection}>
@@ -46,7 +51,7 @@ class CryptoNewsfeed extends React.Component<CryptoNewsfeedProps> {
                     </div>
                 </div>
                 <ul className={css.cryptoNewsfeed__storyList}>
-                    {this.makeList(StoreSingleton.rssData)}
+                    {this.makeList(rssData)}
                 </ul>
             </div>
         )

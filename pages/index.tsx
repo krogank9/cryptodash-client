@@ -25,15 +25,12 @@ import CryptodashStoreSingleton from '../store/CryptodashStoreSingleton.js';
 
 import { toJS } from 'mobx';
 
-var fs = require('fs')
-var xml2js = require('xml2js')
-
 //-------------------------------------------------------------
 
 interface OverviewProps {
   coinImagesB64?: any,
   walletData?: any,
-  trendingData?: any
+  marketData?: any
   rss?: any
 }
 
@@ -51,12 +48,9 @@ export default class Overview extends React.Component<OverviewProps> {
     console.log("USERNAME SERVER:")
     console.log(Utils.getCookie("userName"))
 
-    var parser = new xml2js.Parser()
-    var rssJson = await parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
+    var rssJson = await ServerUtils.getRssData()
 
-    var marketData = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
-    var stableCoins = ["usdt", "dai", "usdc", "tusd", "dgx", "eusd", "busd", "gusd", "cusdc", "wbtc"]
-    var trendingData = marketData.filter((m) => stableCoins.indexOf(m.symbol) === -1).sort((a, b) => b.market_cap_change_24h - a.market_cap_change_24h).slice(0, 20)
+    var marketData = ServerUtils.getMarketData()
 
     const defaultWallets = DefaultCoins.map((c) => {
       console.log(c)
@@ -70,8 +64,6 @@ export default class Overview extends React.Component<OverviewProps> {
     try {
       userWallets = (await ServerUtils.getUserWallets(Utils.getCookie("authToken"))).map(({ coin, amount }) => ({ coin, amount }))
     } catch { }
-    console.log("GOT USER WALLETS:")
-    console.log(userWallets)
 
     let wallets = (userWallets || defaultWallets).map(w => {
       const graph_1d = ServerUtils.getCoinGraph(CoinIdMap[w.coin], "1d")
@@ -86,9 +78,9 @@ export default class Overview extends React.Component<OverviewProps> {
     }, {});
 
     return {
-      trendingData: trendingData,
+      marketData: marketData,
       coinImagesB64: coinsB64Filtered,
-      rss: rssJson.rss.channel[0].item.slice(0, 5),
+      rss: rssJson,
       walletData: wallets,
     }
   }
@@ -102,8 +94,8 @@ export default class Overview extends React.Component<OverviewProps> {
       StoreSingleton.setCoinImagesB64(this.props.coinImagesB64)
     if(this.props.rss)
       StoreSingleton.setRssData(this.props.rss)
-    if(this.props.trendingData)
-      StoreSingleton.setTrendingData(this.props.trendingData)
+    if(this.props.marketData)
+      StoreSingleton.setMarketData(this.props.marketData)
   }
 
   render() {

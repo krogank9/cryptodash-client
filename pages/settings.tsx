@@ -22,7 +22,7 @@ export default observer(class Settings extends React.Component {
 
   render() {
     if(!CryptodashStoreSingleton.loggedInUser.authToken) {
-      return <span>Please login to view this page.</span>
+      return <span>Please log in to view this page.</span>
     }
     
     return (

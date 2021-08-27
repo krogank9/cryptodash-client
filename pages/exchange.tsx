@@ -11,7 +11,7 @@ export default class Exchange extends React.Component {
     return (
       <div className={css.container}>
         <h1>Exchange</h1>
-        <h4>*Demo application, exchange functionality not implmented*</h4>
+        <h4>*Demo application, exchange functionality not implemented*</h4>
         <div>
           <a className={css.buyButton}>Buy</a>
           <a className={css.buyButton}>Sell</a>

@@ -1,5 +1,4 @@
 import { makeObservable, autorun, observable, computed, action, makeAutoObservable, comparer } from "mobx"
-import { observer } from 'mobx-react'
 import config from '../config'
 import CoinIdMap from "../static_data/coin_id_map.json"
 import Utils from '../Utils'
@@ -43,7 +42,6 @@ class CryptodashStore {
 
     setProfilePicQueue = Promise.resolve()
     selectProfilePic(n) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAA")
         const NUM_PICS = 4
 
         let newPic = (this.loggedInUser.profilePic || 1) + n
@@ -228,6 +226,9 @@ class CryptodashStore {
             if (this.walletData.length === 0 && !this.loggedInUser.authToken) {
                 this.setWalletData(DefaultWallets.slice())
             }
+
+            this.tryFetchMarketData()
+            this.tryFetchRssData()
         }, 1)
 
         autorun(() => {
@@ -366,16 +367,31 @@ class CryptodashStore {
         this.addWalletData(data, true)
     }
 
-    trendingData = []
-    setTrendingData(data) {
-        this.trendingData.length = 0;
-        [].push.apply(this.trendingData, data)
+    marketData = []
+    setMarketData(data) {
+        this.marketData.length = 0;
+        [].push.apply(this.marketData, data)
+    }
+    tryFetchMarketData() {
+        if(this.marketData.length === 0) {
+            fetch(`${config.API_ENDPOINT}/market_data`).then(res => res.json())
+                .then(data => {
+                    this.setMarketData(data)
+                })
+        }
     }
 
-    rssData = []
+    rssData = {}
     setRssData(data) {
-        this.rssData.length = 0;
-        [].push.apply(this.rssData, data)
+        Utils.copyDictTo(this.rssData, data)
+    }
+    tryFetchRssData() {
+        if(Object.keys(this.rssData).length === 0) {
+            fetch(`${config.API_ENDPOINT}/rss`).then(res => res.json())
+                .then(data => {
+                    this.setRssData(data)
+                })
+        }
     }
 
     setCoinImagesB64(data) {

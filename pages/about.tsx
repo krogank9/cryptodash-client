@@ -11,7 +11,7 @@ export default class About extends React.Component {
     return (
       <div className={css.container}>
         <h1 style={{ marginBottom: 0 }}>Cryptodash</h1>
-        <h4 style={{ marginTop: 10 }}>Created by Logan Krumbhaar</h4>
+        <h4 style={{ marginTop: 10 }}>Created by <a target="_blank" href="https://ltkdigital.com/">Logan Krumbhaar</a></h4>
         <p>
           Hi, welcome to my app. This is a project I built in around two months in order to learn and improve my web development skills.
           The front-end uses React/NextJS, and the back-end uses Node, ExpressJS, and PostgreSQL.
@@ -89,7 +89,7 @@ export default class About extends React.Component {
 
           The rest of the app consisted of creating basic login functionality, a few more fun features I didn't mention here, and filler pages to fit with the theme of a demo finance dashboard.
           Overall I think it was a good experience and taught me a lot about NextJS, React, and the latest technologies in use in the web development space.
-          Thanks for checking out Cryptodash!
+          Thanks for checking out Cryptodash! You can contact me and view the rest of my portfolio <a target="_blank" href="https://ltkdigital.com/">here</a>.
         </p>
       </div>
     )

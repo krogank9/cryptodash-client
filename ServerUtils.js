@@ -4,6 +4,9 @@ import Utils from './Utils'
 import AuthService from '../cryptodash-server/src/auth/auth-service'
 import WalletsService from '../cryptodash-server/src/wallets/wallets-service'
 
+var fs = require('fs')
+var xml2js = require('xml2js')
+
 //import db from '../cryptodash-server/src/db'
 
 const ONE_DAY = 1000 * 60 * 60 * 24
@@ -47,6 +50,13 @@ const ServerUtils = {
                 return null
             return WalletsService.getWalletsForUser(db, user.id)
         })
+    },
+    getRssData() {
+        var parser = new xml2js.Parser()
+        return parser.parseStringPromise(fs.readFileSync('static_data/crypto_rss.xml', 'utf8'));
+    },
+    getMarketData() {
+        return JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
     }
 }
 
