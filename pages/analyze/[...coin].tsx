@@ -19,6 +19,8 @@ import Utils from '../../Utils'
 
 import { withRouter, NextRouter } from 'next/router'
 
+import ServerUtils from '../../ServerUtils'
+
 
 //-------------------------------------------------------------
 
@@ -27,48 +29,21 @@ var fs = require('fs')
 
 import GraphsCache from '../../../cryptodash-server/src/graphs/graphs-cache'
 
-function tryGetPredictionCache(coin) {
-
-  let preloadedPrediction = GraphsCache.getPredictionCacheJSON(CoinIdMap[coin])
-  let lastRealData = preloadedPrediction[0].slice().pop()
-
-  const ONE_HOUR = 1000 * 60 * 60
-  // Make sure up to date within 24 h
-  if (!lastRealData || Date.now() - lastRealData[0] > ONE_HOUR * 24) {
-
-    // Micro optimization to already start preloading prediction before client makes 2nd request if no data ready now
-    try {
-      fetch(`http://localhost:8000/api/predictions/${CoinIdMap[coin]}`)
-    } catch { }
-  
-    return [[], []]
-  }
-
-  return preloadedPrediction
-}
-
 export async function getServerSideProps(context) {
   // todo if context.req.cookie.isLoaded == true return {}
-
-  let saveCWD = process.cwd()
-  process.chdir("../cryptodash-server")
 
   const coin = context.query.coin
 
   let coinB64 = CoinIconList32B64[coin] || CoinIconList32B64["generic"]
 
-  var marketInfo = JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8')).find(m => m["symbol"] == coin)
-
-  const prediction = tryGetPredictionCache(coin)
-
-  process.chdir(saveCWD)
+  var marketInfo = ServerUtils.getMarketData().find(m => m["symbol"] == coin)
 
   return {
     props: {
       coinB64: coinB64,
       marketInfo: marketInfo,
       coin: coin,
-      preloadedPrediction: prediction
+      preloadedPrediction: ServerUtils.tryGetPredictionData(coin)
     }
   }
 }

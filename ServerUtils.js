@@ -23,14 +23,16 @@ const knex = require('knex')
 import { DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DB } from '../cryptodash-server/src/config'
 
 const db = knex({
-	client: 'pg',
-	connection: {
-		host: DATABASE_HOST,
-		user: DATABASE_USER,
-		password: DATABASE_PASSWORD,
-		database: DATABASE_DB,
-	},
+    client: 'pg',
+    connection: {
+        host: DATABASE_HOST,
+        user: DATABASE_USER,
+        password: DATABASE_PASSWORD,
+        database: DATABASE_DB,
+    },
 })
+
+import CoinIdMap from "./static_data/coin_id_map.json"
 
 const ServerUtils = {
     getCoinGraph(coin, timeFrame) {
@@ -57,6 +59,24 @@ const ServerUtils = {
     },
     getMarketData() {
         return JSON.parse(fs.readFileSync('static_data/coins_markets_list.json', 'utf8'));
+    },
+    tryGetPredictionData(coin) {
+        let preloadedPrediction = GraphsCache.getPredictionCacheJSON(CoinIdMap[coin])
+        let lastRealData = preloadedPrediction[0].slice().pop()
+
+        const ONE_HOUR = 1000 * 60 * 60
+        // Make sure up to date within 24 h
+        if (!lastRealData || Date.now() - lastRealData[0] > ONE_HOUR * 24) {
+
+            // Micro optimization to already start preloading prediction before client makes 2nd request if no data ready now
+            try {
+                fetch(`http://localhost:8000/api/predictions/${CoinIdMap[coin]}`)
+            } catch { }
+
+            return [[], []]
+        }
+
+        return preloadedPrediction
     }
 }
 
