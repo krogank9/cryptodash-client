@@ -16,13 +16,22 @@ interface IProps {
 interface IState {
 }
 
-const SideBarWithRouterObserved = withRouter(observer(class SideBar extends React.Component<IProps, IState> {
+// Disable serverside rendering. Login button needs props from cookies
+import dynamic from "next/dynamic";
+
+function disableSSR(component) {
+  return dynamic(() => Promise.resolve(() => component), {
+    ssr: false,
+  });
+}
+
+export default withRouter(observer(class SideBar extends React.Component<IProps, IState> {
   matchPage(regex) {
     let s = ""
     try { s = this.props.router.asPath || "" } catch (e) { }
 
     let result
-    if(typeof regex === "string")
+    if (typeof regex === "string")
       result = s === regex
     else
       result = s.match(regex)
@@ -43,6 +52,8 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
         <span>Logout</span>
       </a>)
 
+    const LogButton = disableSSR(StoreSingleton.loggedInUser.userName ? logoutButton : loginButton)
+
     return (
       <div className={css.sideBar + " " + (this.props.toggled ? css.sideBar_toggled : "")}>
 
@@ -50,15 +61,15 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
           Dashboard
         </h2>
 
-          <a className={css.sideBar__item + this.matchPage("/")} onClick={() => Router.push("/")}>
-            <IonIcon name="pie-chart" />
-            <span>Overview</span>
-          </a>
+        <a className={css.sideBar__item + this.matchPage("/")} onClick={() => Router.push("/")}>
+          <IonIcon name="pie-chart" />
+          <span>Overview</span>
+        </a>
         <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)} onClick={() => Router.push(`/analyze/${StoreSingleton.selectedCoin.coin || ""}`)}>
           <IonIcon name="stats-chart" />
           <span>Analyze</span>
         </a>
-        <a className={css.sideBar__item + this.matchPage("/exchange")}  onClick={() => Router.push("/exchange")}>
+        <a className={css.sideBar__item + this.matchPage("/exchange")} onClick={() => Router.push("/exchange")}>
           <IonIcon name="swap-horizontal" />
           <span>Exchange</span>
         </a>
@@ -80,14 +91,8 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
           <span>About</span>
         </a>
 
-        {StoreSingleton.loggedInUser.userName ? logoutButton : loginButton}
+        <LogButton />
       </div>
     )
   }
 }))
-
-// Disable serverside rendering. SideBar needs props from cookies
-import dynamic from "next/dynamic";
-export default dynamic(() => Promise.resolve(SideBarWithRouterObserved), {
-    ssr: false,
-});

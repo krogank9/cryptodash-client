@@ -1,10 +1,5 @@
 Remaining stuff:
 -------------------------
--Ok so we 
-
--getInitialProps not working on navigate to page from other loaded page
-    -Need to add api route for rss and market data
-
 -Check CSS for different DPIs
 -bitcoin wiki descriptions
 
