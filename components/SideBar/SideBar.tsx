@@ -75,7 +75,7 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
           <IonIcon name="settings" />
           <span>Settings</span>
         </a>
-        <a className={css.sideBar__item}>
+        <a className={css.sideBar__item + this.matchPage("/about")} onClick={() => Router.push("/about")} >
           <IonIcon name="information-circle" />
           <span>About</span>
         </a>
