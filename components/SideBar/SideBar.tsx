@@ -52,7 +52,7 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
         <span>Logout</span>
       </a>)
 
-    const LogButton = disableSSR(StoreSingleton.loggedInUser.userName ? logoutButton : loginButton)
+    const LogButtonNoSSR = disableSSR(StoreSingleton.loggedInUser.userName ? logoutButton : loginButton)
 
     return (
       <div className={css.sideBar + " " + (this.props.toggled ? css.sideBar_toggled : "")}>
@@ -91,7 +91,7 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           <span>About</span>
         </a>
 
-        <LogButton />
+        <LogButtonNoSSR />
       </div>
     )
   }
