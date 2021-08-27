@@ -13,8 +13,9 @@ export default class About extends React.Component {
         <h1 style={{ marginBottom: 0 }}>Cryptodash</h1>
         <h4 style={{ marginTop: 10 }}>Created by Logan Krumbhaar</h4>
         <p>
-          Hi, welcome to my app. This is a project I built in around two months in order to learn and improve my React, Node, and NextJS skills.
-          The front-end uses React, and the back-end uses Node, ExpressJS, and PostgreSQL.
+          Hi, welcome to my app. This is a project I built in around two months in order to learn and improve my web development skills.
+          The front-end uses React/NextJS, and the back-end uses Node, ExpressJS, and PostgreSQL.
+          For styling, I used SASS adhering to the BEM methodology.
           I'm using <a target="_blank" href="https://www.coingecko.com/en/api">CoinGecko's</a> API to query cryptocurrency price data.
           Once I have the data, I plot it on a graph rendered with SVG.
           To manage the state of the app, I opted for MobX for its ease of use.
@@ -31,23 +32,23 @@ export default class About extends React.Component {
           I also have a script running on the server every 30 minutes to keep the cache up to date with at least all the default coins.
           This enables me to serve most users all the required graph data bundled in first request, rather than loading the overview page, then fetching my server (12 requests for the 12 default coins), which then either fetches from CoinGecko or uses cached data.
           Another optimization I was able to make here to significantly lower requests made, was to update the yearly and monthly (longer time interval) caches at the same time as updating my daily price data cache.
-          Normally, these would each require an additional API call, but since I make a request every 30 minutes 24/7, I can create my own yearly and monthly caches from the data I gather each day.
+          Normally, these would each require an additional API call, but since I make a request every 30 minutes 24/7, I can create my own yearly and monthly caches from the data I gather every day.
 
           <br /><br />
 
           Next, I have to process and send that data to my app's state managed by MobX. MobX will automatically update my components when any new data is received, but optimizations had to be made here as well.
           I fetch monthly and yearly data in the background after all daily and weekly data (essential for initial page render) is loaded.
-          I maintain stores for each time frame so they may be observed by a component and have it only update if new data for the time frame is received.
+          I maintain stores for each time frame so they may be observed by a component and have it only update if new data for that time frame is received.
           If you don't do this, you will end up re-rendering all graphs 20+ times unnecessarily (12 coins times 2 monthly/yearly data) when new data is received.
 
           <br /><br />
 
           Finally, I rendered the data using SVGs. I spent a lot of time tweaking how the graph looked and behaved.
           I wanted it to be both visually appealing, as well as representative of what you might see in a fully functional financial dashboard application.
-          There is standard line plot mode which shows a given coin's price graph superimposed onto your total portfolio balance.
+          There is standard line plot mode which shows a given coin's price graph superimposed onto your total portfolio balance graph.
           The second tab of the graph shows a Japanese candlestick chart for a given coin.
-          Something I found quite interesting when viewing all the coin graph's visually next to each other was just how similarly their prices fluctuated in unison.
-          I think that is likely because they all track with the price of Bitcoin decreasing/increasing.
+          Something I found quite interesting when viewing all the coin graphs visually next to each other was just how similarly their prices fluctuated in unison.
+          I guess this is because the cryptocurrency market is for the most part viewed as a homogeneous mass, with consumer interest in all coins tracking more or less simultaneously.
 
 
           <br /><br />

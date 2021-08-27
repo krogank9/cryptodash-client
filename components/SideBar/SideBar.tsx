@@ -58,7 +58,7 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
           <IonIcon name="stats-chart" />
           <span>Analyze</span>
         </a>
-        <a className={css.sideBar__item}>
+        <a className={css.sideBar__item + this.matchPage("/exchange")}  onClick={() => Router.push("/exchange")}>
           <IonIcon name="swap-horizontal" />
           <span>Exchange</span>
         </a>
@@ -67,7 +67,7 @@ const SideBarWithRouterObserved = withRouter(observer(class SideBar extends Reac
           Account
         </h2>
 
-        <a className={css.sideBar__item}>
+        <a className={css.sideBar__item + this.matchPage("/notifications")} onClick={() => Router.push("/notifications")}>
           <IonIcon name="notifications" />
           <span>Notifications</span>
         </a>
