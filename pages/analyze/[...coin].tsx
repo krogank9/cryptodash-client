@@ -79,7 +79,7 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
   }
 
   // For increasing request timeout. Different on different browsers. Prediction graph could take a long time to load.
-  multiFetch(url, maxWaitTime = 30000, alreadyWaited = 0) {
+  multiFetch(url, maxWaitTime = 120000, alreadyWaited = 0) {
     let startTime = Date.now()
     return fetch(url).catch((error) => {
       let waited = Date.now() - startTime
@@ -96,7 +96,7 @@ export default withRouter(class Analyze extends React.Component<AnalyzeProps> {
       return
     }
 
-    this.multiFetch(`${config.API_ENDPOINT}/predictions/${CoinIdMap[this.props.coin]}`, 30000)
+    this.multiFetch(`${config.API_ENDPOINT}/predictions/${CoinIdMap[this.props.coin]}`)
       .then(response => response.json())
       .then(data => {
         let graphData = data[0]
