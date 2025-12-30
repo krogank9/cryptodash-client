@@ -74,7 +74,7 @@ export default class About extends React.Component {
           <br /><br />
 
 
-          For a basic price prediction system that's mostly for show/novelty, I'm satisfied with these results.
+          For a basic price prediction system that's mostly for show/novelty, I'm satisfied with the results.
 
           <br /><br />
 

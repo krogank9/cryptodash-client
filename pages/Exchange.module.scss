@@ -1,18 +1,216 @@
+@import '../styles/_variables.scss';
+
 .container {
-  a {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.demoNotice {
+  background: linear-gradient(135deg, rgba(211, 47, 47, 0.15) 0%, rgba(211, 47, 47, 0.05) 100%);
+  border: 1px solid rgba(211, 47, 47, 0.4);
+  border-radius: $border-radius-larger;
+  padding: 16px 20px;
+  margin-bottom: 30px;
+  text-align: center;
+
+  &__icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    color: #ff6b6b;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 6px 0;
+  }
+
+  &__text {
+    color: $sub-text-color;
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+.card {
+  background-color: $foreground-color;
+  border-radius: $border-radius-larger;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
     color: white;
+  }
+
+  p {
+    margin: 0;
+    color: $sub-text-color;
+    font-size: 14px;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: $border-radius;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: $inactive-text-color;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &_active {
+    background-color: $active-text-color;
+    color: $background-color;
+
+    &:hover {
+      background-color: $active-text-color;
+    }
+  }
+
+  &_buy.tab_active {
+    background-color: $positive-text-color;
+  }
+
+  &_sell.tab_active {
+    background-color: $negative-text-color;
+  }
+}
+
+.formGroup {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    color: $sub-text-color;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: $border-radius;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: $background-color;
+    color: white;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: $active-text-color;
+    }
+
+    &::placeholder {
+      color: $sub-text-color;
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2385a3c2' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+}
+
+.amountInputs {
+  display: flex;
+  gap: 12px;
+
+  > div {
+    flex: 1;
+  }
+
+  @include on-mobile-only {
+    flex-direction: column;
+  }
+}
+
+.swapIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 24px;
+  color: $sub-text-color;
+  font-size: 20px;
+
+  @include on-mobile-only {
+    padding-top: 0;
+    transform: rotate(90deg);
   }
 }
 
 .exchangeButton {
-  padding: 5px 20px;
-  background-color: #2A4357;
-  border-radius: 3px;
+  display: block;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: $border-radius;
+  background: linear-gradient(135deg, $active-text-color 0%, #5b9fd4 100%);
+  color: $background-color;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(118, 201, 255, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
-.buyButton {
-  margin-right: 5px;
-  padding: 5px 20px;
-  background-color: #2A4357;
-  border-radius: 3px;
+.rateInfo {
+  text-align: center;
+  padding: 16px;
+  margin-top: 16px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: $border-radius;
+
+  &__label {
+    color: $sub-text-color;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  &__value {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+  }
 }

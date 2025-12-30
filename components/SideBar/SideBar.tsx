@@ -61,35 +61,47 @@ export default withRouter(observer(class SideBar extends React.Component<IProps,
           Dashboard
         </h2>
 
-        <a className={css.sideBar__item + this.matchPage("/")} onClick={() => Router.push("/")}>
-          <IonIcon name="pie-chart" />
-          <span>Overview</span>
-        </a>
-        <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)} onClick={() => Router.push(`/analyze/${StoreSingleton.selectedCoin.coin || ""}`)}>
-          <IonIcon name="stats-chart" />
-          <span>Analyze</span>
-        </a>
-        <a className={css.sideBar__item + this.matchPage("/exchange")} onClick={() => Router.push("/exchange")}>
-          <IonIcon name="swap-horizontal" />
-          <span>Exchange</span>
-        </a>
+        <Link href="/">
+          <a className={css.sideBar__item + this.matchPage("/")}>
+            <IonIcon name="pie-chart" />
+            <span>Overview</span>
+          </a>
+        </Link>
+        <Link href={`/analyze/${StoreSingleton.selectedCoin.coin || "bitcoin"}`}>
+          <a className={css.sideBar__item + this.matchPage(/\/analyze\/.*/g)}>
+            <IonIcon name="stats-chart" />
+            <span>Analyze</span>
+          </a>
+        </Link>
+        <Link href="/exchange">
+          <a className={css.sideBar__item + this.matchPage("/exchange")}>
+            <IonIcon name="swap-horizontal" />
+            <span>Exchange</span>
+          </a>
+        </Link>
 
         <h2 className={css.sideBar__sectionTitle}>
           Account
         </h2>
 
-        <a className={css.sideBar__item + this.matchPage("/notifications")} onClick={() => Router.push("/notifications")}>
-          <IonIcon name="notifications" />
-          <span>Notifications</span>
-        </a>
-        <a className={css.sideBar__item + this.matchPage("/settings")} onClick={() => Router.push("/settings")}>
-          <IonIcon name="settings" />
-          <span>Settings</span>
-        </a>
-        <a className={css.sideBar__item + this.matchPage("/about")} onClick={() => Router.push("/about")} >
-          <IonIcon name="information-circle" />
-          <span>About</span>
-        </a>
+        <Link href="/notifications">
+          <a className={css.sideBar__item + this.matchPage("/notifications")}>
+            <IonIcon name="notifications" />
+            <span>Notifications</span>
+          </a>
+        </Link>
+        <Link href="/settings">
+          <a className={css.sideBar__item + this.matchPage("/settings")}>
+            <IonIcon name="settings" />
+            <span>Settings</span>
+          </a>
+        </Link>
+        <Link href="/about">
+          <a className={css.sideBar__item + this.matchPage("/about")}>
+            <IonIcon name="information-circle" />
+            <span>About</span>
+          </a>
+        </Link>
 
         <LogButtonNoSSR />
       </div>
