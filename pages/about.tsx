@@ -66,23 +66,14 @@ export default class About extends React.Component {
 
           <br /><br />
 
-          The prediction library I finally settled on was <a target="_blank" href="https://numenta.com/">HTM (Hierarchical Temporal Memory)</a> machine intelligence.
-          When I found HTM, I was looking for a neural network that would actually try to look for some higher order pattern in the data, rather
-          than just try to copy previous days as the LSTM method I used did.
-          The design of HTM was guided by the latest in theoretical neuroscience research.
-          It was created by Numenta, and provides large performance gains in deep learning inference tasks.
-          I saw other people having good success using HTM for cryptocurrency price prediction, so I tried it myself for a variety of cases and coins, and found it worked quite well:
+          The prediction system I settled on uses a lightweight neural network that analyzes recent price patterns and volatility.
+          The neural network learns from recent price movements to detect trends, while a stochastic model adds realistic volatility
+          based on the coin's actual price behavior. This hybrid approach produces predictions that look natural and match the 
+          characteristics of real market data.
 
           <br /><br />
 
-          <img src="/htm_ipynb.png" style={{maxWidth: "700px", width: "100%"}} />
 
-          <br /><br />
-
-          There are still some issues, namely the prediction breaking down past a certain distance in the future and just outputting erratic dips and peaks.
-          There's also the issue that it seems to just fluctuate around the start price range, and it doesn't grasp any overall trend.
-          My answer to both of these was to just choose a shorter prediction time, of at most 14 days.
-          Neither of these issues usually appear within that time range, and it seems to give quite a believable prediction within that time frame.
           For a basic price prediction system that's mostly for show/novelty, I'm satisfied with these results.
 
           <br /><br />
