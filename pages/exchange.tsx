@@ -76,7 +76,7 @@ export default class Exchange extends React.Component<{}, IState> {
       <div className={css.container}>
         <div className={css.demoNotice}>
           <div className={css.demoNotice__icon}>⚠️</div>
-          <h3 className={css.demoNotice__title}>Demo Mode</h3>
+          <h3 className={css.demoNotice__title}>Demo Application</h3>
           <p className={css.demoNotice__text}>
             This is a demonstration interface only. No real transactions will be processed.
             This feature showcases what an exchange interface could look like.
@@ -125,7 +125,7 @@ export default class Exchange extends React.Component<{}, IState> {
           </div>
 
           <div className={css.amountInputs}>
-            <div className={css.formGroup}>
+            <div className={`${css.formGroup} ${css.amountInput}`}>
               <label>{mode === 'buy' ? 'You Pay' : 'You Receive'} (USD)</label>
               <input 
                 type="number" 
@@ -135,7 +135,7 @@ export default class Exchange extends React.Component<{}, IState> {
               />
             </div>
             <div className={css.swapIcon}>⇄</div>
-            <div className={css.formGroup}>
+            <div className={`${css.formGroup} ${css.amountInput}`}>
               <label>{mode === 'buy' ? 'You Receive' : 'You Pay'} ({this.getCurrencySymbol()})</label>
               <input 
                 type="number" 

@@ -145,27 +145,33 @@
 
 .amountInputs {
   display: flex;
+  align-items: flex-end;
   gap: 12px;
-
-  > div {
-    flex: 1;
-  }
 
   @include on-mobile-only {
     flex-direction: column;
+    align-items: stretch;
   }
+}
+
+.amountInput {
+  flex: 1;
+  min-width: 0; // Prevent overflow
 }
 
 .swapIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 24px;
+  width: 40px;
+  height: 48px; // Match input height
+  flex-shrink: 0;
   color: $sub-text-color;
   font-size: 20px;
 
   @include on-mobile-only {
-    padding-top: 0;
+    width: 100%;
+    height: 30px;
     transform: rotate(90deg);
   }
 }
